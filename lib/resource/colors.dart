@@ -11,3 +11,5 @@ Color softgrey = Color(0xffa1a1a1);
 Color selectedColor = Color(0xFF4AC8EA);
 Color lavender = Color(0xff102286);
 Color backgroundGrey = Color(0xfff2f2f2);
+Color first = Color(0xff0771BD);
+Color second = Color(0xff2EA3F8);

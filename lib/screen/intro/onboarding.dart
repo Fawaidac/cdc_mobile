@@ -49,99 +49,105 @@ class _OnBoardingState extends State<OnBoarding> {
           Container(
               alignment: Alignment(0, 0.85),
               margin: EdgeInsets.symmetric(horizontal: 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  onLastPage
-                      ? SizedBox()
-                      : GestureDetector(
-                          onTap: () {
-                            _controller.jumpToPage(2);
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Skip",
-                                  style: MyFont.poppins(
-                                      fontSize: 14,
-                                      color: black,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          )),
-                  onLastPage
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                    child: Login(),
-                                    type: PageTransitionType.fade));
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 150,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: [primaryColor, Colors.blue]),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Get Started",
-                                  style: MyFont.poppins(
-                                      fontSize: 14,
+              child: onLastPage
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 70),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    PageTransition(
+                                        child: Login(),
+                                        type: PageTransitionType.fade));
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                    gradient:
+                                        LinearGradient(colors: [second, first]),
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Get Started",
+                                      style: MyFont.poppins(
+                                          fontSize: 14,
+                                          color: white,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      Icons.login_rounded,
                                       color: white,
-                                      fontWeight: FontWeight.bold),
+                                      size: 20,
+                                    )
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.login_rounded,
+                              )),
+                        )
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                            onTap: () {
+                              _controller.jumpToPage(2);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              decoration: BoxDecoration(
                                   color: white,
-                                  size: 20,
-                                )
-                              ],
-                            ),
-                          ))
-                      : GestureDetector(
-                          onTap: () {
-                            _controller.nextPage(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.easeIn);
-                          },
-                          child: Container(
-                            height: 40,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: [primaryColor, Colors.blue]),
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Next",
-                                  style: MyFont.poppins(
-                                      fontSize: 14,
-                                      color: white,
-                                      fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ))
-                ],
-              ))
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Skip",
+                                    style: MyFont.poppins(
+                                        fontSize: 14,
+                                        color: black,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            )),
+                        GestureDetector(
+                            onTap: () {
+                              _controller.nextPage(
+                                  duration: Duration(milliseconds: 500),
+                                  curve: Curves.easeIn);
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  gradient:
+                                      LinearGradient(colors: [second, first]),
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Next",
+                                    style: MyFont.poppins(
+                                        fontSize: 14,
+                                        color: white,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ))
+                      ],
+                    ))
         ],
       ),
     );

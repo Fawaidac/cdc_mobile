@@ -1,9 +1,11 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/register/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -27,82 +29,115 @@ class _LoginState extends State<Login> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
+              Text(
+                "Selamat Datang",
+                style: MyFont.poppins(
+                    fontSize: 24, color: black, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                "Masuk ke akun anda",
+                style: MyFont.poppins(fontSize: 12, color: black),
+              ),
+              const SizedBox(
+                height: 60,
+              ),
+              CustomTextField(
                   controller: nik,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => nik = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan nik anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
+                  label: "Masukan Email / NIK",
+                  keyboardType: TextInputType.text,
+                  isEnable: true,
+                  icon: Icons.mail,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.done,
+                      controller: pw,
+                      obscureText: showpass,
+                      style: MyFont.poppins(fontSize: 13, color: black),
+                      keyboardType: TextInputType.text,
+                      onSaved: (val) => pw = val as TextEditingController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.singleLineFormatter
+                      ],
+                      decoration: InputDecoration(
+                        hintText: "Kata Sandi",
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showpass = !showpass;
+                              });
+                            },
+                            icon: showpass
+                                ? Icon(
+                                    Icons.visibility_off,
+                                    size: 20,
+                                    color: grey,
+                                  )
+                                : Icon(
+                                    Icons.visibility,
+                                    color: primaryColor,
+                                    size: 20,
+                                  )),
+                        isDense: true,
+                        hintStyle:
+                            GoogleFonts.poppins(fontSize: 13, color: grey),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffC4C4C4).withOpacity(0.2),
+                      ),
+                    )
                   ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Nik",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
                 ),
               ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  obscureText: showpass,
-                  controller: pw,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => pw = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan password anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
+              Padding(
+                padding: const EdgeInsets.only(top: 5.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Lupa Sandi ?",
+                          style:
+                              MyFont.poppins(fontSize: 12, color: primaryColor),
+                        ))
                   ],
-                  decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: grey)),
-                      labelText: "Kata sandi",
-                      labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              showpass = !showpass;
-                            });
-                          },
-                          icon: showpass
-                              ? Icon(
-                                  Icons.visibility_off,
-                                  size: 20,
-                                  color: grey,
-                                )
-                              : Icon(
-                                  Icons.visibility,
-                                  color: primaryColor,
-                                  size: 20,
-                                ))),
                 ),
               ),
               Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
+                  margin: const EdgeInsets.fromLTRB(0, 5, 0, 15),
                   height: 48,
                   width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [second, first]),
+                      borderRadius: BorderRadius.circular(15)),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -112,22 +147,35 @@ class _LoginState extends State<Login> {
                     },
                     child: Text('Masuk',
                         style: MyFont.poppins(
-                          fontSize: 12,
+                          fontSize: 14,
                           color: white,
                         )),
                   )),
-              TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Register(),
-                        ));
-                  },
-                  child: Text(
-                    "Register",
-                    style: MyFont.poppins(fontSize: 14, color: black),
-                  ))
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Belum memiliki akun ? ",
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Register(),
+                          ));
+                    },
+                    child: Text(
+                      "Daftar Sekarang ",
+                      style: MyFont.poppins(
+                          fontSize: 12,
+                          color: first,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ),
