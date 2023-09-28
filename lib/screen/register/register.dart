@@ -1,8 +1,12 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/resource/textfields.dart';
+import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -27,246 +31,234 @@ class _RegisterState extends State<Register> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(30),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  controller: email,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => email = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan email anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
-                  ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Email",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
-                ),
+              Text(
+                "Daftar Akun",
+                style: MyFont.poppins(
+                    fontSize: 24, color: black, fontWeight: FontWeight.bold),
               ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  controller: nik,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => nik = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan nik anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
-                  ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Nik",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
-                ),
+              Text(
+                "Buat akun anda",
+                style: MyFont.poppins(fontSize: 12, color: black),
               ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
+              const SizedBox(
+                height: 30,
+              ),
+              CustomTextField(
                   controller: fullname,
-                  style: MyFont.poppins(fontSize: 13, color: black),
+                  label: "Nama Lengkap",
                   keyboardType: TextInputType.name,
-                  onSaved: (val) => fullname = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan nik anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
-                  ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Fullname",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
+                  isEnable: true,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.person_rounded),
+              CustomTextField(
+                  controller: email,
+                  label: "Email",
+                  keyboardType: TextInputType.emailAddress,
+                  isEnable: true,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.mail),
+              CustomTextField(
                   controller: no_telp,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => no_telp = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan nik anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
+                  label: "No. Telepon",
+                  keyboardType: TextInputType.number,
+                  isEnable: true,
+                  inputFormatters: FilteringTextInputFormatter.digitsOnly,
+                  icon: Icons.phone_android),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.done,
+                      controller: pw,
+                      obscureText: showpass,
+                      style: MyFont.poppins(fontSize: 13, color: black),
+                      keyboardType: TextInputType.text,
+                      onSaved: (val) => pw = val as TextEditingController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.singleLineFormatter
+                      ],
+                      decoration: InputDecoration(
+                        hintText: "Kata Sandi",
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                showpass = !showpass;
+                              });
+                            },
+                            icon: showpass
+                                ? Icon(
+                                    Icons.visibility_off,
+                                    size: 20,
+                                    color: grey,
+                                  )
+                                : Icon(
+                                    Icons.visibility,
+                                    color: first,
+                                    size: 20,
+                                  )),
+                        isDense: true,
+                        hintStyle:
+                            GoogleFonts.poppins(fontSize: 13, color: grey),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffC4C4C4).withOpacity(0.2),
+                      ),
+                    )
                   ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Telepon",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
                 ),
               ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  controller: alamat,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => alamat = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan nik anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      textInputAction: TextInputAction.done,
+                      controller: conpw,
+                      obscureText: conpass,
+                      style: MyFont.poppins(fontSize: 13, color: black),
+                      keyboardType: TextInputType.text,
+                      onSaved: (val) => conpw = val as TextEditingController,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.singleLineFormatter
+                      ],
+                      decoration: InputDecoration(
+                        hintText: "Konfirmasi Kata Sandi",
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                conpass = !conpass;
+                              });
+                            },
+                            icon: conpass
+                                ? Icon(
+                                    Icons.visibility_off,
+                                    size: 20,
+                                    color: grey,
+                                  )
+                                : Icon(
+                                    Icons.visibility,
+                                    color: first,
+                                    size: 20,
+                                  )),
+                        isDense: true,
+                        hintStyle:
+                            GoogleFonts.poppins(fontSize: 13, color: grey),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: Color(0xffC4C4C4).withOpacity(0.2),
+                      ),
+                    )
                   ],
-                  decoration: InputDecoration(
-                    focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: grey)),
-                    labelText: "Alamat",
-                    labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  obscureText: showpass,
-                  controller: pw,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => pw = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan password anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
-                  ],
-                  decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: grey)),
-                      labelText: "Kata sandi",
-                      labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              showpass = !showpass;
-                            });
-                          },
-                          icon: showpass
-                              ? Icon(
-                                  Icons.visibility_off,
-                                  size: 20,
-                                  color: grey,
-                                )
-                              : Icon(
-                                  Icons.visibility,
-                                  color: primaryColor,
-                                  size: 20,
-                                ))),
-                ),
-              ),
-              SizedBox(
-                height: 50,
-                child: TextFormField(
-                  textInputAction: TextInputAction.done,
-                  obscureText: conpass,
-                  controller: conpw,
-                  style: MyFont.poppins(fontSize: 13, color: black),
-                  keyboardType: TextInputType.name,
-                  onSaved: (val) => conpw = val as TextEditingController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Masukan password anda';
-                    }
-                    return null;
-                  },
-                  inputFormatters: <TextInputFormatter>[
-                    FilteringTextInputFormatter.singleLineFormatter,
-                    LengthLimitingTextInputFormatter(100)
-                  ],
-                  decoration: InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: grey)),
-                      labelText: "Con Kata sandi",
-                      labelStyle: MyFont.poppins(fontSize: 13, color: grey),
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              conpass = !conpass;
-                            });
-                          },
-                          icon: conpass
-                              ? Icon(
-                                  Icons.visibility_off,
-                                  size: 20,
-                                  color: grey,
-                                )
-                              : Icon(
-                                  Icons.visibility,
-                                  color: primaryColor,
-                                  size: 20,
-                                ))),
                 ),
               ),
               Container(
-                  margin: EdgeInsets.symmetric(vertical: 20),
+                  margin: EdgeInsets.fromLTRB(0, 25, 0, 15),
                   height: 48,
                   width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [second, first]),
+                      borderRadius: BorderRadius.circular(15)),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
+                        backgroundColor: Colors.transparent,
                         shadowColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(15),
                         )),
                     onPressed: () {
-                      // handleRegister();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => VerifikasiOtp(),
+                          ));
                     },
-                    child: Text('Masuk',
-                        style: MyFont.poppins(
-                          fontSize: 12,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Lanjut',
+                            style: MyFont.poppins(
+                              fontSize: 14,
+                              color: white,
+                            )),
+                        Icon(
+                          Icons.keyboard_arrow_right,
                           color: white,
-                        )),
+                        )
+                      ],
+                    ),
                   )),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Sudah memiliki akun ? ",
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Login(),
+                          ));
+                    },
+                    child: Text(
+                      "Masuk ",
+                      style: MyFont.poppins(
+                          fontSize: 12,
+                          color: first,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ),
