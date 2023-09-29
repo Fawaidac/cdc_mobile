@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/register/register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -143,7 +144,11 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                     onPressed: () {
-                      // handleLogin();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ));
                     },
                     child: Text('Masuk',
                         style: MyFont.poppins(

@@ -42,8 +42,8 @@ class _OnBoardingState extends State<OnBoarding> {
             child: SmoothPageIndicator(
               controller: _controller,
               count: 3,
-              effect: SlideEffect(
-                  dotWidth: 8, dotHeight: 8, activeDotColor: primaryColor),
+              effect:
+                  SlideEffect(dotWidth: 8, dotHeight: 8, activeDotColor: first),
             ),
           ),
           Container(
