@@ -2,6 +2,8 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    // id "com.google.gms.google-services"
+    // id 'com.google.gms.google-services' version '4.3.15' apply false
 }
 
 def localProperties = new Properties()
@@ -11,6 +13,8 @@ if (localPropertiesFile.exists()) {
         localProperties.load(reader)
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
@@ -37,7 +41,7 @@ android {
         applicationId "com.jtiinovation.cdc_mobile"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -54,4 +58,10 @@ android {
 
 flutter {
     source '../..'
+}
+
+dependencies {
+        implementation platform('com.google.firebase:firebase-bom:32.3.1')
+        implementation 'com.google.firebase:firebase-analytics'
+        implementation 'com.google.firebase:firebase-auth'
 }

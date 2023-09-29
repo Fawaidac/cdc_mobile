@@ -2,7 +2,9 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/login/lupa_sandi.dart';
 import 'package:cdc_mobile/screen/register/register.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,6 +22,29 @@ class _LoginState extends State<Login> {
   var nik = TextEditingController();
   var pw = TextEditingController();
   bool showpass = true;
+
+  void handleLogin() async {
+    final emailOrNik = nik.text;
+    final password = pw.text;
+    try {
+      final response = await ApiServices.login(emailOrNik, password);
+      if (response['code'] == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', response['data']['token']);
+        Fluttertoast.showToast(msg: response['message']);
+        // ignore: use_build_context_synchronously
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ));
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +145,13 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LupaSandi(),
+                              ));
+                        },
                         child: Text(
                           "Lupa Sandi ?",
                           style:
@@ -144,11 +175,7 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ));
+                      handleLogin();
                     },
                     child: Text('Masuk',
                         style: MyFont.poppins(

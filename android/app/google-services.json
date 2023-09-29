@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "416453185086",
+    "project_id": "cdc-online-6bd80",
+    "storage_bucket": "cdc-online-6bd80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:416453185086:android:87552e4b27897897270b6f",
+        "android_client_info": {
+          "package_name": "com.jtiinovation.cdc_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRITr-3nUqhINAVt3Xr8hUi-v8b-UMBWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

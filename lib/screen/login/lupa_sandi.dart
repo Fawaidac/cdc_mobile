@@ -1,74 +1,18 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
-import 'package:cdc_mobile/screen/register/register.dart';
-import 'package:cdc_mobile/services/api.services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pinput/pinput.dart';
+import 'package:flutter/services.dart';
 
-class VerifikasiOtp extends StatefulWidget {
-  var fullname;
-  var email;
-  var pw;
-  var phone;
-  var alamat;
-  var nik;
-  VerifikasiOtp(
-      {required this.fullname,
-      required this.email,
-      required this.pw,
-      required this.alamat,
-      required this.phone,
-      required this.nik,
-      super.key});
+class LupaSandi extends StatefulWidget {
+  const LupaSandi({super.key});
 
   @override
-  State<VerifikasiOtp> createState() => _VerifikasiOtpState();
+  State<LupaSandi> createState() => _LupaSandiState();
 }
 
-class _VerifikasiOtpState extends State<VerifikasiOtp> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  verifikasiOtp() async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: Register.verify, smsCode: code);
-      await auth.signInWithCredential(credential);
-      handleRegister();
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Kode Otp Salah");
-    }
-  }
-
-  void handleRegister() async {
-    try {
-      final response = await ApiServices.register(widget.email, widget.nik,
-          widget.fullname, widget.pw, "0" + widget.phone, widget.alamat);
-      if (response['code'] == 201) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Login(),
-            ));
-        Fluttertoast.showToast(msg: response['message']);
-      } else {
-        Fluttertoast.showToast(msg: response['message']);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(widget.email);
-  }
-
-  var code = "";
+class _LupaSandiState extends State<LupaSandi> {
+  var email = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,26 +35,27 @@ class _VerifikasiOtpState extends State<VerifikasiOtp> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(
-              height: 30,
+              height: 50,
             ),
             Text(
-              "Verifikasi Otp",
+              "Atur Ulang Sandi",
               style: MyFont.poppins(fontSize: 24, color: black),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 10, 0, 50),
-              child: Text(
-                "Masukkan 6 digit kode yang dikirim di nomor +62 0895 09512660  untuk verifikasi.",
-                style: MyFont.poppins(fontSize: 12, color: black),
-              ),
+            Text(
+              "Masukan email yang ditautkan di email anda",
+              style: MyFont.poppins(fontSize: 12, color: black),
             ),
-            Pinput(
-              length: 6,
-              showCursor: true,
-              onChanged: (value) {
-                code = value;
-              },
+            const SizedBox(
+              height: 50,
             ),
+            CustomTextField(
+                controller: email,
+                label: "Email",
+                isEnable: true,
+                keyboardType: TextInputType.emailAddress,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter,
+                icon: Icons.mail_rounded),
             Container(
                 margin: const EdgeInsets.fromLTRB(0, 50, 0, 45),
                 height: 48,
@@ -126,7 +71,7 @@ class _VerifikasiOtpState extends State<VerifikasiOtp> {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onPressed: () {
-                    verifikasiOtp();
+                    // handleLogin();
                   },
                   child: Text('Verifikasi',
                       style: MyFont.poppins(
@@ -138,7 +83,7 @@ class _VerifikasiOtpState extends State<VerifikasiOtp> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Tidak menerima kode OTP ? ",
+                  "Tidak menerima pesan ? ",
                   style: MyFont.poppins(fontSize: 12, color: black),
                 ),
                 InkWell(

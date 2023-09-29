@@ -3,6 +3,8 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
-
+  static String verify = "";
   @override
   State<Register> createState() => _RegisterState();
 }
@@ -25,6 +27,47 @@ class _RegisterState extends State<Register> {
   var conpw = TextEditingController();
   bool showpass = true;
   bool conpass = true;
+  var phone = "";
+
+  var countrycode = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    countrycode.text = "+62";
+    super.initState();
+  }
+
+  registerWithMobileNumber() async {
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: countrycode.text + phone,
+        verificationCompleted: (PhoneAuthCredential authCredential) async {},
+        verificationFailed: (FirebaseAuthException e) {},
+        codeSent: (verificationId, forceResendingToken) {
+          Register.verify = verificationId;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => VerifikasiOtp(
+                    fullname: fullname.text,
+                    email: email.text,
+                    pw: pw.text,
+                    phone: phone,
+                    alamat: alamat.text,
+                    nik: nik.text),
+              ));
+        },
+        codeAutoRetrievalTimeout: (verificationId) {},
+      );
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +99,14 @@ class _RegisterState extends State<Register> {
                       FilteringTextInputFormatter.singleLineFormatter,
                   icon: Icons.person_rounded),
               CustomTextField(
+                  controller: nik,
+                  label: "Nomer Induk Kependudukan",
+                  keyboardType: TextInputType.name,
+                  isEnable: true,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.badge),
+              CustomTextField(
                   controller: email,
                   label: "Email",
                   keyboardType: TextInputType.emailAddress,
@@ -64,12 +115,66 @@ class _RegisterState extends State<Register> {
                       FilteringTextInputFormatter.singleLineFormatter,
                   icon: Icons.mail),
               CustomTextField(
-                  controller: no_telp,
-                  label: "No. Telepon",
-                  keyboardType: TextInputType.number,
+                  controller: alamat,
+                  label: "Alamat",
+                  keyboardType: TextInputType.emailAddress,
                   isEnable: true,
-                  inputFormatters: FilteringTextInputFormatter.digitsOnly,
-                  icon: Icons.phone_android),
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.location_city),
+              Container(
+                height: 50,
+                margin: const EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  color: Color(0xffC4C4C4).withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 30,
+                      child: TextField(
+                        controller: countrycode,
+                        style: MyFont.poppins(fontSize: 12, color: black),
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          isDense: true,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      "|",
+                      style: MyFont.poppins(fontSize: 20, color: black),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                        child: TextField(
+                      keyboardType: TextInputType.phone,
+                      style: MyFont.poppins(fontSize: 13, color: black),
+                      onChanged: (value) {
+                        phone = value;
+                      },
+                      decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Phone",
+                          suffixIcon: Icon(
+                            Icons.phone_android_rounded,
+                            size: 20,
+                            color: grey,
+                          ),
+                          isDense: false,
+                          hintStyle: MyFont.poppins(fontSize: 13, color: grey)),
+                    ))
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Column(
@@ -178,14 +283,14 @@ class _RegisterState extends State<Register> {
                         hintStyle:
                             GoogleFonts.poppins(fontSize: 13, color: grey),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.transparent,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.transparent,
                             width: 1,
                           ),
@@ -199,7 +304,7 @@ class _RegisterState extends State<Register> {
                 ),
               ),
               Container(
-                  margin: EdgeInsets.fromLTRB(0, 25, 0, 15),
+                  margin: const EdgeInsets.fromLTRB(0, 25, 0, 15),
                   height: 48,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
@@ -213,11 +318,7 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(15),
                         )),
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerifikasiOtp(),
-                          ));
+                      registerWithMobileNumber();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

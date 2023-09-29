@@ -41,12 +41,12 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "active": Image.asset(
-        "images/non_active_graph.png",
+        "images/active_graph.png",
         height: 20,
         width: 20,
       ),
       "non_active": Image.asset(
-        "images/active_graph.png",
+        "images/non_active_graph.png",
         height: 20,
         width: 20,
       ),
@@ -54,12 +54,12 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "active": Image.asset(
-        "images/non_active_plus.png",
+        "images/active_plus.png",
         height: 20,
         width: 20,
       ),
       "non_active": Image.asset(
-        "images/active_plus.png",
+        "images/non_active_plus.png",
         height: 20,
         width: 20,
       ),
@@ -67,12 +67,12 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "active": Image.asset(
-        "images/non_active_app.png",
+        "images/active_app.png",
         height: 20,
         width: 20,
       ),
       "non_active": Image.asset(
-        "images/active_graph.png",
+        "images/non_active_app.png",
         height: 20,
         width: 20,
       ),
@@ -80,12 +80,12 @@ class _HomePageState extends State<HomePage> {
     },
     {
       "active": Image.asset(
-        "images/non_active_profile.png",
+        "images/active_profile.png",
         height: 20,
         width: 20,
       ),
       "non_active": Image.asset(
-        "images/active_profile.png",
+        "images/non_active_profile.png",
         height: 20,
         width: 20,
       ),
@@ -146,85 +146,6 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(right: 10),
             child: Row(
               children: [
-                // GestureDetector(
-                //   onTap: () {
-                //     setState(() {
-                //       active = !active;
-                //     });
-                //   },
-                //   child: Center(
-                //     child: AnimatedContainer(
-                //       margin: EdgeInsets.only(right: 10),
-                //       padding: EdgeInsets.symmetric(horizontal: 10),
-                //       height: 50,
-                //       width:
-                //           active ? 50 : MediaQuery.of(context).size.width * 0.8,
-                //       duration: Duration(milliseconds: 375),
-                //       curve: Curves.easeOut,
-                //       decoration: BoxDecoration(
-                //           color: Colors.transparent,
-                //           borderRadius: BorderRadius.circular(30)),
-                //       child: Column(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         crossAxisAlignment: active
-                //             ? CrossAxisAlignment.center
-                //             : CrossAxisAlignment.start,
-                //         children: [
-                //           active
-                //               ? Icon(
-                //                   Icons.search,
-                //                   color: first,
-                //                   size: 20,
-                //                 )
-                //               : Row(
-                //                   mainAxisAlignment: MainAxisAlignment.center,
-                //                   crossAxisAlignment: CrossAxisAlignment.center,
-                //                   children: [
-                //                     Icon(
-                //                       Icons.search,
-                //                       color: primaryColor,
-                //                       size: 20,
-                //                     ),
-                //                     Expanded(
-                //                       child: TextFormField(
-                //                         textInputAction: TextInputAction.done,
-                //                         controller: searh,
-                //                         style: MyFont.poppins(
-                //                             fontSize: 12, color: black),
-                //                         keyboardType: TextInputType.text,
-                //                         decoration: InputDecoration(
-                //                           hintText: "Search",
-                //                           isDense: true,
-                //                           hintStyle: GoogleFonts.poppins(
-                //                               fontSize: 13, color: grey),
-                //                           enabledBorder: OutlineInputBorder(
-                //                             borderSide: BorderSide(
-                //                               color: Colors.transparent,
-                //                               width: 1,
-                //                             ),
-                //                             borderRadius:
-                //                                 BorderRadius.circular(30),
-                //                           ),
-                //                           focusedBorder: OutlineInputBorder(
-                //                             borderSide: BorderSide(
-                //                               color: Colors.transparent,
-                //                               width: 1,
-                //                             ),
-                //                             borderRadius:
-                //                                 BorderRadius.circular(30),
-                //                           ),
-                //                           filled: true,
-                //                           fillColor: white,
-                //                         ),
-                //                       ),
-                //                     ),
-                //                   ],
-                //                 )
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
                 SizedBox(
                   child: Image.asset(
                     "images/bell.png",
@@ -232,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.center,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 15,
                 ),
                 SizedBox(
@@ -242,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                     alignment: Alignment.center,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
               ],
@@ -340,7 +261,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
       bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: true,
+          showSelectedLabels: false,
           unselectedLabelStyle: MyFont.poppins(
               fontSize: 12, color: grey, fontWeight: FontWeight.w300),
           selectedLabelStyle: MyFont.poppins(
@@ -348,7 +269,7 @@ class _HomePageState extends State<HomePage> {
           selectedFontSize: 12,
           type: BottomNavigationBarType.fixed,
           showUnselectedLabels: false,
-          selectedItemColor: primaryColor,
+          selectedItemColor: first,
           unselectedItemColor: softgrey,
           currentIndex: index,
           onTap: onTap,
