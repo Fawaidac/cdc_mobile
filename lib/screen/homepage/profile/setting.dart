@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/profile/settings/add_education.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {
@@ -44,7 +45,15 @@ class _SettingState extends State<Setting> {
                   fontSize: 16, color: black, fontWeight: FontWeight.bold),
             ),
             get("Kartu Alumni", Icons.badge_outlined),
-            get("Pendidikan", Icons.school_outlined),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddEducation(),
+                      ));
+                },
+                child: get("Pendidikan", Icons.school_outlined)),
             get("Pekerjaan", Icons.work_outline),
             get("Ubah Sandi", Icons.lock_outline),
             Text(

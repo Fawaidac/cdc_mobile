@@ -177,6 +177,8 @@ class ApiServices {
       String tahunlulus,
       String noijazah,
       String strata) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
     final res =
         await http.post(Uri.parse('$baseUrl/user/education/add'), body: {
       'perguruan': perguruan,
@@ -186,6 +188,8 @@ class ApiServices {
       'tahun_lulus': tahunlulus,
       'no_ijasah': noijazah,
       'strata': strata,
+    }, headers: {
+      "Authorization": "Bearer $token"
     });
     final data = jsonDecode(res.body);
     return data;
