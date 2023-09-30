@@ -1,6 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/profile/settings/add_education.dart';
+import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {

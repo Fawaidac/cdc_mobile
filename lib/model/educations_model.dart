@@ -1,4 +1,4 @@
-class PendidikanModel {
+class EducationsModel {
   String? perguruan;
   String? jurusan;
   String? strata;
@@ -8,7 +8,7 @@ class PendidikanModel {
   int? tahunLulus;
   String? id;
 
-  PendidikanModel(
+  EducationsModel(
       {this.perguruan,
       this.jurusan,
       this.strata,
@@ -18,7 +18,7 @@ class PendidikanModel {
       this.tahunLulus,
       this.id});
 
-  PendidikanModel.fromJson(Map<String, dynamic> json) {
+  EducationsModel.fromJson(Map<String, dynamic> json) {
     perguruan = json['perguruan'];
     jurusan = json['jurusan'];
     strata = json['strata'];

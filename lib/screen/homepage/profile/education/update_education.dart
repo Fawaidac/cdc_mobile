@@ -1,4 +1,4 @@
-import 'package:cdc_mobile/model/pendidikan.dart';
+import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
@@ -10,8 +10,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UpdateEducation extends StatefulWidget {
-  PendidikanModel pendidikanModel;
-  UpdateEducation({required this.pendidikanModel, super.key});
+  EducationsModel educationsModel;
+  UpdateEducation({required this.educationsModel, super.key});
 
   @override
   State<UpdateEducation> createState() => _UpdateEducationState();
@@ -38,7 +38,7 @@ class _UpdateEducationState extends State<UpdateEducation> {
           tahunMasuk.text,
           tahunLulus.text,
           noIjazah.text,
-          widget.pendidikanModel.id ?? "",
+          widget.educationsModel.id ?? "",
           selectedStrata.toString());
       if (response['code'] == 200) {
         Navigator.push(
@@ -59,13 +59,13 @@ class _UpdateEducationState extends State<UpdateEducation> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    perguruantinggi.text = widget.pendidikanModel.perguruan.toString();
-    selectedStrata = widget.pendidikanModel.strata.toString().substring(0, 2);
-    jurusan.text = widget.pendidikanModel.jurusan.toString();
-    prodi.text = widget.pendidikanModel.prodi.toString();
-    tahunMasuk.text = widget.pendidikanModel.tahunMasuk.toString();
-    tahunLulus.text = widget.pendidikanModel.tahunLulus.toString();
-    noIjazah.text = widget.pendidikanModel.noIjasah.toString();
+    perguruantinggi.text = widget.educationsModel.perguruan.toString();
+    selectedStrata = widget.educationsModel.strata.toString().substring(0, 2);
+    jurusan.text = widget.educationsModel.jurusan.toString();
+    prodi.text = widget.educationsModel.prodi.toString();
+    tahunMasuk.text = widget.educationsModel.tahunMasuk.toString();
+    tahunLulus.text = widget.educationsModel.tahunLulus.toString();
+    noIjazah.text = widget.educationsModel.noIjasah.toString();
   }
 
   @override

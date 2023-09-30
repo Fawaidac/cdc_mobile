@@ -1,18 +1,16 @@
-import 'package:cdc_mobile/model/pendidikan.dart';
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/profile/settings/update_education.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
-class MyEducations extends StatelessWidget {
-  const MyEducations({super.key});
+class MyJobs extends StatelessWidget {
+  const MyJobs({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<PendidikanModel>>(
-      future: ApiServices.getPendidikan(),
+    return FutureBuilder<List<JobsModel>>(
+      future: ApiServices.fetchJobs(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -23,21 +21,21 @@ class MyEducations extends StatelessWidget {
         } else if (!snapshot.hasData) {
           return const Center(child: Text('No data available'));
         } else {
-          List<PendidikanModel> pendidikanList = snapshot.data!;
+          List<JobsModel> jobsList = snapshot.data!;
           return ListView.builder(
-            itemCount: pendidikanList.length,
+            itemCount: jobsList.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              PendidikanModel pendidikan = pendidikanList[index];
+              JobsModel jobs = jobsList[index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            UpdateEducation(pendidikanModel: pendidikan),
-                      ));
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           UpdateEducation(JobsModel: jobs),
+                  //     ));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),
@@ -52,14 +50,14 @@ class MyEducations extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "${pendidikan.perguruan}",
+                        "${jobs.jabatan}",
                         style: MyFont.poppins(
                             fontSize: 16,
                             color: black,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        "${pendidikan.strata}, ${pendidikan.jurusan}",
+                        "${jobs.perusahaan}, ${jobs.jenisPekerjaan}",
                         style: MyFont.poppins(
                             fontSize: 14,
                             color: black,
@@ -69,14 +67,14 @@ class MyEducations extends StatelessWidget {
                         height: 2,
                       ),
                       Text(
-                        "${pendidikan.prodi}, ${pendidikan.tahunMasuk}-${pendidikan.tahunLulus}",
+                        "${jobs.tahunMasuk} - ${jobs.tahunKeluar != null ? jobs.tahunKeluar! : 'Sekarang'}",
                         style: MyFont.poppins(
                             fontSize: 12,
                             color: first,
                             fontWeight: FontWeight.normal),
                       ),
                       Text(
-                        "No. Ijazah: ${pendidikan.noIjasah != null ? pendidikan.noIjasah! : '-'}",
+                        "Rp. ${jobs.gaji}",
                         style: MyFont.poppins(
                           fontSize: 12,
                           color: grey,

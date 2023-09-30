@@ -2,8 +2,9 @@ import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
+import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
-import 'package:cdc_mobile/screen/homepage/profile/widget_data_pendidikan.dart';
+import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -318,21 +319,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   },
                 ),
                 MyEducations(),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      height: 125,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: grey.withOpacity(0.4)),
-                    );
-                  },
-                ),
+                MyJobs(),
               ]),
             )));
   }
