@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
@@ -23,6 +24,26 @@ class _LoginState extends State<Login> {
   var pw = TextEditingController();
   bool showpass = true;
 
+  bool isTokenExpired(String token) {
+    try {
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+      if (decodedToken.containsKey('exp')) {
+        int expirationTimestamp =
+            decodedToken['exp'] * 1000; // Convert to milliseconds
+        DateTime expirationDateTime =
+            DateTime.fromMillisecondsSinceEpoch(expirationTimestamp);
+        DateTime currentDateTime = DateTime.now();
+
+        return currentDateTime.isAfter(expirationDateTime);
+      }
+    } catch (e) {
+      print('Error decoding token: $e');
+    }
+
+    // Return true if unable to decode or expiration check failed
+    return true;
+  }
+
   void handleLogin() async {
     final emailOrNik = nik.text;
     final password = pw.text;
@@ -31,6 +52,11 @@ class _LoginState extends State<Login> {
       if (response['code'] == 200) {
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('token', response['data']['token']);
+
+        DateTime expirationTime = DateTime.now().add(Duration(days: 7));
+        prefs.setInt(
+            'tokenExpirationTime', expirationTime.millisecondsSinceEpoch);
+        print('Token will expire on: ${expirationTime.toLocal()}');
         Fluttertoast.showToast(msg: response['message']);
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(

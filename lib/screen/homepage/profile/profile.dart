@@ -1,8 +1,10 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
+import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -117,7 +119,17 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   )),
-                              onPressed: () async {},
+                              onPressed: () async {
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                preferences.remove('token');
+                                preferences.remove('tokenExpirationTime');
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Login(),
+                                    ));
+                              },
                               child: Text('Edit Profile',
                                   style: MyFont.poppins(
                                     fontSize: 14,
