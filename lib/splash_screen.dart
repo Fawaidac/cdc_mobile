@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cdc_mobile/resource/colors.dart';
-import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   void checkLogin() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var token = preferences.getString('token');
@@ -28,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
       if (currentDateTime.isBefore(expirationDateTime)) {
         // Token masih valid, arahkan ke HomePage
+        print(expirationDateTime);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

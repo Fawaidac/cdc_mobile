@@ -1,4 +1,3 @@
-import 'package:cdc_mobile/screen/intro/onboarding.dart';
 import 'package:cdc_mobile/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

@@ -1,9 +1,12 @@
+import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
+import 'package:cdc_mobile/screen/homepage/profile/widget_data_pendidikan.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatefulWidget {
@@ -16,6 +19,31 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   bool active = true;
   late TabController _tabController;
+  User? user;
+
+  Future<void> getUser() async {
+    final auth = await ApiServices.userInfo();
+    if (auth != null) {
+      setState(() {
+        user = auth;
+        print("ok");
+      });
+    }
+  }
+
+  int followerCount = 0;
+
+  Future<void> fetchFollowerCount() async {
+    try {
+      final apiResponse = await ApiServices.getFollowers();
+      setState(() {
+        followerCount = apiResponse.followers!.length;
+      });
+    } catch (e) {
+      print('Error fetching follower count: $e');
+      // Handle errors if needed
+    }
+  }
 
   @override
   void initState() {
@@ -24,6 +52,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
       length: 3,
       vsync: this,
     );
+    getUser();
+    fetchFollowerCount();
     super.initState();
   }
 
@@ -36,7 +66,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  expandedHeight: 275,
+                  expandedHeight: 350,
                   pinned: true,
                   backgroundColor: white,
                   automaticallyImplyLeading: false,
@@ -47,6 +77,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     color: white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -62,23 +93,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Text(
-                                  "Achmad Fawa'id",
-                                  style: MyFont.poppins(
+                                if (user != null)
+                                  Text(
+                                    user?.fullname.toString() ?? "",
+                                    style: MyFont.poppins(
                                       fontSize: 16,
                                       color: black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "Software Engineer",
-                                  style: MyFont.poppins(
-                                      fontSize: 14, color: black),
-                                ),
-                                Text(
-                                  "Jember, Jawa Timur",
-                                  style: MyFont.poppins(
-                                      fontSize: 12, color: black),
-                                ),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                if (user != null)
+                                  Text(
+                                    user?.fullname.toString() ?? "",
+                                    style: MyFont.poppins(
+                                      fontSize: 12,
+                                      color: black,
+                                    ),
+                                  ),
                               ],
                             ),
                             Spacer(),
@@ -102,12 +133,114 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            "I’m a postive person. I love to travel and eat Always available for chat",
+                            user?.about.toString() ?? "",
                             style: MyFont.poppins(fontSize: 12, color: black),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
+                        SizedBox(
+                          height: 100,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(
+                                  height: 80,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "80",
+                                        style: MyFont.poppins(
+                                            fontSize: 20,
+                                            color: black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Post",
+                                        style: MyFont.poppins(
+                                            fontSize: 12,
+                                            color: black,
+                                            fontWeight: FontWeight.normal),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  width: 1,
+                                  height: MediaQuery.of(context).size.height,
+                                  color: black.withOpacity(0.2),
+                                ),
+                                SizedBox(
+                                  height: 80,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "900",
+                                        style: MyFont.poppins(
+                                            fontSize: 20,
+                                            color: black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "Mengikuti",
+                                        style: MyFont.poppins(
+                                            fontSize: 12,
+                                            color: black,
+                                            fontWeight: FontWeight.normal),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  width: 1,
+                                  height: MediaQuery.of(context).size.height,
+                                  color: black.withOpacity(0.2),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Followers(),
+                                        ));
+                                  },
+                                  child: SizedBox(
+                                    height: 80,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "$followerCount",
+                                          style: MyFont.poppins(
+                                              fontSize: 20,
+                                              color: black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Pengikut",
+                                          style: MyFont.poppins(
+                                              fontSize: 12,
+                                              color: black,
+                                              fontWeight: FontWeight.normal),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                         SizedBox(
                             height: 40,
@@ -184,21 +317,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                     );
                   },
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                      height: 125,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: grey.withOpacity(0.4)),
-                    );
-                  },
-                ),
+                MyEducations(),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
