@@ -194,4 +194,31 @@ class ApiServices {
     final data = jsonDecode(res.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> updateEducation(
+      String perguruan,
+      String jurusan,
+      String prodi,
+      String tahunmasuk,
+      String tahunlulus,
+      String noijazah,
+      String educationId,
+      String strata) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http
+        .put(Uri.parse('$baseUrl/user/education/$educationId'), body: {
+      'perguruan': perguruan,
+      'jurusan': jurusan,
+      'prodi': prodi,
+      'tahun_masuk': tahunmasuk,
+      'tahun_lulus': tahunlulus,
+      'no_ijasah': noijazah,
+      'strata': strata,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
 }
