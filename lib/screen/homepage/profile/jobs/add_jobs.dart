@@ -7,36 +7,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:getwidget/getwidget.dart';
 
-class AddEducation extends StatefulWidget {
-  const AddEducation({super.key});
+class AddJobs extends StatefulWidget {
+  const AddJobs({super.key});
 
   @override
-  State<AddEducation> createState() => _AddEducationState();
+  State<AddJobs> createState() => _AddJobsState();
 }
 
-class _AddEducationState extends State<AddEducation> {
-  var perguruantinggi = TextEditingController();
-  var strata = TextEditingController();
-  var jurusan = TextEditingController();
-  var prodi = TextEditingController();
+class _AddJobsState extends State<AddJobs> {
+  var perusahaan = TextEditingController();
+  var jabatan = TextEditingController();
+  var gaji = TextEditingController();
   var tahunMasuk = TextEditingController();
-  var tahunLulus = TextEditingController();
-  var noIjazah = TextEditingController();
-  String? selectedStrata;
+  var tahunKeluar = TextEditingController();
+  String? selectedJenisPekerjaan;
+  bool isChecked = false;
 
-  List<String> strataOptions = ['D3', 'D4', 'S1', 'S2', 'S3'];
+  List<String> jobsOptions = [
+    'Purnawaktu',
+    'Paruh Waktu',
+    'Wiraswata',
+    'Pekerja Lepas',
+    'Kontrak',
+    'Musiman'
+  ];
 
-  void handleAddEducation() async {
+  void handleAddJob() async {
+    String? tahunKeluarValue;
+    String? isJobsNow;
+    String gajiValue = gaji.text.replaceAll('.', '');
+    if (isChecked) {
+      tahunKeluarValue = tahunKeluar.text;
+      isJobsNow = "1";
+    } else {
+      tahunKeluarValue = tahunKeluar.text;
+      isJobsNow = "0";
+    }
     try {
-      final response = await ApiServices.addEducation(
-          perguruantinggi.text,
-          jurusan.text,
-          prodi.text,
-          tahunMasuk.text,
-          tahunLulus.text,
-          noIjazah.text,
-          selectedStrata.toString());
+      final response = await ApiServices.addJobs(
+        perusahaan.text,
+        jabatan.text,
+        gajiValue,
+        selectedJenisPekerjaan.toString(),
+        tahunMasuk.text,
+        tahunKeluarValue.toString(),
+        isJobsNow,
+      );
       if (response['code'] == 201) {
         Navigator.push(
             context,
@@ -69,7 +87,7 @@ class _AddEducationState extends State<AddEducation> {
         ),
         centerTitle: true,
         title: Text(
-          "Tambah Pendidikan",
+          "Tambah Pekerjaan",
           style: MyFont.poppins(
               fontSize: 16, color: first, fontWeight: FontWeight.bold),
         ),
@@ -80,12 +98,25 @@ class _AddEducationState extends State<AddEducation> {
         child: Column(
           children: [
             CustomTextFieldForm(
-                controller: perguruantinggi,
-                label: "Perguruan Tinggi",
                 isEnable: true,
+                controller: perusahaan,
+                label: "Perusahaan",
                 keyboardType: TextInputType.text,
                 inputFormatters:
                     FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                isEnable: true,
+                controller: jabatan,
+                label: "Jabatan",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                isEnable: true,
+                controller: gaji,
+                label: "Gaji",
+                keyboardType: TextInputType.number,
+                inputFormatters: FilteringTextInputFormatter.digitsOnly),
             Padding(
               padding: const EdgeInsets.only(top: 10),
               child: Column(
@@ -97,7 +128,7 @@ class _AddEducationState extends State<AddEducation> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Strata",
+                          "Jenis Pekerjaan",
                           style: GoogleFonts.poppins(fontSize: 12),
                         )
                       ],
@@ -109,17 +140,17 @@ class _AddEducationState extends State<AddEducation> {
                   SizedBox(
                     height: 50,
                     child: DropdownButtonFormField<String>(
-                      value: selectedStrata,
+                      value: selectedJenisPekerjaan,
                       icon: Icon(
                         Icons.keyboard_arrow_down_rounded,
                         color: black,
                       ),
                       onChanged: (newValue) {
                         setState(() {
-                          selectedStrata = newValue;
+                          selectedJenisPekerjaan = newValue;
                         });
                       },
-                      items: strataOptions.map((strata) {
+                      items: jobsOptions.map((strata) {
                         return DropdownMenuItem<String>(
                           value: strata,
                           child: Text(
@@ -129,7 +160,7 @@ class _AddEducationState extends State<AddEducation> {
                         );
                       }).toList(),
                       decoration: InputDecoration(
-                        hintText: "Pilih Strata",
+                        hintText: "Pilih Jenis Pekerjaan",
                         isDense: true,
                         hintStyle:
                             GoogleFonts.poppins(fontSize: 13, color: grey),
@@ -157,37 +188,33 @@ class _AddEducationState extends State<AddEducation> {
             ),
             CustomTextFieldForm(
                 isEnable: true,
-                controller: jurusan,
-                label: "Jurusan / Fakultas",
-                keyboardType: TextInputType.text,
-                inputFormatters:
-                    FilteringTextInputFormatter.singleLineFormatter),
-            CustomTextFieldForm(
-                isEnable: true,
-                controller: prodi,
-                label: "Program Studi",
-                keyboardType: TextInputType.text,
-                inputFormatters:
-                    FilteringTextInputFormatter.singleLineFormatter),
-            CustomTextFieldForm(
-                isEnable: true,
                 controller: tahunMasuk,
                 label: "Tahun Masuk",
                 keyboardType: TextInputType.number,
                 inputFormatters: FilteringTextInputFormatter.digitsOnly),
             CustomTextFieldForm(
                 isEnable: true,
-                controller: tahunLulus,
-                label: "Tahun Lulus",
+                controller: tahunKeluar,
+                label: "Tahun Keluar",
                 keyboardType: TextInputType.number,
                 inputFormatters: FilteringTextInputFormatter.digitsOnly),
-            CustomTextFieldForm(
-                isEnable: true,
-                controller: noIjazah,
-                label: "No. Ijazah",
-                keyboardType: TextInputType.text,
-                inputFormatters:
-                    FilteringTextInputFormatter.singleLineFormatter),
+            Row(
+              children: [
+                Checkbox(
+                  activeColor: first,
+                  value: isChecked,
+                  onChanged: (value) {
+                    setState(() {
+                      isChecked = value!;
+                    });
+                  },
+                ),
+                Text(
+                  "Ini adalah pekerjaan saya saat ini",
+                  style: MyFont.poppins(fontSize: 12, color: black),
+                )
+              ],
+            ),
             Container(
                 margin: const EdgeInsets.fromLTRB(0, 20, 0, 15),
                 height: 48,
@@ -202,7 +229,7 @@ class _AddEducationState extends State<AddEducation> {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onPressed: () {
-                    handleAddEducation();
+                    handleAddJob();
                   },
                   child: Text('Simpan',
                       style: MyFont.poppins(

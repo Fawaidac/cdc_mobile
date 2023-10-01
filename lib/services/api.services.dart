@@ -161,4 +161,30 @@ class ApiServices {
       throw Exception('Failed to load jobs');
     }
   }
+
+  static Future<Map<String, dynamic>> addJobs(
+    String perusahaan,
+    String jabatan,
+    String gaji,
+    String jenisPekerjaan,
+    String tahunMasuk,
+    String tahunKeluar,
+    String isJobs,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http.post(Uri.parse('$baseUrl/user/jobs'), body: {
+      'perusahaan': perusahaan,
+      'jabatan': jabatan,
+      'gaji': gaji,
+      'jenis_pekerjaan': jenisPekerjaan,
+      'tahun_masuk': tahunMasuk,
+      'tahun_keluar': tahunKeluar,
+      'is_jobs_now': isJobs,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
 }

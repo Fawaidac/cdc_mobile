@@ -5,6 +5,7 @@ import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
+import 'package:cdc_mobile/screen/homepage/profile/update_profile.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -82,10 +83,23 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                       children: [
                         Row(
                           children: [
-                            const CircleAvatar(
-                              backgroundImage: NetworkImage(
-                                  "https://th.bing.com/th/id/OIP.VH39b0tEUhcx63P0laPnKgHaFu?w=230&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7"),
-                              radius: 40,
+                            GestureDetector(
+                              onTap: () async {
+                                SharedPreferences preferences =
+                                    await SharedPreferences.getInstance();
+                                preferences.remove('token');
+                                preferences.remove('tokenExpirationTime');
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Login(),
+                                    ));
+                              },
+                              child: const CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    "https://th.bing.com/th/id/OIP.VH39b0tEUhcx63P0laPnKgHaFu?w=230&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7"),
+                                radius: 40,
+                              ),
                             ),
                             const SizedBox(
                               width: 10,
@@ -254,14 +268,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     borderRadius: BorderRadius.circular(10),
                                   )),
                               onPressed: () async {
-                                SharedPreferences preferences =
-                                    await SharedPreferences.getInstance();
-                                preferences.remove('token');
-                                preferences.remove('tokenExpirationTime');
-                                Navigator.pushReplacement(
+                                Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => Login(),
+                                      builder: (context) => UpdateProfile(),
                                     ));
                               },
                               child: Text('Edit Profile',

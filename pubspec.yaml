@@ -19,6 +19,7 @@ dependencies:
   firebase_auth: 4.7.2
   pinput: 3.0.1
   jwt_decode: 0.3.1
+  getwidget: 4.0.0
   flutter: 
     sdk: flutter
 

@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart';
+import 'package:cdc_mobile/screen/homepage/profile/jobs/add_jobs.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {
@@ -54,7 +55,15 @@ class _SettingState extends State<Setting> {
                       ));
                 },
                 child: get("Pendidikan", Icons.school_outlined)),
-            get("Pekerjaan", Icons.work_outline),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddJobs(),
+                      ));
+                },
+                child: get("Pekerjaan", Icons.work_outline)),
             get("Ubah Sandi", Icons.lock_outline),
             Text(
               "Aksi",
