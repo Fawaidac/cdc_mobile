@@ -3,7 +3,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
-import 'package:cdc_mobile/screen/homepage/screen1/screen1.dart';
+import 'package:cdc_mobile/screen/homepage/screen1/users_all.dart';
 import 'package:cdc_mobile/screen/homepage/screen2/ikapj_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   int index = 0;
   List<Widget> screen = <Widget>[
     const Home(),
-    const Screen1(),
+    const UsersAll(),
     const Posting(),
     const IkapjScreen(),
     const Profile(),

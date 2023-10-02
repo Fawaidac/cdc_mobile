@@ -2,7 +2,10 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/add_jobs.dart';
+import 'package:cdc_mobile/screen/homepage/profile/tentang.dart';
+import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -71,13 +74,34 @@ class _SettingState extends State<Setting> {
                   fontSize: 16, color: black, fontWeight: FontWeight.bold),
             ),
             get("Notifikasi", Icons.notifications_outlined, show: true),
-            get("Keluar", Icons.logout),
+            GestureDetector(
+                onTap: () async {
+                  SharedPreferences preferences =
+                      await SharedPreferences.getInstance();
+                  preferences.remove('token');
+                  preferences.remove('tokenExpirationTime');
+                  // ignore: use_build_context_synchronously
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Login(),
+                      ));
+                },
+                child: get("Keluar", Icons.logout)),
             Text(
               "Info",
               style: MyFont.poppins(
                   fontSize: 16, color: black, fontWeight: FontWeight.bold),
             ),
-            get("Tentang", Icons.help_outline)
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Tentang(),
+                      ));
+                },
+                child: get("Tentang", Icons.help_outline))
           ],
         ),
       ),
@@ -87,8 +111,10 @@ class _SettingState extends State<Setting> {
   Padding get(String name, IconData iconData, {bool show = false}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: SizedBox(
+      child: Container(
+        color: white,
         height: 60,
+        width: MediaQuery.of(context).size.width,
         child: Row(
           children: [
             Icon(

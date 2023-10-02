@@ -87,7 +87,7 @@ class _UpdateEducationState extends State<UpdateEducation> {
         ),
         centerTitle: true,
         title: Text(
-          "Tambah Pendidikan",
+          "Update Pendidikan",
           style: MyFont.poppins(
               fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),

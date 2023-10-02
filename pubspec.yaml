@@ -21,6 +21,7 @@ dependencies:
   jwt_decode: 0.3.1
   getwidget: 4.0.0
   webview_flutter: 4.4.0
+  flutter_svg: 2.0.7
   flutter: 
     sdk: flutter
 

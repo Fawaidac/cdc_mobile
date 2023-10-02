@@ -44,8 +44,14 @@ class _LoginState extends State<Login> {
     return true;
   }
 
-  void checkLogin (){
-    if
+  void checkLogin() {
+    if (nik.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Email atau NIK harus diisi");
+    } else if (pw.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Password harus diisi");
+    } else {
+      handleLogin();
+    }
   }
 
   void handleLogin() async {
@@ -205,7 +211,7 @@ class _LoginState extends State<Login> {
                           borderRadius: BorderRadius.circular(10),
                         )),
                     onPressed: () {
-                      handleLogin();
+                      checkLogin();
                     },
                     child: Text('Masuk',
                         style: MyFont.poppins(

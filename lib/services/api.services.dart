@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.18.32:8000/api";
+  static const String baseUrl = "http://192.168.157.87:8000/api";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {
@@ -181,6 +181,34 @@ class ApiServices {
       'tahun_masuk': tahunMasuk,
       'tahun_keluar': tahunKeluar,
       'is_jobs_now': isJobs,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> updateJobs(
+    String perusahaan,
+    String jabatan,
+    String gaji,
+    String jenisPekerjaan,
+    String tahunMasuk,
+    String tahunKeluar,
+    String isJobs,
+    String jobsId,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http.put(Uri.parse('$baseUrl/user/jobs'), body: {
+      'perusahaan': perusahaan,
+      'jabatan': jabatan,
+      'gaji': gaji,
+      'jenis_pekerjaan': jenisPekerjaan,
+      'tahun_masuk': tahunMasuk,
+      'tahun_keluar': tahunKeluar,
+      'is_jobs_now': isJobs,
+      'jobs_id': jobsId,
     }, headers: {
       "Authorization": "Bearer $token"
     });

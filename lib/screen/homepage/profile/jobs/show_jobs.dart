@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/profile/jobs/update_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
@@ -30,12 +31,11 @@ class MyJobs extends StatelessWidget {
               JobsModel jobs = jobsList[index];
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) =>
-                  //           UpdateEducation(JobsModel: jobs),
-                  //     ));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateJobs(jobsModel: jobs),
+                      ));
                 },
                 child: Container(
                   padding: const EdgeInsets.all(15),
