@@ -4,7 +4,7 @@ import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/screen1.dart';
-import 'package:cdc_mobile/screen/homepage/screen2/screen2.dart';
+import 'package:cdc_mobile/screen/homepage/screen2/ikapj_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
     const Home(),
     const Screen1(),
     const Posting(),
-    const Screen2(),
+    const IkapjScreen(),
     const Profile(),
   ];
 
@@ -31,11 +31,13 @@ class _HomePageState extends State<HomePage> {
         "images/active_home.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "non_active": Image.asset(
         "images/non_active_home.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "label": "Home"
     },
@@ -44,11 +46,13 @@ class _HomePageState extends State<HomePage> {
         "images/active_graph.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "non_active": Image.asset(
         "images/non_active_graph.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "label": "Gatau"
     },
@@ -57,24 +61,27 @@ class _HomePageState extends State<HomePage> {
         "images/active_plus.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "non_active": Image.asset(
         "images/non_active_plus.png",
         height: 20,
         width: 20,
+        color: primaryColor,
       ),
       "label": "Posting"
     },
     {
       "active": Image.asset(
-        "images/active_app.png",
-        height: 20,
-        width: 20,
+        "images/fill.png",
+        height: 25,
+        width: 25,
       ),
       "non_active": Image.asset(
-        "images/non_active_app.png",
-        height: 20,
-        width: 20,
+        "images/non.png",
+        height: 25,
+        width: 25,
+        color: primaryColor,
       ),
       "label": "Gatau"
     },
@@ -82,11 +89,13 @@ class _HomePageState extends State<HomePage> {
       "active": Image.asset(
         "images/active_profile.png",
         height: 20,
+        color: primaryColor,
         width: 20,
       ),
       "non_active": Image.asset(
         "images/non_active_profile.png",
         height: 20,
+        color: primaryColor,
         width: 20,
       ),
       "label": "Profile"

@@ -2,6 +2,7 @@ class User {
   String? id;
   String? fullname;
   String? email;
+  String? tempatTanggalLahir;
   String? nik;
   String? noTelp;
   String? foto;
@@ -18,6 +19,7 @@ class User {
     this.id,
     this.fullname,
     this.email,
+    this.tempatTanggalLahir,
     this.nik,
     this.noTelp,
     this.foto,
@@ -36,6 +38,7 @@ class User {
       id: json['id'],
       fullname: json['fullname'],
       email: json['email'],
+      tempatTanggalLahir: json['ttl'],
       nik: json['nik'],
       noTelp: json['no_telp'],
       foto: json['foto'],

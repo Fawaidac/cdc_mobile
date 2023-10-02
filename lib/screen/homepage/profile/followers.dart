@@ -1,5 +1,5 @@
 import 'package:cdc_mobile/model/followers_model.dart';
-import 'package:cdc_mobile/model/user.dart';
+
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/services/api.services.dart';
@@ -41,7 +41,7 @@ class _FollowersState extends State<Followers> {
             return const Center(child: Text('No data available'));
           } else {
             final followersModel = snapshot.data!;
-            final totalFollowers = followersModel.totalFollowers;
+            // final totalFollowers = followersModel.totalFollowers;
             final followersList = followersModel.followers;
 
             return ListView.builder(

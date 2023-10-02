@@ -44,6 +44,10 @@ class _LoginState extends State<Login> {
     return true;
   }
 
+  void checkLogin (){
+    if
+  }
+
   void handleLogin() async {
     final emailOrNik = nik.text;
     final password = pw.text;

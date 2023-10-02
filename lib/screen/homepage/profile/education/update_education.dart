@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';

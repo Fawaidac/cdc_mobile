@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.0.117:8000/api";
+  static const String baseUrl = "http://192.168.18.32:8000/api";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {

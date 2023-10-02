@@ -59,6 +59,13 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    // fetchFollowerCount();
+  }
+
   var searh = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -89,6 +96,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                     await SharedPreferences.getInstance();
                                 preferences.remove('token');
                                 preferences.remove('tokenExpirationTime');
+                                // ignore: use_build_context_synchronously
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
