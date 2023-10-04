@@ -1,3 +1,7 @@
+import 'package:cdc_mobile/model/educations_model.dart';
+import 'package:cdc_mobile/model/followers_model.dart';
+import 'package:cdc_mobile/model/jobs_model.dart';
+
 class User {
   String? id;
   String? fullname;
@@ -14,6 +18,7 @@ class User {
   String? facebook;
   String? instagram;
   String? twitter;
+  String? accountStatus;
 
   User({
     this.id,
@@ -31,6 +36,7 @@ class User {
     this.facebook,
     this.instagram,
     this.twitter,
+    this.accountStatus,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -50,6 +56,7 @@ class User {
       facebook: json['facebook'],
       instagram: json['instagram'],
       twitter: json['twitter'],
+      accountStatus: json['account_status'],
     );
   }
 }
@@ -196,15 +203,13 @@ class Education {
 }
 
 class ApiResponse {
-  User user;
-  List<Follower> followers;
-  List<Job> jobs;
-  List<Education> educations;
+  int totalPage;
+  int totalItems;
+  List<Map<String, dynamic>> userDataList;
 
   ApiResponse({
-    required this.user,
-    required this.followers,
-    required this.jobs,
-    required this.educations,
+    required this.totalPage,
+    required this.totalItems,
+    required this.userDataList,
   });
 }

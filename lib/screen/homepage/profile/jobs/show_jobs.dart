@@ -4,9 +4,23 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/update_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MyJobs extends StatelessWidget {
   const MyJobs({super.key});
+
+  void handleDeleteJobs(String jobsId) async {
+    try {
+      final response = await ApiServices.deleteJobs(jobsId);
+      if (response['code'] == 200) {
+        Fluttertoast.showToast(msg: response['message']);
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,60 +43,83 @@ class MyJobs extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               JobsModel jobs = jobsList[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UpdateJobs(jobsModel: jobs),
-                      ));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                  height: 125,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Color(0xff242760).withOpacity(0.03)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${jobs.jabatan}",
-                        style: MyFont.poppins(
-                            fontSize: 16,
-                            color: black,
-                            fontWeight: FontWeight.bold),
+              return Container(
+                padding: const EdgeInsets.all(15),
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                height: 125,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Color(0xff242760).withOpacity(0.03)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                            "${jobs.jabatan}",
+                            style: MyFont.poppins(
+                                fontSize: 16,
+                                color: black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            "${jobs.perusahaan}, ${jobs.jenisPekerjaan}",
+                            style: MyFont.poppins(
+                                fontSize: 14,
+                                color: black,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Text(
+                            "${jobs.tahunMasuk} - ${jobs.tahunKeluar != null ? jobs.tahunKeluar! : 'Sekarang'}",
+                            style: MyFont.poppins(
+                                fontSize: 12,
+                                color: first,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          Text(
+                            "Rp. ${jobs.gaji}",
+                            style: MyFont.poppins(
+                              fontSize: 12,
+                              color: grey,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "${jobs.perusahaan}, ${jobs.jenisPekerjaan}",
-                        style: MyFont.poppins(
-                            fontSize: 14,
-                            color: black,
-                            fontWeight: FontWeight.normal),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      Text(
-                        "${jobs.tahunMasuk} - ${jobs.tahunKeluar != null ? jobs.tahunKeluar! : 'Sekarang'}",
-                        style: MyFont.poppins(
-                            fontSize: 12,
-                            color: first,
-                            fontWeight: FontWeight.normal),
-                      ),
-                      Text(
-                        "Rp. ${jobs.gaji}",
-                        style: MyFont.poppins(
-                          fontSize: 12,
-                          color: grey,
-                          fontWeight: FontWeight.normal,
+                    ),
+                    Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      UpdateJobs(jobsModel: jobs),
+                                ));
+                          },
+                          child: Icon(
+                            Icons.edit,
+                            color: primaryColor,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                        InkWell(
+                          onTap: () {
+                            handleDeleteJobs("${jobs.id}");
+                          },
+                          child: Icon(
+                            Icons.delete,
+                            color: primaryColor,
+                          ),
+                        )
+                      ],
+                    )
+                  ],
                 ),
               );
             },

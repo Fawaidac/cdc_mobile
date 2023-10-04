@@ -1,70 +1,136 @@
 import 'package:card_loading/card_loading.dart';
+import 'package:cdc_mobile/model/educations_model.dart';
+import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
-import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
-import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
-import 'package:cdc_mobile/screen/homepage/profile/update_profile.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class DetailUser extends StatefulWidget {
+  User user;
+  List<JobsModel> jobsModel;
+  List<EducationsModel> educationsModel;
+
+  DetailUser(
+      {required this.user,
+      required this.jobsModel,
+      required this.educationsModel,
+      super.key});
 
   @override
-  State<Profile> createState() => _ProfileState();
+  State<DetailUser> createState() => _DetailUserState();
 }
 
-class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
-  bool active = true;
+class _DetailUserState extends State<DetailUser>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  User? user;
-
-  Future<void> getUser() async {
-    final auth = await ApiServices.userInfo();
-    if (auth != null) {
-      setState(() {
-        user = auth;
-        print("ok");
-      });
-    }
-  }
-
-  int followerCount = 0;
-
-  Future<void> fetchFollowerCount() async {
-    try {
-      final apiResponse = await ApiServices.getFollowers();
-      setState(() {
-        followerCount = apiResponse.followers!.length;
-      });
-    } catch (e) {
-      print('Error fetching follower count: $e');
-      // Handle errors if needed
-    }
-  }
+  bool isFollow = false;
 
   @override
   void initState() {
+    // TODO: implement initState
+    super.initState();
     _tabController = TabController(
       initialIndex: 0,
       length: 3,
       vsync: this,
     );
-    getUser();
-    fetchFollowerCount();
-    super.initState();
+    checkFollowOrNo();
   }
 
-  var searh = TextEditingController();
+  void checkFollowOrNo() async {
+    try {
+      final response = await ApiServices.followUser(widget.user.id.toString());
+      if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
+        setState(() {
+          isFollow = true;
+        });
+        // print(isFollow);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // void checkUnFollow() async {
+  //   try {
+  //     final response = await ApiServices.followUser(widget.user.id.toString());
+  //     if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
+  //       handleUnfollow();
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  void handleFollow() async {
+    try {
+      final response = await ApiServices.followUser(widget.user.id.toString());
+      if (response['code'] == 201) {
+        Fluttertoast.showToast(msg: response['message']);
+        print("berhasil mengikuti");
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+        print("lu udah ngikuti");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void handleUnfollow() async {
+    try {
+      final response =
+          await ApiServices.unfollowUser(widget.user.id.toString());
+      if (response['code'] == 200) {
+        setState(() {
+          isFollow = false;
+          checkFollowOrNo();
+        });
+        Fluttertoast.showToast(msg: response['message']);
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+        print("gagal");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void handleFollownUnfollow() async {
+    if (isFollow == true) {
+      handleUnfollow();
+    } else if (isFollow == false) {
+      handleFollow();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: white,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Icon(
+              Icons.keyboard_arrow_left_rounded,
+              color: primaryColor,
+            ),
+          ),
+          centerTitle: true,
+          title: Text(
+            "Profile",
+            style: MyFont.poppins(
+                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+          ),
+        ),
         body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return <Widget>[
@@ -85,18 +151,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () async {
-                                SharedPreferences preferences =
-                                    await SharedPreferences.getInstance();
-                                preferences.remove('token');
-                                preferences.remove('tokenExpirationTime');
-                                // ignore: use_build_context_synchronously
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(),
-                                    ));
-                              },
+                              onTap: () async {},
                               child: const CircleAvatar(
                                 backgroundImage: NetworkImage(
                                     "https://th.bing.com/th/id/OIP.VH39b0tEUhcx63P0laPnKgHaFu?w=230&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7"),
@@ -113,7 +168,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Visibility(
-                                      visible: user != null,
+                                      visible: widget.user != null,
                                       replacement: CardLoading(
                                         height: 20,
                                         width:
@@ -121,7 +176,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        user?.fullname.toString() ?? "",
+                                        widget.user.fullname.toString(),
                                         style: MyFont.poppins(
                                           fontSize: 16,
                                           color: black,
@@ -129,7 +184,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         ),
                                       )),
                                   Visibility(
-                                      visible: user != null,
+                                      visible: widget.user != null,
                                       replacement: CardLoading(
                                         height: 15,
                                         margin: const EdgeInsets.only(top: 10),
@@ -138,7 +193,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        user?.alamat.toString() ?? "",
+                                        widget.user.alamat.toString(),
                                         style: MyFont.poppins(
                                           fontSize: 12,
                                           color: black,
@@ -147,19 +202,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 ],
                               ),
                             ),
-                            Spacer(),
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => Setting(),
-                                      ));
-                                },
-                                icon: Icon(
-                                  Icons.settings_outlined,
-                                  color: first,
-                                ))
                           ],
                         ),
                         const SizedBox(
@@ -167,23 +209,76 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Visibility(
-                              visible: user != null,
-                              replacement: CardLoading(
-                                height: 15,
-                                width: MediaQuery.of(context).size.width,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                user?.about.toString() ?? "",
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: MyFont.poppins(
-                                  fontSize: 12,
-                                  color: black,
-                                  // fontWeight: FontWeight.bold,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Visibility(
+                                        visible: widget.user != null,
+                                        replacement: CardLoading(
+                                          height: 15,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          widget.user.about.toString(),
+                                          maxLines: 3,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: MyFont.poppins(
+                                            fontSize: 12,
+                                            color: black,
+                                            // fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: primaryColor,
+                                      ),
+                                      child: Text(
+                                        "Detail Profile",
+                                        style: MyFont.poppins(
+                                            fontSize: 12,
+                                            color: white,
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                    )
+                                  ],
                                 ),
-                              )),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  handleFollownUnfollow();
+                                },
+                                child: Container(
+                                  width: 100,
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: isFollow
+                                        ? Border.all(
+                                            width: 1, color: primaryColor)
+                                        : null,
+                                    color: isFollow ? white : primaryColor,
+                                  ),
+                                  child: Text(
+                                    isFollow ? "Dikuti" : "Ikuti",
+                                    textAlign: TextAlign.center,
+                                    style: MyFont.poppins(
+                                        fontSize: 12,
+                                        color: isFollow ? primaryColor : white),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           height: 100,
@@ -254,11 +349,11 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Followers(),
-                                        ));
+                                    // Navigator.push(
+                                    //     context,
+                                    //     MaterialPageRoute(
+                                    //       builder: (context) => Followers(),
+                                    //     ));
                                   },
                                   child: SizedBox(
                                     height: 80,
@@ -269,7 +364,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "$followerCount",
+                                          "0",
                                           style: MyFont.poppins(
                                               fontSize: 20,
                                               color: black,
@@ -290,29 +385,6 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        SizedBox(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: first,
-                                  shadowColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  )),
-                              onPressed: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => UpdateProfile(),
-                                    ));
-                              },
-                              child: Text('Edit Profile',
-                                  style: MyFont.poppins(
-                                    fontSize: 14,
-                                    color: white,
-                                  )),
-                            )),
                       ],
                     ),
                   )),

@@ -8,7 +8,9 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.157.87:8000/api";
+  static const String baseUrl = "http://192.168.0.117:8000/api";
+  // static const String baseUrl = "http://192.168.157.87:8000/api";
+  // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {
@@ -60,6 +62,110 @@ class ApiServices {
     } catch (e) {
       print("Error fetching user data: $e");
       return null;
+    }
+  }
+
+  // static Future<ApiResponse> getAllUsers(int page) async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('token');
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/users?page=$page'),
+  //       headers: {"Authorization": "Bearer $token"},
+  //     );
+  //     final data = jsonDecode(response.body);
+
+  //     if (data['code'] == 200) {
+  //       final userDataList = (data['data'] as List).map((userData) {
+  //         final user = User.fromJson(userData['user']);
+  //         final followers = (userData['followers'] as List)
+  //             .map((follower) => FollowersModel.fromJson(follower))
+  //             .toList();
+  //         final jobs = (userData['jobs'] as List)
+  //             .map((job) => JobsModel.fromJson(job))
+  //             .toList();
+  //         final educations = (userData['educations'] as List)
+  //             .map((education) => EducationsModel.fromJson(education))
+  //             .toList();
+
+  //         return {
+  //           'user': user,
+  //           'followers': followers,
+  //           'jobs': jobs,
+  //           'educations': educations,
+  //         };
+  //       }).toList();
+
+  //       return ApiResponse(
+  //         totalPage: data['total_page'],
+  //         totalItems: data['total_items'],
+  //         userDataList: userDataList,
+  //       );
+  //     } else {
+  //       // Handle error if response code is not 200
+  //       throw Exception('Failed to fetch users. Error: ${data['message']}');
+  //     }
+  //   } catch (e) {
+  //     // Handle any other errors that occur during the API call
+  //     throw Exception('Failed to fetch users. Error: $e');
+  //   }
+  // }
+  static Future<ApiResponse> getAllUsers(int page) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await http.get(
+        Uri.parse('$baseUrl/users?page=$page'),
+        headers: {"Authorization": "Bearer $token"},
+      );
+      final data = jsonDecode(response.body);
+
+      if (data['code'] == 200) {
+        final totalPage =
+            data['total_page'] as int? ?? 1; // Set default to 1 if null
+        final totalItems =
+            data['total_items'] as int? ?? 0; // Set default to 0 if null
+
+        final userDataList = (data['data'] as List?)?.map((userData) {
+              final user =
+                  User.fromJson(userData?['user'] as Map<String, dynamic>);
+              final followers = (userData?['followers'] as List?)
+                      ?.map((follower) => FollowersModel.fromJson(
+                          follower as Map<String, dynamic>))
+                      .toList() ??
+                  [];
+              final jobs = (userData?['jobs'] as List?)
+                      ?.map((job) =>
+                          JobsModel.fromJson(job as Map<String, dynamic>))
+                      .toList() ??
+                  [];
+              final educations = (userData?['educations'] as List?)
+                      ?.map((education) => EducationsModel.fromJson(
+                          education as Map<String, dynamic>))
+                      .toList() ??
+                  [];
+
+              return {
+                'user': user,
+                'followers': followers,
+                'jobs': jobs,
+                'educations': educations,
+              };
+            }).toList() ??
+            [];
+
+        return ApiResponse(
+          totalPage: totalPage,
+          totalItems: totalItems,
+          userDataList: userDataList,
+        );
+      } else {
+        // Handle error if response code is not 200
+        throw Exception('Failed to fetch users. Error: ${data['message']}');
+      }
+    } catch (e) {
+      // Handle any other errors that occur during the API call
+      throw Exception('Failed to fetch users. Error: $e');
     }
   }
 
@@ -213,6 +319,78 @@ class ApiServices {
       "Authorization": "Bearer $token"
     });
     final data = jsonDecode(res.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> deleteJobs(String jobsId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.delete(Uri.parse('$baseUrl/user/jobs'), body: {
+      "jobs_id": jobsId,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> updateUsers(
+    String fullname,
+    String ttl,
+    String about,
+    String linkedIn,
+    String instagram,
+    String x,
+    String facebook,
+    String no_telp,
+    String gender,
+    String alamat,
+    String nik,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http.put(Uri.parse('$baseUrl/user/profile'), body: {
+      "fullname": fullname,
+      "ttl": ttl,
+      "about": about,
+      "linkedin": linkedIn, // link
+      "instagram": instagram, // link
+      "x": x, // link
+      "facebook": facebook, // link
+      "no_telp": no_telp,
+      "gender": gender,
+      "alamat": alamat,
+      "nik": nik,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> followUser(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response =
+        await http.post(Uri.parse('$baseUrl/user/followers'), body: {
+      "user_id": userId,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> unfollowUser(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response =
+        await http.delete(Uri.parse('$baseUrl/user/followers'), body: {
+      "user_id": userId,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(response.body);
     return data;
   }
 }
