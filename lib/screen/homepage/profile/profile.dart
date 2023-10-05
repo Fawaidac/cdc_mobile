@@ -260,7 +260,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                           builder: (context) => Followers(),
                                         ));
                                   },
-                                  child: SizedBox(
+                                  child: Container(
+                                    color: white,
                                     height: 80,
                                     child: Column(
                                       mainAxisAlignment:

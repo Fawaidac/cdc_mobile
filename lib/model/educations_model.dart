@@ -28,17 +28,19 @@ class EducationsModel {
     tahunLulus = json['tahun_lulus'];
     id = json['id'];
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['perguruan'] = this.perguruan;
-    data['jurusan'] = this.jurusan;
-    data['strata'] = this.strata;
-    data['no_ijasah'] = this.noIjasah;
-    data['prodi'] = this.prodi;
-    data['tahun_masuk'] = this.tahunMasuk;
-    data['tahun_lulus'] = this.tahunLulus;
-    data['id'] = this.id;
-    return data;
+class EducationsListModel {
+  List<EducationsModel>? educations;
+
+  EducationsListModel({this.educations});
+
+  EducationsListModel.fromJson(Map<String, dynamic> json) {
+    if (json['educations'] != null) {
+      educations = [];
+      json['educations'].forEach((v) {
+        educations!.add(EducationsModel.fromJson(v));
+      });
+    }
   }
 }

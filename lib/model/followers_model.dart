@@ -46,25 +46,6 @@ class Follower {
     instagram = json['instagram'];
     twiter = json['twiter'];
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['fullname'] = this.fullname;
-    data['email'] = this.email;
-    data['nik'] = this.nik;
-    data['no_telp'] = this.noTelp;
-    data['foto'] = this.foto;
-    data['alamat'] = this.alamat;
-    data['about'] = this.about;
-    data['gender'] = this.gender;
-    data['level'] = this.level;
-    data['linkedin'] = this.linkedin;
-    data['facebook'] = this.facebook;
-    data['instagram'] = this.instagram;
-    data['twiter'] = this.twiter;
-    return data;
-  }
 }
 
 class FollowersModel {
@@ -82,13 +63,19 @@ class FollowersModel {
       });
     }
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['total_followers'] = this.totalFollowers;
-    if (this.followers != null) {
-      data['followers'] = this.followers!.map((v) => v.toJson()).toList();
+class FollowersListModel {
+  List<Follower>? followers;
+
+  FollowersListModel({this.followers});
+
+  FollowersListModel.fromJson(Map<String, dynamic> json) {
+    if (json['followers'] != null) {
+      followers = [];
+      json['followers'].forEach((v) {
+        followers!.add(Follower.fromJson(v));
+      });
     }
-    return data;
   }
 }

@@ -11,13 +11,17 @@ class CustomTextFieldForm extends StatefulWidget {
   TextInputFormatter inputFormatters;
   bool isEnable;
   TextInputAction textInputAction;
+  bool isReadOnly;
+  Function()? onTap;
   CustomTextFieldForm(
       {Key? key,
       required this.controller,
       required this.label,
       required this.keyboardType,
       this.isEnable = false,
+      this.isReadOnly = false,
       required this.inputFormatters,
+      this.onTap,
       this.textInputAction = TextInputAction.done})
       : super(key: key);
 
@@ -51,9 +55,11 @@ class _CustomTextFieldFormState extends State<CustomTextFieldForm> {
           TextFormField(
             textInputAction: widget.textInputAction,
             controller: widget.controller,
+            onTap: widget.onTap,
             style: MyFont.poppins(fontSize: 13, color: black),
             keyboardType: widget.keyboardType,
             enabled: widget.isEnable,
+            readOnly: widget.isReadOnly,
             onSaved: (val) => widget.controller = val as TextEditingController,
             validator: (value) {
               if (value == null || value.isEmpty) {

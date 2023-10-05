@@ -8,8 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.0.117:8000/api";
-  // static const String baseUrl = "http://192.168.157.87:8000/api";
+  static const String baseUrl = "http://192.168.18.32:8000/api";
   // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
@@ -65,107 +64,93 @@ class ApiServices {
     }
   }
 
-  // static Future<ApiResponse> getAllUsers(int page) async {
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final token = prefs.getString('token');
-  //     final response = await http.get(
-  //       Uri.parse('$baseUrl/users?page=$page'),
-  //       headers: {"Authorization": "Bearer $token"},
-  //     );
-  //     final data = jsonDecode(response.body);
+  static Future<UserFollowersInfo> fetchUserFollowers(String userId) async {
+    final String url = '$baseUrl/user/followers/$userId';
 
-  //     if (data['code'] == 200) {
-  //       final userDataList = (data['data'] as List).map((userData) {
-  //         final user = User.fromJson(userData['user']);
-  //         final followers = (userData['followers'] as List)
-  //             .map((follower) => FollowersModel.fromJson(follower))
-  //             .toList();
-  //         final jobs = (userData['jobs'] as List)
-  //             .map((job) => JobsModel.fromJson(job))
-  //             .toList();
-  //         final educations = (userData['educations'] as List)
-  //             .map((education) => EducationsModel.fromJson(education))
-  //             .toList();
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
-  //         return {
-  //           'user': user,
-  //           'followers': followers,
-  //           'jobs': jobs,
-  //           'educations': educations,
-  //         };
-  //       }).toList();
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-  //       return ApiResponse(
-  //         totalPage: data['total_page'],
-  //         totalItems: data['total_items'],
-  //         userDataList: userDataList,
-  //       );
-  //     } else {
-  //       // Handle error if response code is not 200
-  //       throw Exception('Failed to fetch users. Error: ${data['message']}');
-  //     }
-  //   } catch (e) {
-  //     // Handle any other errors that occur during the API call
-  //     throw Exception('Failed to fetch users. Error: $e');
-  //   }
-  // }
-  static Future<ApiResponse> getAllUsers(int page) async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      final response = await http.get(
-        Uri.parse('$baseUrl/users?page=$page'),
-        headers: {"Authorization": "Bearer $token"},
-      );
-      final data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
 
-      if (data['code'] == 200) {
-        final totalPage =
-            data['total_page'] as int? ?? 1; // Set default to 1 if null
-        final totalItems =
-            data['total_items'] as int? ?? 0; // Set default to 0 if null
+      final int totalFollowers = data['data']['total_followers'];
+      final User user = User.fromJson(data['data']['user']);
 
-        final userDataList = (data['data'] as List?)?.map((userData) {
-              final user =
-                  User.fromJson(userData?['user'] as Map<String, dynamic>);
-              final followers = (userData?['followers'] as List?)
-                      ?.map((follower) => FollowersModel.fromJson(
-                          follower as Map<String, dynamic>))
-                      .toList() ??
-                  [];
-              final jobs = (userData?['jobs'] as List?)
-                      ?.map((job) =>
-                          JobsModel.fromJson(job as Map<String, dynamic>))
-                      .toList() ??
-                  [];
-              final educations = (userData?['educations'] as List?)
-                      ?.map((education) => EducationsModel.fromJson(
-                          education as Map<String, dynamic>))
-                      .toList() ??
-                  [];
+      return UserFollowersInfo(totalFollowers: totalFollowers, user: user);
+    } else {
+      throw Exception('Failed to fetch followers');
+    }
+  }
 
-              return {
-                'user': user,
-                'followers': followers,
-                'jobs': jobs,
-                'educations': educations,
-              };
-            }).toList() ??
-            [];
+  static Future<List<Map<String, dynamic>>> fetchUserAll(int page) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.get(
+      Uri.parse('$baseUrl/users?page=$page'),
+      headers: {"Authorization": "Bearer $token"},
+    );
 
-        return ApiResponse(
-          totalPage: totalPage,
-          totalItems: totalItems,
-          userDataList: userDataList,
-        );
+    if (response.statusCode == 200) {
+      // Parse the response JSON
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      if (jsonResponse['status'] == true) {
+        final Map<String, dynamic> data = jsonResponse['data'];
+        final int totalItems = data['total_items'];
+        final List<Map<String, dynamic>> userList = [];
+
+        for (int i = 0; i < totalItems; i++) {
+          final Map<String, dynamic> userResponse = data[i.toString()]['user'];
+          final List<Map<String, dynamic>> educations =
+              data[i.toString()]['educations'].cast<Map<String, dynamic>>();
+          final List<Map<String, dynamic>> jobs =
+              data[i.toString()]['jobs'].cast<Map<String, dynamic>>();
+          final List<Map<String, dynamic>> followers =
+              data[i.toString()]['followers'].cast<Map<String, dynamic>>();
+
+          userResponse['educations'] = educations;
+          userResponse['jobs'] = jobs;
+          userResponse['followers'] = followers;
+
+          userList.add(userResponse);
+        }
+
+        return userList;
       } else {
-        // Handle error if response code is not 200
-        throw Exception('Failed to fetch users. Error: ${data['message']}');
+        throw Exception('Failed to fetch users');
       }
-    } catch (e) {
-      // Handle any other errors that occur during the API call
-      throw Exception('Failed to fetch users. Error: $e');
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  static Future<UserDetail> fetchDetailUser(String userId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.get(
+      Uri.parse('$baseUrl/user/detail/$userId'),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      if (jsonResponse['status'] == true) {
+        return UserDetail.fromJson(jsonResponse['data']);
+      } else {
+        throw Exception(
+            'Failed to fetch user details: ${jsonResponse['message']}');
+      }
+    } else {
+      throw Exception(
+          'Failed to fetch user details. Status code: ${response.statusCode}');
     }
   }
 

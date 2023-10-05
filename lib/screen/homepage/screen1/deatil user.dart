@@ -8,18 +8,13 @@ import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:cdc_mobile/model/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class DetailUser extends StatefulWidget {
-  User user;
-  List<JobsModel> jobsModel;
-  List<EducationsModel> educationsModel;
+  String id;
 
-  DetailUser(
-      {required this.user,
-      required this.jobsModel,
-      required this.educationsModel,
-      super.key});
+  DetailUser({required this.id, super.key});
 
   @override
   State<DetailUser> createState() => _DetailUserState();
@@ -28,7 +23,7 @@ class DetailUser extends StatefulWidget {
 class _DetailUserState extends State<DetailUser>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool isFollow = false;
+  UserDetail? userDetail;
 
   @override
   void initState() {
@@ -39,22 +34,32 @@ class _DetailUserState extends State<DetailUser>
       length: 3,
       vsync: this,
     );
-    checkFollowOrNo();
+    handleUser();
   }
 
-  void checkFollowOrNo() async {
-    try {
-      final response = await ApiServices.followUser(widget.user.id.toString());
-      if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
-        setState(() {
-          isFollow = true;
-        });
-        // print(isFollow);
-      }
-    } catch (e) {
-      print(e);
-    }
+  void handleUser() {
+    ApiServices.fetchDetailUser(widget.id).then((user) {
+      setState(() {
+        userDetail = user;
+      });
+    }).catchError((error) {
+      print('Failed to fetch user followers: $error');
+    });
   }
+
+  // void checkFollowOrNo() async {
+  //   try {
+  //     final response = await ApiServices.followUser(widget.user.id.toString());
+  //     if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
+  //       setState(() {
+  //         isFollow = true;
+  //       });
+  //       // print(isFollow);
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   // void checkUnFollow() async {
   //   try {
@@ -69,10 +74,12 @@ class _DetailUserState extends State<DetailUser>
 
   void handleFollow() async {
     try {
-      final response = await ApiServices.followUser(widget.user.id.toString());
+      final response = await ApiServices.followUser(userDetail?.user.id ?? "");
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
-        print("berhasil mengikuti");
+        setState(() {
+          handleUser();
+        });
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print("lu udah ngikuti");
@@ -85,13 +92,12 @@ class _DetailUserState extends State<DetailUser>
   void handleUnfollow() async {
     try {
       final response =
-          await ApiServices.unfollowUser(widget.user.id.toString());
+          await ApiServices.unfollowUser(userDetail?.user.id ?? "");
       if (response['code'] == 200) {
-        setState(() {
-          isFollow = false;
-          checkFollowOrNo();
-        });
         Fluttertoast.showToast(msg: response['message']);
+        setState(() {
+          handleUser();
+        });
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print("gagal");
@@ -102,9 +108,9 @@ class _DetailUserState extends State<DetailUser>
   }
 
   void handleFollownUnfollow() async {
-    if (isFollow == true) {
+    if (userDetail?.user.isFollow == true) {
       handleUnfollow();
-    } else if (isFollow == false) {
+    } else {
       handleFollow();
     }
   }
@@ -168,7 +174,7 @@ class _DetailUserState extends State<DetailUser>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Visibility(
-                                      visible: widget.user != null,
+                                      visible: userDetail != null,
                                       replacement: CardLoading(
                                         height: 20,
                                         width:
@@ -176,7 +182,7 @@ class _DetailUserState extends State<DetailUser>
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        widget.user.fullname.toString(),
+                                        ' ${userDetail?.user.fullname ?? " "}',
                                         style: MyFont.poppins(
                                           fontSize: 16,
                                           color: black,
@@ -184,7 +190,7 @@ class _DetailUserState extends State<DetailUser>
                                         ),
                                       )),
                                   Visibility(
-                                      visible: widget.user != null,
+                                      visible: userDetail != null,
                                       replacement: CardLoading(
                                         height: 15,
                                         margin: const EdgeInsets.only(top: 10),
@@ -193,7 +199,7 @@ class _DetailUserState extends State<DetailUser>
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Text(
-                                        widget.user.alamat.toString(),
+                                        ' ${userDetail?.user.alamat ?? " "}',
                                         style: MyFont.poppins(
                                           fontSize: 12,
                                           color: black,
@@ -216,7 +222,7 @@ class _DetailUserState extends State<DetailUser>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Visibility(
-                                        visible: widget.user != null,
+                                        visible: userDetail != null,
                                         replacement: CardLoading(
                                           height: 15,
                                           width:
@@ -225,7 +231,7 @@ class _DetailUserState extends State<DetailUser>
                                               BorderRadius.circular(10),
                                         ),
                                         child: Text(
-                                          widget.user.about.toString(),
+                                          ' ${userDetail?.user.about ?? ""}',
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
                                           style: MyFont.poppins(
@@ -262,18 +268,24 @@ class _DetailUserState extends State<DetailUser>
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
-                                    border: isFollow
+                                    border: userDetail?.user.isFollow == true
                                         ? Border.all(
                                             width: 1, color: primaryColor)
                                         : null,
-                                    color: isFollow ? white : primaryColor,
+                                    color: userDetail?.user.isFollow == true
+                                        ? white
+                                        : primaryColor,
                                   ),
                                   child: Text(
-                                    isFollow ? "Dikuti" : "Ikuti",
+                                    userDetail?.user.isFollow == true
+                                        ? "Dikuti"
+                                        : "Ikuti",
                                     textAlign: TextAlign.center,
                                     style: MyFont.poppins(
                                         fontSize: 12,
-                                        color: isFollow ? primaryColor : white),
+                                        color: userDetail?.user.isFollow == true
+                                            ? primaryColor
+                                            : white),
                                   ),
                                 ),
                               ),

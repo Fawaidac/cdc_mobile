@@ -12,6 +12,8 @@ class CustomTextFieldCheckbox extends StatefulWidget {
   bool isEnable;
   TextInputAction textInputAction;
   bool checkboxValue;
+  bool isReadOnly;
+
   ValueChanged<bool?> onCheckboxChanged;
 
   CustomTextFieldCheckbox({
@@ -24,6 +26,7 @@ class CustomTextFieldCheckbox extends StatefulWidget {
     this.textInputAction = TextInputAction.done,
     required this.checkboxValue,
     required this.onCheckboxChanged,
+    this.isReadOnly = false,
   }) : super(key: key);
 
   @override
@@ -60,6 +63,7 @@ class _CustomTextFieldCheckboxState extends State<CustomTextFieldCheckbox> {
             style: MyFont.poppins(fontSize: 13, color: black),
             keyboardType: widget.keyboardType,
             enabled: widget.isEnable,
+            readOnly: widget.isReadOnly,
             onSaved: (val) => widget.controller = val as TextEditingController,
             validator: (value) {
               if (value == null || value.isEmpty) {

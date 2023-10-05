@@ -9,6 +9,7 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +42,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
       setState(() {
         user = auth;
         fullname.text = user?.fullname ?? "";
-        jk.text = user?.gender ?? "";
+        selectedGender = user?.gender ?? "";
         telp.text = user?.noTelp ?? "";
         ttl.text = user?.tempatTanggalLahir ?? "";
         email.text = user?.email ?? "";
@@ -52,6 +53,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
         ig.text = user?.instagram ?? "";
         fb.text = user?.facebook ?? "";
         x.text = user?.twitter ?? "";
+        print(user?.twitter);
         isCheckedTelp = user?.noTelp != null && user?.noTelp != "***";
         isCheckedTtl = user?.tempatTanggalLahir != null &&
             user?.tempatTanggalLahir != "***";
@@ -68,6 +70,12 @@ class _UpdateProfileState extends State<UpdateProfile> {
     super.initState();
     getUser();
   }
+
+  List<String> genderOptions = [
+    'male',
+    'female',
+  ];
+  String? selectedGender;
 
   bool? isCheckedTelp;
   bool? isCheckedTtl;
@@ -194,28 +202,81 @@ class _UpdateProfileState extends State<UpdateProfile> {
             const SizedBox(
               height: 10,
             ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(
-                    context, fullname, "Nama Lengkap", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: fullname,
-                  label: "Nama Lengkap",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, jk, "Jenis Kelamin", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: jk,
-                  label: "Jenis Kelamin",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                controller: fullname,
+                isEnable: true,
+                label: "Nama Lengkap",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Jenis Kelamin",
+                          style: GoogleFonts.poppins(fontSize: 12),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: DropdownButtonFormField<String>(
+                      value: selectedGender,
+                      icon: Icon(
+                        Icons.keyboard_arrow_down_rounded,
+                        color: black,
+                      ),
+                      onChanged: (newValue) {
+                        setState(() {
+                          selectedGender = newValue;
+                        });
+                      },
+                      items: genderOptions.map((strata) {
+                        return DropdownMenuItem<String>(
+                          value: strata,
+                          child: Text(
+                            strata,
+                            style: MyFont.poppins(fontSize: 12, color: black),
+                          ),
+                        );
+                      }).toList(),
+                      decoration: InputDecoration(
+                        hintText: "Pilih Jenis Kelamin",
+                        isDense: true,
+                        hintStyle:
+                            GoogleFonts.poppins(fontSize: 13, color: grey),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: black,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: black,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFFCFDFE),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(top: 15),
@@ -268,6 +329,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                     controller: email,
                     label: "Email",
                     isEnable: true,
+                    isReadOnly: true,
                     keyboardType: TextInputType.emailAddress,
                     inputFormatters:
                         FilteringTextInputFormatter.singleLineFormatter,
@@ -311,267 +373,68 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 ],
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, about, "Tentang", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: about,
-                  label: "Tentang",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, linkedin, "LinkedIn", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: linkedin,
-                  label: "LinkedIn",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, ig, "Instagram", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: ig,
-                  label: "Instagram",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, fb, "Facebook", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: fb,
-                  label: "Facebook",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
-            GestureDetector(
-              onTap: () {
-                _showModalSheet(context, x, "Twitter", Icons.person);
-              },
-              child: CustomTextFieldForm(
-                  controller: x,
-                  label: "Twitter",
-                  keyboardType: TextInputType.text,
-                  inputFormatters:
-                      FilteringTextInputFormatter.singleLineFormatter),
-            ),
+            CustomTextFieldForm(
+                controller: about,
+                label: "Tentang",
+                isEnable: true,
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                controller: linkedin,
+                isEnable: true,
+                label: "LinkedIn",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                controller: ig,
+                isEnable: true,
+                label: "Instagram",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                controller: fb,
+                isEnable: true,
+                label: "Facebook",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            CustomTextFieldForm(
+                controller: x,
+                isEnable: true,
+                label: "Twitter",
+                keyboardType: TextInputType.text,
+                inputFormatters:
+                    FilteringTextInputFormatter.singleLineFormatter),
+            Container(
+                margin: const EdgeInsets.fromLTRB(0, 20, 0, 15),
+                height: 48,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [second, first]),
+                    borderRadius: BorderRadius.circular(15)),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      )),
+                  onPressed: () {
+                    handleUpdateProfile();
+                  },
+                  child: Text('Simpan Perubahan',
+                      style: MyFont.poppins(
+                        fontSize: 14,
+                        color: white,
+                      )),
+                )),
           ],
         ),
       ),
     );
-  }
-
-  // var fullname = TextEditingController();
-  Padding getTextField(BuildContext context, String name, String label, int i) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 2),
-            child: Text(
-              label,
-              style: MyFont.poppins(fontSize: 12, color: black),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              if (i == 0) {
-                setState(() {
-                  fullname.text = label;
-                });
-                _showModalSheet(context, fullname, label, Icons.person);
-              }
-            },
-            child: Container(
-              height: 48,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: black, width: 1),
-                  color: white),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: MyFont.poppins(fontSize: 12, color: black),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Container getTextFieldCheckBox(String name, String label, bool checkboxValue,
-      ValueChanged<bool?> onCheckboxChanged) {
-    return Container(
-      padding: const EdgeInsets.only(top: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10, left: 2),
-            child: Text(
-              label,
-              style: MyFont.poppins(fontSize: 12, color: black),
-            ),
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 48,
-                  // width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: black, width: 1),
-                      color: white),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        name,
-                        style: MyFont.poppins(fontSize: 12, color: black),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Checkbox(
-                materialTapTargetSize: MaterialTapTargetSize.padded,
-                value: checkboxValue,
-                onChanged: onCheckboxChanged,
-                visualDensity: VisualDensity.compact,
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                    width: 1, // Ketebalan border
-                    color: black, // Warna border
-                  ),
-                  borderRadius:
-                      BorderRadius.circular(10.0), // Jika ingin sudut terbulat
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showModalSheet(BuildContext context, TextEditingController controller,
-      String label, IconData icon) {
-    showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (builder) {
-          return Padding(
-            padding: EdgeInsets.only(
-                top: 20,
-                left: 15,
-                right: 15,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 20),
-            child: Wrap(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Masukan $label baru anda :",
-                  style: MyFont.poppins(
-                      fontSize: 12,
-                      color: black,
-                      fontWeight: FontWeight.normal),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  textInputAction: TextInputAction.done,
-                  controller: controller,
-                  style: MyFont.poppins(
-                    fontSize: 14,
-                    color: black,
-                  ),
-                  keyboardType: TextInputType.text,
-                  readOnly: false,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                    LengthLimitingTextInputFormatter(13)
-                  ],
-                  decoration: InputDecoration(
-                    hintText: label,
-                    isDense: false,
-                    prefixIcon: Icon(
-                      icon,
-                      size: 20,
-                      color: softgrey,
-                    ),
-                    border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: primaryColor)),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  children: [
-                    Spacer(),
-                    Row(
-                      children: [
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Batal",
-                              style: MyFont.poppins(
-                                  fontSize: 12,
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                        TextButton(
-                            onPressed: () async {
-                              handleUpdateProfile();
-                            },
-                            child: Text(
-                              "Simpan",
-                              style: MyFont.poppins(
-                                  fontSize: 12,
-                                  color: primaryColor,
-                                  fontWeight: FontWeight.bold),
-                            ))
-                      ],
-                    )
-                  ],
-                ),
-              ],
-            ),
-          );
-        });
   }
 
   void handleUpdateProfile() async {
@@ -585,7 +448,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
           x.text,
           fb.text,
           telp.text,
-          jk.text,
+          selectedGender.toString(),
           alamat.text,
           nik.text);
       if (response['code'] == 200) {
