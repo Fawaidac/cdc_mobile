@@ -1,20 +1,18 @@
-import 'package:cdc_mobile/model/followers_model.dart';
-
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/profile/tab_bar_view/widget_followed.dart';
-import 'package:cdc_mobile/screen/homepage/profile/tab_bar_view/widget_followers.dart';
-import 'package:cdc_mobile/services/api.services.dart';
+import 'package:cdc_mobile/screen/homepage/followers_user/widget_followed_user.dart';
+import 'package:cdc_mobile/screen/homepage/followers_user/widget_followers_user.dart';
 import 'package:flutter/material.dart';
 
-class Followers extends StatefulWidget {
-  const Followers({super.key});
+class FollowersUser extends StatefulWidget {
+  String id;
+  FollowersUser({required this.id, super.key});
 
   @override
-  State<Followers> createState() => _FollowersState();
+  State<FollowersUser> createState() => _FollowersUserState();
 }
 
-class _FollowersState extends State<Followers> {
+class _FollowersUserState extends State<FollowersUser> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -57,18 +55,17 @@ class _FollowersState extends State<Followers> {
                         Tab(text: "Diikuti"),
                       ]),
                 ),
-                const Expanded(
+                Expanded(
                     child: Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TabBarView(children: [
                     SizedBox(
-                      child: Column(
-                        children: [WidgetFollowers()],
-                      ),
-                    ),
+                        child: Column(
+                      children: [WidgetFollowersUser(id: widget.id)],
+                    )),
                     SizedBox(
                       child: Column(
-                        children: [WidgetFollowed()],
+                        children: [WidgetFollowedUser(id: widget.id)],
                       ),
                     ),
                   ]),

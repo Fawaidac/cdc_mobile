@@ -4,6 +4,7 @@ import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/followers_user/followers_user.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
@@ -35,6 +36,7 @@ class _DetailUserState extends State<DetailUser>
       vsync: this,
     );
     handleUser();
+    fetchFollowerCount();
   }
 
   void handleUser() {
@@ -86,6 +88,23 @@ class _DetailUserState extends State<DetailUser>
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  int followerCount = 0;
+  int followedCount = 0;
+
+  Future<void> fetchFollowerCount() async {
+    try {
+      final apiResponse = await ApiServices.fetchUserFollowers(widget.id);
+      final apiResponse2 = await ApiServices.fetchUserFollowed(widget.id);
+      setState(() {
+        followerCount = apiResponse.totalFollowers!;
+        followedCount = apiResponse2.totalFollowers!;
+      });
+    } catch (e) {
+      print('Error fetching follower count: $e');
+      // Handle errors if needed
     }
   }
 
@@ -329,43 +348,15 @@ class _DetailUserState extends State<DetailUser>
                                   height: MediaQuery.of(context).size.height,
                                   color: black.withOpacity(0.2),
                                 ),
-                                SizedBox(
-                                  height: 80,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "900",
-                                        style: MyFont.poppins(
-                                            fontSize: 20,
-                                            color: black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Mengikuti",
-                                        style: MyFont.poppins(
-                                            fontSize: 12,
-                                            color: black,
-                                            fontWeight: FontWeight.normal),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 10),
-                                  width: 1,
-                                  height: MediaQuery.of(context).size.height,
-                                  color: black.withOpacity(0.2),
-                                ),
                                 GestureDetector(
                                   onTap: () {
-                                    // Navigator.push(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //       builder: (context) => Followers(),
-                                    //     ));
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => FollowersUser(
+                                            id: userDetail?.user.id ?? "",
+                                          ),
+                                        ));
                                   },
                                   child: SizedBox(
                                     height: 80,
@@ -376,7 +367,49 @@ class _DetailUserState extends State<DetailUser>
                                           CrossAxisAlignment.center,
                                       children: [
                                         Text(
-                                          "0",
+                                          "$followedCount",
+                                          style: MyFont.poppins(
+                                              fontSize: 20,
+                                              color: black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Mengikuti",
+                                          style: MyFont.poppins(
+                                              fontSize: 12,
+                                              color: black,
+                                              fontWeight: FontWeight.normal),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(vertical: 10),
+                                  width: 1,
+                                  height: MediaQuery.of(context).size.height,
+                                  color: black.withOpacity(0.2),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => FollowersUser(
+                                            id: userDetail?.user.id ?? "",
+                                          ),
+                                        ));
+                                  },
+                                  child: SizedBox(
+                                    height: 80,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "$followerCount",
                                           style: MyFont.poppins(
                                               fontSize: 20,
                                               color: black,

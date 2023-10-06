@@ -1,17 +1,24 @@
 import 'package:cdc_mobile/model/followers_model.dart';
+import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/deatil%20user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
-class WidgetFollowers extends StatelessWidget {
-  const WidgetFollowers({super.key});
+class WidgetFollowedUser extends StatefulWidget {
+  String id;
+  WidgetFollowedUser({required this.id, super.key});
 
   @override
+  State<WidgetFollowedUser> createState() => _WidgetFollowedUserState();
+}
+
+class _WidgetFollowedUserState extends State<WidgetFollowedUser> {
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<FollowersModel>(
-      future: ApiServices.getFollowers(),
+    return FutureBuilder<UserFollowedInfo>(
+      future: ApiServices.fetchUserFollowed(widget.id),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -23,11 +30,11 @@ class WidgetFollowers extends StatelessWidget {
           return const Center(child: Text('No data available'));
         } else {
           final followersModel = snapshot.data!;
-          final followersList = followersModel.followers;
-          final followersCount = followersModel.totalFollowers;
+          // final totalFollowers = followersModel.totalFollowers;
+          final followersList = followersModel.followed;
 
           return ListView.builder(
-            itemCount: followersList?.length ?? 0,
+            itemCount: followersModel.followed!.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
               final follower = followersList![index];

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.18.32:8000/api";
+  static const String baseUrl = "http://192.168.0.117:8000/api";
   // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
@@ -78,12 +78,51 @@ class ApiServices {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
+      final data = json.decode(response.body);
 
       final int totalFollowers = data['data']['total_followers'];
       final User user = User.fromJson(data['data']['user']);
+      List<Follower> followers = [];
+      if (data['data']['user']['followers'] != null) {
+        data['data']['user']['followers'].forEach((followerData) {
+          followers.add(Follower.fromJson(followerData));
+        });
+      }
 
-      return UserFollowersInfo(totalFollowers: totalFollowers, user: user);
+      return UserFollowersInfo(
+          totalFollowers: totalFollowers, user: user, followers: followers);
+    } else {
+      throw Exception('Failed to fetch followers');
+    }
+  }
+
+  static Future<UserFollowedInfo> fetchUserFollowed(String userId) async {
+    final String url = '$baseUrl/user/followed/$userId';
+
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      final int totalFollowers = data['data']['total_followers'];
+      final User user = User.fromJson(data['data']['user']);
+      List<Follower> followed = [];
+      if (data['data']['user']['followed'] != null) {
+        data['data']['user']['followed'].forEach((followerData) {
+          followed.add(Follower.fromJson(followerData));
+        });
+      }
+
+      return UserFollowedInfo(
+          totalFollowers: totalFollowers, user: user, followed: followed);
     } else {
       throw Exception('Failed to fetch followers');
     }
@@ -164,6 +203,34 @@ class ApiServices {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         return FollowersModel.fromJson(jsonResponse['data']);
+      } else {
+        throw Exception('Failed to fetch followers');
+      }
+    } catch (e) {
+      print('Error fetching followers: $e');
+      throw e;
+    }
+  }
+
+  static Future<FollowedModel> getFollowed() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await http.get(Uri.parse('$baseUrl/user/followed'),
+          headers: {"Authorization": "Bearer $token"});
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+
+        final int totalFollowers = jsonResponse['data']['total_followers'];
+        List<Follower> followers = [];
+        if (jsonResponse['data']['user']['followed'] != null) {
+          jsonResponse['data']['user']['followed'].forEach((followerData) {
+            followers.add(Follower.fromJson(followerData));
+          });
+        }
+        return FollowedModel(
+            totalFollowers: totalFollowers, followers: followers);
       } else {
         throw Exception('Failed to fetch followers');
       }

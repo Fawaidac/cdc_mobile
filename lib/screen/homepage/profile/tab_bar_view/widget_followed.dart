@@ -5,13 +5,13 @@ import 'package:cdc_mobile/screen/homepage/screen1/deatil%20user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
-class WidgetFollowers extends StatelessWidget {
-  const WidgetFollowers({super.key});
+class WidgetFollowed extends StatelessWidget {
+  const WidgetFollowed({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<FollowersModel>(
-      future: ApiServices.getFollowers(),
+    return FutureBuilder<FollowedModel>(
+      future: ApiServices.getFollowed(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -19,25 +19,25 @@ class WidgetFollowers extends StatelessWidget {
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
-        } else if (!snapshot.hasData) {
+        } else if (!snapshot.hasData || snapshot.data!.followers == null) {
           return const Center(child: Text('No data available'));
         } else {
           final followersModel = snapshot.data!;
           final followersList = followersModel.followers;
-          final followersCount = followersModel.totalFollowers;
 
           return ListView.builder(
-            itemCount: followersList?.length ?? 0,
+            itemCount: followersList!.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final follower = followersList![index];
+              final follower = followersList[index];
               return ListTile(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailUser(id: follower.id ?? ""),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailUser(id: follower.id ?? ""),
+                    ),
+                  );
                 },
                 leading: CircleAvatar(
                   radius: 25,

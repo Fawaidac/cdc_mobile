@@ -1,4 +1,5 @@
 import 'package:cdc_mobile/model/educations_model.dart';
+import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 
 class User {
@@ -102,11 +103,45 @@ class UserDetail {
 }
 
 class UserFollowersInfo {
-  int totalFollowers;
-  User user;
+  int? totalFollowers;
+  User? user;
+  List<Follower>? followers;
 
-  UserFollowersInfo({
-    required this.totalFollowers,
-    required this.user,
-  });
+  UserFollowersInfo(
+      {required this.totalFollowers,
+      required this.user,
+      required this.followers});
+
+  UserFollowersInfo.fromJson(Map<String, dynamic> json) {
+    totalFollowers = json['total_followers'];
+    user = json['user'];
+    if (json['followers'] != null) {
+      followers = [];
+      json['followers'].forEach((v) {
+        followers!.add(Follower.fromJson(v));
+      });
+    }
+  }
+}
+
+class UserFollowedInfo {
+  int? totalFollowers;
+  User? user;
+  List<Follower>? followed;
+
+  UserFollowedInfo(
+      {required this.totalFollowers,
+      required this.user,
+      required this.followed});
+
+  UserFollowedInfo.fromJson(Map<String, dynamic> json) {
+    totalFollowers = json['total_followers'];
+    user = json['user'];
+    if (json['followed'] != null) {
+      followed = [];
+      json['followed'].forEach((v) {
+        followed!.add(Follower.fromJson(v));
+      });
+    }
+  }
 }

@@ -35,12 +35,15 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   }
 
   int followerCount = 0;
+  int followedCount = 0;
 
   Future<void> fetchFollowerCount() async {
     try {
       final apiResponse = await ApiServices.getFollowers();
+      final apiResponse2 = await ApiServices.getFollowed();
       setState(() {
-        followerCount = apiResponse.followers!.length;
+        followerCount = apiResponse.totalFollowers!;
+        followedCount = apiResponse2.totalFollowers!;
       });
     } catch (e) {
       print('Error fetching follower count: $e');
@@ -222,28 +225,38 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   height: MediaQuery.of(context).size.height,
                                   color: black.withOpacity(0.2),
                                 ),
-                                SizedBox(
-                                  height: 80,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "900",
-                                        style: MyFont.poppins(
-                                            fontSize: 20,
-                                            color: black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Text(
-                                        "Mengikuti",
-                                        style: MyFont.poppins(
-                                            fontSize: 12,
-                                            color: black,
-                                            fontWeight: FontWeight.normal),
-                                      )
-                                    ],
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Followers(),
+                                        ));
+                                  },
+                                  child: SizedBox(
+                                    height: 80,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "$followedCount",
+                                          style: MyFont.poppins(
+                                              fontSize: 20,
+                                              color: black,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "Mengikuti",
+                                          style: MyFont.poppins(
+                                              fontSize: 12,
+                                              color: black,
+                                              fontWeight: FontWeight.normal),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Container(
