@@ -7,6 +7,8 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/followers_user/followers_user.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
+import 'package:cdc_mobile/screen/homepage/screen1/widget_education_detail_user.dart';
+import 'package:cdc_mobile/screen/homepage/screen1/widget_jobs_detail_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:cdc_mobile/model/user.dart';
@@ -478,8 +480,8 @@ class _DetailUserState extends State<DetailUser>
                     );
                   },
                 ),
-                MyEducations(),
-                MyJobs(),
+                EducationDetailUser(userId: userDetail?.user.id ?? ""),
+                JobsDetailUser(userId: userDetail?.user.id ?? ""),
               ]),
             )));
   }

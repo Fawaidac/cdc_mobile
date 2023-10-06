@@ -1,14 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
   static const String baseUrl = "http://192.168.0.117:8000/api";
+  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
   // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
@@ -61,6 +64,52 @@ class ApiServices {
     } catch (e) {
       print("Error fetching user data: $e");
       return null;
+    }
+  }
+
+  static Future<String?> updateImageProfile(File imagePath) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$baseUrl/user/profile/image'),
+      );
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Content-Type'] = 'multipart/form-data';
+
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          imagePath.path,
+        ),
+      );
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        // Check content type
+        if (response.headers['content-type']!.contains('application/json')) {
+          final jsonResponse = await response.stream.bytesToString();
+          final data = json.decode(jsonResponse);
+
+          if (data['status'] == true) {
+            return data['data'];
+          } else {
+            throw Exception(
+                'Failed to update profile image: ${data['message']}');
+          }
+        } else {
+          throw Exception('Invalid content type in the response');
+        }
+      } else {
+        throw Exception(
+            'Failed to update profile image. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error updating profile image: $e');
+      throw e;
     }
   }
 

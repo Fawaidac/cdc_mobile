@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UpdateProfile extends StatefulWidget {
@@ -120,6 +122,40 @@ class _UpdateProfileState extends State<UpdateProfile> {
     }
   }
 
+  File? image;
+
+  Future getImageGalerry() async {
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      image = File(imageFile!.path);
+    });
+    if (image != null) {
+      await uploadProfileImage();
+    } else {
+      print("imagenull");
+    }
+  }
+
+  Future<void> uploadProfileImage() async {
+    if (image == null) {
+      Fluttertoast.showToast(msg: "Silahkan pilih image");
+    }
+
+    try {
+      String? imageUrl = await ApiServices.updateImageProfile(image!);
+      if (imageUrl != null) {
+        // Update the UI or save the image URL wherever needed.
+        print('Image URL: $imageUrl');
+      } else {
+        // Handle null image URL
+      }
+    } catch (e) {
+      // Handle errors
+      print('Error updating profile image: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -149,28 +185,38 @@ class _UpdateProfileState extends State<UpdateProfile> {
           children: [
             Row(
               children: [
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: softgrey.withOpacity(0.5),
-                    ),
-                    Positioned(
-                        bottom: 0,
-                        right: 0,
-                        // left: -10,
-                        child: Container(
-                            padding: const EdgeInsets.all(6),
-                            // color: first,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: first),
-                            child: Icon(
-                              Icons.camera_alt_rounded,
-                              size: 15,
-                              color: white,
-                            )))
-                  ],
+                GestureDetector(
+                  onTap: () {
+                    getImageGalerry();
+                  },
+                  child: Stack(
+                    children: [
+                      image == null
+                          ? CircleAvatar(
+                              radius: 40,
+                              backgroundImage: NetworkImage(user?.foto == null
+                                  ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
+                                  : user?.foto ?? ""),
+                            )
+                          : CircleAvatar(
+                              radius: 40,
+                              backgroundImage: FileImage(image!),
+                            ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: first),
+                              child: Icon(
+                                Icons.camera_alt_rounded,
+                                size: 15,
+                                color: white,
+                              )))
+                    ],
+                  ),
                 ),
                 const SizedBox(
                   width: 10,

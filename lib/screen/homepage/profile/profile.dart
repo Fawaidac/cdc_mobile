@@ -88,24 +88,25 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () async {
-                                SharedPreferences preferences =
-                                    await SharedPreferences.getInstance();
-                                preferences.remove('token');
-                                preferences.remove('tokenExpirationTime');
-                                // ignore: use_build_context_synchronously
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => Login(),
-                                    ));
-                              },
-                              child: const CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    "https://th.bing.com/th/id/OIP.VH39b0tEUhcx63P0laPnKgHaFu?w=230&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7"),
-                                radius: 40,
-                              ),
-                            ),
+                                onTap: () async {
+                                  SharedPreferences preferences =
+                                      await SharedPreferences.getInstance();
+                                  preferences.remove('token');
+                                  preferences.remove('tokenExpirationTime');
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => Login(),
+                                      ));
+                                },
+                                child: CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: NetworkImage(user?.foto ==
+                                          null
+                                      ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
+                                      : user?.foto ?? ""),
+                                )),
                             const SizedBox(
                               width: 10,
                             ),
@@ -161,7 +162,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 },
                                 icon: Icon(
                                   Icons.settings_outlined,
-                                  color: first,
+                                  color: primaryColor,
                                 ))
                           ],
                         ),
@@ -309,7 +310,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                             width: MediaQuery.of(context).size.width,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                  backgroundColor: first,
+                                  backgroundColor: primaryColor,
                                   shadowColor: Colors.transparent,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -332,7 +333,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                   )),
                   bottom: TabBar(
                       unselectedLabelColor: grey,
-                      labelColor: first,
+                      labelColor: primaryColor,
                       controller: _tabController,
                       labelStyle: MyFont.poppins(
                           fontSize: 14,
@@ -343,7 +344,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                           color: grey,
                           fontWeight: FontWeight.w500),
                       isScrollable: false,
-                      indicatorColor: first,
+                      indicatorColor: primaryColor,
                       tabs: const [
                         Tab(text: "Post"),
                         Tab(text: "Pendidikan"),
