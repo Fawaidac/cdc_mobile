@@ -113,6 +113,36 @@ class ApiServices {
     }
   }
 
+  static Future<void> updateEmailUser(String email) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      final response = await http.put(
+        Uri.parse('$baseUrl/user/profile/email'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': email}),
+      );
+      final jsonResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        if (jsonResponse['status'] == true) {
+          print(jsonResponse['message']);
+        } else {
+          throw Exception('Failed to update email: ${jsonResponse['message']}');
+        }
+      } else {
+        throw Exception('Failed to update email. ${jsonResponse['message']}');
+      }
+    } catch (e) {
+      print('Error updating email: $e');
+      throw e;
+    }
+  }
+
   static Future<UserFollowersInfo> fetchUserFollowers(String userId) async {
     final String url = '$baseUrl/user/followers/$userId';
 

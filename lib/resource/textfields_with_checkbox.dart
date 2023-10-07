@@ -13,6 +13,7 @@ class CustomTextFieldCheckbox extends StatefulWidget {
   TextInputAction textInputAction;
   bool checkboxValue;
   bool isReadOnly;
+  Function()? onTap;
 
   ValueChanged<bool?> onCheckboxChanged;
 
@@ -25,6 +26,7 @@ class CustomTextFieldCheckbox extends StatefulWidget {
     required this.inputFormatters,
     this.textInputAction = TextInputAction.done,
     required this.checkboxValue,
+    this.onTap,
     required this.onCheckboxChanged,
     this.isReadOnly = false,
   }) : super(key: key);
@@ -58,6 +60,7 @@ class _CustomTextFieldCheckboxState extends State<CustomTextFieldCheckbox> {
             height: 10,
           ),
           TextFormField(
+            onTap: widget.onTap,
             textInputAction: widget.textInputAction,
             controller: widget.controller,
             style: MyFont.poppins(fontSize: 13, color: black),

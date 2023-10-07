@@ -6,6 +6,8 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
 import 'package:cdc_mobile/resource/textfields_with_checkbox.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -373,6 +375,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   ),
                   CustomTextFieldCheckbox(
                     controller: email,
+                    onTap: () => openDialog(),
                     label: "Email",
                     isEnable: true,
                     isReadOnly: true,
@@ -510,4 +513,70 @@ class _UpdateProfileState extends State<UpdateProfile> {
       print(e);
     }
   }
+
+  var newEmail = TextEditingController();
+  Future openDialog() => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          backgroundColor: Colors.white, // Change the background color here
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Change the radius here
+          ),
+          title: Text(
+            "Perbarui email anda",
+            style: MyFont.poppins(fontSize: 14, color: primaryColor),
+          ),
+          content: TextField(
+            controller: newEmail,
+            autofocus: true,
+            style: MyFont.poppins(fontSize: 12, color: black),
+            decoration: InputDecoration(
+              hintText: "Masukan email baru anda",
+              hintStyle: MyFont.poppins(fontSize: 12, color: softgrey),
+              isDense: true,
+              filled: true,
+              fillColor: const Color(0xFFFCFDFE),
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Color(0xffF0F1F7),
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          actions: [
+            InkWell(
+              onTap: () async {
+                try {
+                  await ApiServices.updateEmailUser(newEmail.text);
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Login(),
+                      )); // Navigate to login screen
+                  Fluttertoast.showToast(
+                    msg: "Email updated successfully. Please log in again.",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                  );
+                } catch (e) {
+                  Fluttertoast.showToast(msg: e.toString());
+                }
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: primaryColor),
+                child: Text(
+                  "Simpan",
+                  style: MyFont.poppins(fontSize: 12, color: white),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
 }
