@@ -4,7 +4,7 @@ import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/users_all.dart';
-import 'package:cdc_mobile/screen/homepage/screen2/ikapj_screen.dart';
+import 'package:cdc_mobile/screen/homepage/ikapj/ikapj_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -113,73 +113,73 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: AppBar(
-        backgroundColor: white,
-        automaticallyImplyLeading: false,
-        title: SizedBox(
-          height: 48,
-          child: TextFormField(
-            textInputAction: TextInputAction.done,
-            controller: searh,
-            style: MyFont.poppins(fontSize: 12, color: black),
-            keyboardType: TextInputType.text,
-            decoration: InputDecoration(
-              prefixIcon: Icon(
-                Icons.search,
-                color: first,
-              ),
-              hintText: "Search",
-              isDense: true,
-              hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: first,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                  color: first,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(30),
-              ),
-              filled: true,
-              fillColor: Colors.transparent,
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Row(
-              children: [
-                SizedBox(
-                  child: Image.asset(
-                    "images/bell.png",
-                    height: 20,
-                    alignment: Alignment.center,
-                  ),
-                ),
-                const SizedBox(
-                  width: 15,
-                ),
-                SizedBox(
-                  child: Image.asset(
-                    "images/chats.png",
-                    height: 20,
-                    alignment: Alignment.center,
-                  ),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: white,
+      //   automaticallyImplyLeading: false,
+      //   // title: SizedBox(
+      //   //   height: 48,
+      //   //   child: TextFormField(
+      //   //     textInputAction: TextInputAction.done,
+      //   //     controller: searh,
+      //   //     style: MyFont.poppins(fontSize: 12, color: black),
+      //   //     keyboardType: TextInputType.text,
+      //   //     decoration: InputDecoration(
+      //   //       prefixIcon: Icon(
+      //   //         Icons.search,
+      //   //         color: first,
+      //   //       ),
+      //   //       hintText: "Search",
+      //   //       isDense: true,
+      //   //       hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
+      //   //       enabledBorder: OutlineInputBorder(
+      //   //         borderSide: BorderSide(
+      //   //           color: first,
+      //   //           width: 1,
+      //   //         ),
+      //   //         borderRadius: BorderRadius.circular(30),
+      //   //       ),
+      //   //       focusedBorder: OutlineInputBorder(
+      //   //         borderSide: BorderSide(
+      //   //           color: first,
+      //   //           width: 1,
+      //   //         ),
+      //   //         borderRadius: BorderRadius.circular(30),
+      //   //       ),
+      //   //       filled: true,
+      //   //       fillColor: Colors.transparent,
+      //   //     ),
+      //   //   ),
+      //   // ),
+      //   actions: [
+      //     Padding(
+      //       padding: EdgeInsets.only(right: 10),
+      //       child: Row(
+      //         children: [
+      //           SizedBox(
+      //             child: Image.asset(
+      //               "images/bell.png",
+      //               height: 20,
+      //               alignment: Alignment.center,
+      //             ),
+      //           ),
+      //           const SizedBox(
+      //             width: 15,
+      //           ),
+      //           SizedBox(
+      //             child: Image.asset(
+      //               "images/chats.png",
+      //               height: 20,
+      //               alignment: Alignment.center,
+      //             ),
+      //           ),
+      //           const SizedBox(
+      //             width: 10,
+      //           ),
+      //         ],
+      //       ),
+      //     )
+      //   ],
+      // ),
       body: active
           ? screen[index]
           : ListView.builder(

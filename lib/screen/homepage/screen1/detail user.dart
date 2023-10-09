@@ -13,6 +13,7 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailUser extends StatefulWidget {
   String id;
@@ -162,7 +163,7 @@ class _DetailUserState extends State<DetailUser>
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return <Widget>[
                 SliverAppBar(
-                  expandedHeight: 370,
+                  expandedHeight: 380,
                   pinned: true,
                   backgroundColor: white,
                   automaticallyImplyLeading: false,
@@ -229,6 +230,13 @@ class _DetailUserState extends State<DetailUser>
                                 ],
                               ),
                             ),
+                            Spacer(),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.info_outline,
+                                  color: primaryColor,
+                                ))
                           ],
                         ),
                         const SizedBox(
@@ -252,8 +260,8 @@ class _DetailUserState extends State<DetailUser>
                                               BorderRadius.circular(10),
                                         ),
                                         child: Text(
-                                          ' ${userDetail?.user.about ?? ""}',
-                                          maxLines: 3,
+                                          '${userDetail?.user.about ?? ""}',
+                                          maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: MyFont.poppins(
                                             fontSize: 12,
@@ -261,22 +269,6 @@ class _DetailUserState extends State<DetailUser>
                                             // fontWeight: FontWeight.bold,
                                           ),
                                         )),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 5),
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: primaryColor,
-                                      ),
-                                      child: Text(
-                                        "Detail Profile",
-                                        style: MyFont.poppins(
-                                            fontSize: 12,
-                                            color: white,
-                                            fontWeight: FontWeight.normal),
-                                      ),
-                                    )
                                   ],
                                 ),
                               ),
@@ -432,6 +424,93 @@ class _DetailUserState extends State<DetailUser>
                             ),
                           ),
                         ),
+                        Text(
+                          "Kontak",
+                          style: MyFont.poppins(
+                              fontSize: 14,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                String linkedin =
+                                    userDetail?.user.linkedin ?? "";
+                                String url =
+                                    "http://www.linkedin.com/in/$linkedin";
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw "Could not launch $url";
+                                }
+                              },
+                              child: Image.asset(
+                                "images/linkedin.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                String linkedin =
+                                    userDetail?.user.instagram ?? "";
+                                String url =
+                                    "http://www.linkedin.com/in/$linkedin";
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw "Could not launch $url";
+                                }
+                              },
+                              child: Image.asset(
+                                "images/instagram.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                String linkedin =
+                                    userDetail?.user.twitter ?? "";
+                                String url =
+                                    "http://www.linkedin.com/in/$linkedin";
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw "Could not launch $url";
+                                }
+                              },
+                              child: Image.asset(
+                                "images/x.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                String linkedin =
+                                    userDetail?.user.facebook ?? "";
+                                String url =
+                                    "http://www.linkedin.com/in/$linkedin";
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  throw "Could not launch $url";
+                                }
+                              },
+                              child: Image.asset(
+                                "images/facebook.png",
+                                height: 40,
+                                width: 40,
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   )),
@@ -485,4 +564,6 @@ class _DetailUserState extends State<DetailUser>
               ]),
             )));
   }
+
+  // Future
 }

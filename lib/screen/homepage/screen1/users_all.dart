@@ -8,6 +8,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/detail%20user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UsersAll extends StatefulWidget {
   const UsersAll({super.key});
@@ -18,6 +19,7 @@ class UsersAll extends StatefulWidget {
 
 class _UsersAllState extends State<UsersAll> {
   Future<List<Map<String, dynamic>>>? _usersFuture;
+  List<Map<String, dynamic>>? _users;
   int currentPage = 1;
 
   @override
@@ -31,6 +33,7 @@ class _UsersAllState extends State<UsersAll> {
       _usersFuture = ApiServices.fetchUserAll(page);
       currentPage = page;
     });
+    _loadUsers();
   }
 
   Future<void> _loadNextPage() async {
@@ -43,14 +46,92 @@ class _UsersAllState extends State<UsersAll> {
     }
   }
 
+  bool _isAscending = true;
+
+  void _toggleSortOrder() {
+    setState(() {
+      _isAscending = !_isAscending;
+    });
+  }
+
+  var search = TextEditingController();
+
+  Future<void> _loadUsers() async {
+    try {
+      final users = await _usersFuture;
+      if (users != null) {
+        // Apply search filter
+        if (search.text.isNotEmpty) {
+          _users = users.where((user) {
+            final fullName = user['fullname'].toLowerCase();
+            final searchQuery = search.text.toLowerCase();
+            return fullName.contains(searchQuery);
+          }).toList();
+        } else {
+          _users = users;
+        }
+
+        setState(() {});
+      }
+    } catch (e) {
+      print('Error loading users: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: white,
+      appBar: AppBar(
+        title: Text(
+          "Daftar Alumni",
+          style: MyFont.poppins(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Column(
           children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 10),
+              height: 48,
+              child: TextFormField(
+                textInputAction: TextInputAction.done,
+                controller: search,
+                style: MyFont.poppins(fontSize: 12, color: black),
+                keyboardType: TextInputType.text,
+                onChanged: (value) {
+                  setState(() {
+                    _loadUsers();
+                  });
+                },
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: primaryColor,
+                  ),
+                  hintText: "Search",
+                  isDense: true,
+                  hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: primaryColor,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  filled: true,
+                  fillColor: Colors.transparent,
+                ),
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -87,6 +168,21 @@ class _UsersAllState extends State<UsersAll> {
                   child: Text(
                     "Program Studi",
                     style: MyFont.poppins(fontSize: 12, color: primaryColor),
+                  ),
+                ),
+                InkWell(
+                  onTap: _toggleSortOrder,
+                  child: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: primaryColor),
+                      borderRadius: BorderRadius.circular(10),
+                      color: white,
+                    ),
+                    child: Text(
+                      _isAscending ? "A - Z" : "Z - A",
+                      style: MyFont.poppins(fontSize: 12, color: primaryColor),
+                    ),
                   ),
                 ),
               ],
@@ -175,10 +271,14 @@ class _UsersAllState extends State<UsersAll> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
-                  // final userDataMap = snapshot.data![index];
-                  // final user = userDataMap['user'] as User;
-                  // final totalPage = snapshot.data!.totalPage;
-                  final users = snapshot.data;
+                  final users = _users;
+                  users!.sort((user1, user2) {
+                    final String fullName1 = user1['fullname'];
+                    final String fullName2 = user2['fullname'];
+                    return _isAscending
+                        ? fullName1.compareTo(fullName2)
+                        : fullName2.compareTo(fullName1);
+                  });
                   return Column(
                     children: [
                       ListView.builder(
@@ -189,27 +289,12 @@ class _UsersAllState extends State<UsersAll> {
                           final user = users[index];
                           final List<Map<String, dynamic>> educations =
                               user['educations'].cast<Map<String, dynamic>>();
-
                           // Filter educations where perguruan is "Politeknik Negeri Jember"
                           final filteredEducations = educations
                               .where((education) =>
                                   education['perguruan'] ==
                                   'Politeknik Negeri Jember')
                               .toList();
-                          // Mendapatkan informasi pengguna
-                          // final user = User.fromJson(
-                          //     userData['user'] as Map<String, dynamic>);
-                          // Map<String, dynamic> user = users[index];
-                          // Map<String, dynamic> education =
-                          //     user['educations'][0];
-
-                          // final followers =
-                          //     userData['followers'] as List<FollowersModel>;
-                          // final jobs = userData['jobs'] as List<JobsModel>;
-                          // final educations =
-                          //     userData['educations'] as List<EducationsModel>;
-
-                          // Menampilkan informasi pengguna
                           return InkWell(
                             onTap: () {
                               Navigator.push(
