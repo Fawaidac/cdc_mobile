@@ -113,6 +113,19 @@ class ApiServices {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> getProdi() async {
+    final response = await http.get(Uri.parse('$baseUrl/prodi'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      final List<Map<String, dynamic>> prodiList =
+          List<Map<String, dynamic>>.from(jsonResponse['data']);
+      return prodiList;
+    } else {
+      throw Exception('Failed to fetch prodi');
+    }
+  }
+
   static Future<void> updateEmailUser(String email) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -207,13 +220,25 @@ class ApiServices {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchUserAll(int page) async {
+  static Future<List<Map<String, dynamic>>> fetchUserAll(int page,
+      {int? angkatan, String? prodi}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
+
+    String url = '$baseUrl/users?page=$page';
+    if (angkatan != null) {
+      url += '&angkatan=$angkatan';
+    }
+    if (prodi != null && prodi.isNotEmpty) {
+      url += '&prodi=$prodi';
+    }
+
     final response = await http.get(
-      Uri.parse('$baseUrl/users?page=$page'),
+      Uri.parse(url),
       headers: {"Authorization": "Bearer $token"},
     );
+
+    print(url);
 
     if (response.statusCode == 200) {
       // Parse the response JSON

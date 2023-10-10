@@ -1,17 +1,12 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:cdc_mobile/model/educations_model.dart';
-import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/followers_user/followers_user.dart';
-import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
-import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/widget_education_detail_user.dart';
 import 'package:cdc_mobile/screen/homepage/screen1/widget_jobs_detail_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
-import 'package:cdc_mobile/model/user.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,101 +35,6 @@ class _DetailUserState extends State<DetailUser>
     );
     handleUser();
     fetchFollowerCount();
-  }
-
-  void handleUser() {
-    ApiServices.fetchDetailUser(widget.id).then((user) {
-      setState(() {
-        userDetail = user;
-      });
-    }).catchError((error) {
-      print('Failed to fetch user followers: $error');
-    });
-  }
-
-  // void checkFollowOrNo() async {
-  //   try {
-  //     final response = await ApiServices.followUser(widget.user.id.toString());
-  //     if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
-  //       setState(() {
-  //         isFollow = true;
-  //       });
-  //       // print(isFollow);
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  // void checkUnFollow() async {
-  //   try {
-  //     final response = await ApiServices.followUser(widget.user.id.toString());
-  //     if (response['message'] == "Ops , kamu sudah mengikuti user tersebut") {
-  //       handleUnfollow();
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
-  void handleFollow() async {
-    try {
-      final response = await ApiServices.followUser(userDetail?.user.id ?? "");
-      if (response['code'] == 201) {
-        Fluttertoast.showToast(msg: response['message']);
-        setState(() {
-          handleUser();
-        });
-      } else {
-        Fluttertoast.showToast(msg: response['message']);
-        print("lu udah ngikuti");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  int followerCount = 0;
-  int followedCount = 0;
-
-  Future<void> fetchFollowerCount() async {
-    try {
-      final apiResponse = await ApiServices.fetchUserFollowers(widget.id);
-      final apiResponse2 = await ApiServices.fetchUserFollowed(widget.id);
-      setState(() {
-        followerCount = apiResponse.totalFollowers!;
-        followedCount = apiResponse2.totalFollowers!;
-      });
-    } catch (e) {
-      print('Error fetching follower count: $e');
-      // Handle errors if needed
-    }
-  }
-
-  void handleUnfollow() async {
-    try {
-      final response =
-          await ApiServices.unfollowUser(userDetail?.user.id ?? "");
-      if (response['code'] == 200) {
-        Fluttertoast.showToast(msg: response['message']);
-        setState(() {
-          handleUser();
-        });
-      } else {
-        Fluttertoast.showToast(msg: response['message']);
-        print("gagal");
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  void handleFollownUnfollow() async {
-    if (userDetail?.user.isFollow == true) {
-      handleUnfollow();
-    } else {
-      handleFollow();
-    }
   }
 
   @override
@@ -565,5 +465,73 @@ class _DetailUserState extends State<DetailUser>
             )));
   }
 
-  // Future
+  void handleUser() {
+    ApiServices.fetchDetailUser(widget.id).then((user) {
+      setState(() {
+        userDetail = user;
+      });
+    }).catchError((error) {
+      print('Failed to fetch user followers: $error');
+    });
+  }
+
+  void handleFollow() async {
+    try {
+      final response = await ApiServices.followUser(userDetail?.user.id ?? "");
+      if (response['code'] == 201) {
+        Fluttertoast.showToast(msg: response['message']);
+        setState(() {
+          handleUser();
+        });
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+        print("lu udah ngikuti");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  int followerCount = 0;
+  int followedCount = 0;
+
+  Future<void> fetchFollowerCount() async {
+    try {
+      final apiResponse = await ApiServices.fetchUserFollowers(widget.id);
+      final apiResponse2 = await ApiServices.fetchUserFollowed(widget.id);
+      setState(() {
+        followerCount = apiResponse.totalFollowers!;
+        followedCount = apiResponse2.totalFollowers!;
+      });
+    } catch (e) {
+      print('Error fetching follower count: $e');
+      // Handle errors if needed
+    }
+  }
+
+  void handleUnfollow() async {
+    try {
+      final response =
+          await ApiServices.unfollowUser(userDetail?.user.id ?? "");
+      if (response['code'] == 200) {
+        Fluttertoast.showToast(msg: response['message']);
+        setState(() {
+          handleUser();
+        });
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+        print("gagal");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void handleFollownUnfollow() async {
+    if (userDetail?.user.isFollow == true) {
+      handleUnfollow();
+    } else {
+      handleFollow();
+    }
+  }
 }

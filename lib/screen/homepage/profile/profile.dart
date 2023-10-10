@@ -67,6 +67,18 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: Text(
+              "Profile",
+              style: MyFont.poppins(
+                  fontSize: 16,
+                  color: primaryColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
         backgroundColor: white,
         body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
