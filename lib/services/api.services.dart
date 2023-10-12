@@ -410,6 +410,20 @@ class ApiServices {
     return data;
   }
 
+  static Future<Map<String, dynamic>> deleteEducations(
+      String educationsId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response =
+        await http.delete(Uri.parse('$baseUrl/user/education'), body: {
+      "id_education": educationsId,
+    }, headers: {
+      "Authorization": "Bearer $token"
+    });
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
   static Future<List<JobsModel>> fetchJobs() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

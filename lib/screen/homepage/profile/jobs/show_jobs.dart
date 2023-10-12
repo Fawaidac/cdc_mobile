@@ -1,4 +1,6 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/update_jobs.dart';
@@ -111,7 +113,19 @@ class MyJobs extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            handleDeleteJobs("${jobs.id}");
+                            GetAwesomeDialog.showCustomDialog(
+                              context: context,
+                              dialogType: DialogType.WARNING,
+                              title: "Perhatian",
+                              desc:
+                                  "Apakah anda yakin untuk menghapus data pekerjaan anda?",
+                              btnOkPress: () {
+                                handleDeleteJobs("${jobs.id}");
+                              },
+                              btnCancelPress: () {
+                                Navigator.pop(context);
+                              },
+                            );
                           },
                           child: Icon(
                             Icons.delete,

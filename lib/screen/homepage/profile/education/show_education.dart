@@ -1,12 +1,28 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/update_education.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class MyEducations extends StatelessWidget {
   const MyEducations({super.key});
+
+  void handleDeleteEducation(String educationId) async {
+    try {
+      final response = await ApiServices.deleteEducations(educationId);
+      if (response['code'] == 200) {
+        Fluttertoast.showToast(msg: response['message']);
+      } else {
+        Fluttertoast.showToast(msg: response['message']);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +113,19 @@ class MyEducations extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () {
-                            
+                            GetAwesomeDialog.showCustomDialog(
+                              context: context,
+                              dialogType: DialogType.WARNING,
+                              title: "Perhatian",
+                              desc:
+                                  "Apakah anda yakin untuk menghapus data pendidikan anda",
+                              btnOkPress: () {
+                                handleDeleteEducation("${educations.id}");
+                              },
+                              btnCancelPress: () {
+                                Navigator.pop(context);
+                              },
+                            );
                           },
                           child: Icon(
                             Icons.delete,
