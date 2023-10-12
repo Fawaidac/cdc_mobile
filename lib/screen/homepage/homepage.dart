@@ -113,73 +113,76 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      // appBar: AppBar(
-      //   backgroundColor: white,
-      //   automaticallyImplyLeading: false,
-      //   // title: SizedBox(
-      //   //   height: 48,
-      //   //   child: TextFormField(
-      //   //     textInputAction: TextInputAction.done,
-      //   //     controller: searh,
-      //   //     style: MyFont.poppins(fontSize: 12, color: black),
-      //   //     keyboardType: TextInputType.text,
-      //   //     decoration: InputDecoration(
-      //   //       prefixIcon: Icon(
-      //   //         Icons.search,
-      //   //         color: first,
-      //   //       ),
-      //   //       hintText: "Search",
-      //   //       isDense: true,
-      //   //       hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
-      //   //       enabledBorder: OutlineInputBorder(
-      //   //         borderSide: BorderSide(
-      //   //           color: first,
-      //   //           width: 1,
-      //   //         ),
-      //   //         borderRadius: BorderRadius.circular(30),
-      //   //       ),
-      //   //       focusedBorder: OutlineInputBorder(
-      //   //         borderSide: BorderSide(
-      //   //           color: first,
-      //   //           width: 1,
-      //   //         ),
-      //   //         borderRadius: BorderRadius.circular(30),
-      //   //       ),
-      //   //       filled: true,
-      //   //       fillColor: Colors.transparent,
-      //   //     ),
-      //   //   ),
-      //   // ),
-      //   actions: [
-      //     Padding(
-      //       padding: EdgeInsets.only(right: 10),
-      //       child: Row(
-      //         children: [
-      //           SizedBox(
-      //             child: Image.asset(
-      //               "images/bell.png",
-      //               height: 20,
-      //               alignment: Alignment.center,
-      //             ),
-      //           ),
-      //           const SizedBox(
-      //             width: 15,
-      //           ),
-      //           SizedBox(
-      //             child: Image.asset(
-      //               "images/chats.png",
-      //               height: 20,
-      //               alignment: Alignment.center,
-      //             ),
-      //           ),
-      //           const SizedBox(
-      //             width: 10,
-      //           ),
-      //         ],
-      //       ),
-      //     )
-      //   ],
-      // ),
+      appBar: index == 0
+          ? AppBar(
+              backgroundColor: white,
+              automaticallyImplyLeading: false,
+              title: SizedBox(
+                height: 48,
+                child: TextFormField(
+                  textInputAction: TextInputAction.done,
+                  controller: searh,
+                  style: MyFont.poppins(fontSize: 12, color: black),
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: primaryColor,
+                    ),
+                    hintText: "Search",
+                    isDense: true,
+                    hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: primaryColor,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    filled: true,
+                    fillColor: Colors.transparent,
+                  ),
+                ),
+              ),
+              actions: [
+                Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        child: Image.asset(
+                          "images/bell.png",
+                          height: 20,
+                          alignment: Alignment.center,
+                          color: primaryColor,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      SizedBox(
+                        child: Image.asset(
+                          "images/chats.png",
+                          height: 20,
+                          alignment: Alignment.center,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )
+          : null,
       body: active
           ? screen[index]
           : ListView.builder(
@@ -278,7 +281,7 @@ class _HomePageState extends State<HomePage> {
           selectedFontSize: 12,
           type: BottomNavigationBarType.fixed,
           showUnselectedLabels: false,
-          selectedItemColor: first,
+          selectedItemColor: primaryColor,
           unselectedItemColor: softgrey,
           currentIndex: index,
           onTap: onTap,

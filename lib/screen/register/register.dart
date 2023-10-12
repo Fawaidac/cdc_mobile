@@ -3,6 +3,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,11 +23,13 @@ class _RegisterState extends State<Register> {
   var no_telp = TextEditingController();
   var nik = TextEditingController();
   var pw = TextEditingController();
+  var nim = TextEditingController();
   var conpw = TextEditingController();
   bool showpass = true;
   bool conpass = true;
   var phone = "";
-
+  String? selectedProdi;
+  String? idProdi;
   var countrycode = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -50,12 +53,15 @@ class _RegisterState extends State<Register> {
               context,
               MaterialPageRoute(
                 builder: (context) => VerifikasiOtp(
-                    fullname: fullname.text,
-                    email: email.text,
-                    pw: pw.text,
-                    phone: phone,
-                    alamat: alamat.text,
-                    nik: nik.text),
+                  fullname: fullname.text,
+                  email: email.text,
+                  pw: pw.text,
+                  phone: phone,
+                  alamat: alamat.text,
+                  nik: nik.text,
+                  nim: nim.text,
+                  kode_prodi: idProdi,
+                ),
               ));
         },
         codeAutoRetrievalTimeout: (verificationId) {},
@@ -64,8 +70,6 @@ class _RegisterState extends State<Register> {
       print(e.toString());
     }
   }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +116,102 @@ class _RegisterState extends State<Register> {
                   inputFormatters:
                       FilteringTextInputFormatter.singleLineFormatter,
                   icon: Icons.mail),
+              CustomTextField(
+                  controller: nim,
+                  label: "NIM",
+                  keyboardType: TextInputType.name,
+                  isEnable: true,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.mail),
+              FutureBuilder<List<Map<String, dynamic>>>(
+                future: ApiServices.getProdi(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ); // Placeholder for loading state
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    final List<Map<String, dynamic>>? prodiList = snapshot.data;
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5, top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Pilih Program Studi",
+                                style: GoogleFonts.poppins(fontSize: 12),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          height: 50,
+                          child: DropdownButtonFormField<String>(
+                            value: selectedProdi,
+                            icon: Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Colors.black,
+                            ),
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedProdi = newValue;
+                                idProdi = prodiList
+                                    .firstWhere((prodi) =>
+                                        prodi['nama_prodi'] ==
+                                        selectedProdi)['id']
+                                    .toString();
+                              });
+                            },
+                            items: prodiList!.map((prodi) {
+                              return DropdownMenuItem<String>(
+                                value: prodi['nama_prodi'],
+                                child: Text(
+                                  prodi['nama_prodi'],
+                                  style: MyFont.poppins(
+                                      fontSize: 12, color: Colors.black),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              hintText: "Pilih Program Studi",
+                              isDense: true,
+                              hintStyle: GoogleFonts.poppins(
+                                  fontSize: 13, color: Colors.grey),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                  width: 1,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: const Color(0xFFFCFDFE),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container(); // Placeholder for empty state
+                  }
+                },
+              ),
               CustomTextField(
                   controller: alamat,
                   label: "Alamat",

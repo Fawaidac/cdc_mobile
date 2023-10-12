@@ -549,4 +549,39 @@ class ApiServices {
     final data = jsonDecode(response.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> quisionerIdentitas(
+    int kodeProdi,
+    String nim,
+    String namaLengkap,
+    String noTelp,
+    String email,
+    int tahunLulus,
+    String nik,
+    String npwp,
+  ) async {
+    final Map<String, dynamic> requestBody = {
+      "kode_prodi": kodeProdi,
+      "nim": nim,
+      "nama_lengkap": namaLengkap,
+      "no_telp": noTelp,
+      "email": email,
+      "tahun_lulus": tahunLulus,
+      "nik": nik,
+      "npwp": npwp,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/identity'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
 }

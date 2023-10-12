@@ -15,6 +15,8 @@ class VerifikasiOtp extends StatefulWidget {
   var phone;
   var alamat;
   var nik;
+  var nim;
+  var kode_prodi;
   VerifikasiOtp(
       {required this.fullname,
       required this.email,
@@ -22,6 +24,8 @@ class VerifikasiOtp extends StatefulWidget {
       required this.alamat,
       required this.phone,
       required this.nik,
+      required this.nim,
+      required this.kode_prodi,
       super.key});
 
   @override
