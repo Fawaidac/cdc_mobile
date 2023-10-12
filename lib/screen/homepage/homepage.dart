@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int index = 0;
   List<Widget> screen = <Widget>[
-    const Home(),
+    Home(),
     const UsersAll(),
     const Posting(),
     const IkapjScreen(),

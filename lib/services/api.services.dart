@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
+import 'package:cdc_mobile/model/quisioner_check_model.dart';
 import 'package:cdc_mobile/model/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.0.117:8000/api";
-  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
+  static const String baseUrl = "http://192.168.1.152:8000/api";
+  static const String baseUrlImage = "http://192.168.1.152:8000/users/";
   // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
@@ -597,5 +598,24 @@ class ApiServices {
     );
     final data = jsonDecode(response.body);
     return data;
+  }
+
+  static Future<QuestionnaireCheck> quisionerCheck() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await http.get(
+          Uri.parse('$baseUrl/user/quisioner/check'),
+          headers: {"Authorization": "Bearer $token"});
+      if (response.statusCode == 200) {
+        final responseJson = jsonDecode(response.body);
+        return QuestionnaireCheck.fromJson(responseJson['data']);
+      } else {
+        throw Exception('Failed to fetch quisioner check');
+      }
+    } catch (e) {
+      print('Error fetching quisioner check: $e');
+      throw e;
+    }
   }
 }
