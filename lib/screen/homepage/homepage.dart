@@ -167,12 +167,9 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         width: 15,
                       ),
-                      SizedBox(
-                        child: Image.asset(
-                          "images/chats.png",
-                          height: 20,
-                          alignment: Alignment.center,
-                        ),
+                      Icon(
+                        Icons.dashboard_customize_rounded,
+                        color: primaryColor,
                       ),
                       const SizedBox(
                         width: 10,

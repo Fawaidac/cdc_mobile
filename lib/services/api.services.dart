@@ -11,8 +11,8 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.1.152:8000/api";
-  static const String baseUrlImage = "http://192.168.1.152:8000/users/";
+  static const String baseUrl = "http://192.168.0.117:8000/api";
+  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
   // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
@@ -565,6 +565,25 @@ class ApiServices {
     return data;
   }
 
+  static Future<QuestionnaireCheck> quisionerCheck() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      final response = await http.get(
+          Uri.parse('$baseUrl/user/quisioner/check'),
+          headers: {"Authorization": "Bearer $token"});
+      if (response.statusCode == 200) {
+        final responseJson = jsonDecode(response.body);
+        return QuestionnaireCheck.fromJson(responseJson['data']);
+      } else {
+        throw Exception('Failed to fetch quisioner check');
+      }
+    } catch (e) {
+      print('Error fetching quisioner check: $e');
+      throw e;
+    }
+  }
+
   static Future<Map<String, dynamic>> quisionerIdentitas(
     int kodeProdi,
     String nim,
@@ -600,22 +619,44 @@ class ApiServices {
     return data;
   }
 
-  static Future<QuestionnaireCheck> quisionerCheck() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      final response = await http.get(
-          Uri.parse('$baseUrl/user/quisioner/check'),
-          headers: {"Authorization": "Bearer $token"});
-      if (response.statusCode == 200) {
-        final responseJson = jsonDecode(response.body);
-        return QuestionnaireCheck.fromJson(responseJson['data']);
-      } else {
-        throw Exception('Failed to fetch quisioner check');
-      }
-    } catch (e) {
-      print('Error fetching quisioner check: $e');
-      throw e;
-    }
+  static Future<Map<String, dynamic>> quisionerMain(
+    String statusValue,
+    bool is_less_6_months,
+    String pre_grad_employment_months,
+    String monthly_income,
+    String post_grad_months,
+    String code_province,
+    String code_regency,
+    String agency_type,
+    String company_name,
+    String job_title,
+    String work_level,
+  ) async {
+    final Map<String, dynamic> requestBody = {
+      "status": statusValue,
+      "is_less_6_months": is_less_6_months,
+      "pre_grad_employment_months": pre_grad_employment_months,
+      "monthly_income": monthly_income,
+      "post_grad_months": post_grad_months,
+      "code_province": code_province,
+      "code_regency": code_regency,
+      "agency_type": agency_type,
+      "company_name": company_name,
+      "job_title": job_title,
+      "work_level": work_level,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/main'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
   }
 }

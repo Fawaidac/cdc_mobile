@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/main_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -51,10 +52,19 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             color: primaryColor,
           ),
         ),
-        title: Text(
-          "Data Diri",
-          style: MyFont.poppins(
-              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+        title: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MainSection(),
+                ));
+          },
+          child: Text(
+            "Identitas Diri",
+            style: MyFont.poppins(
+                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -293,8 +303,13 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             nik.text,
             npwp.text);
         if (response['code'] == 201) {
-          // Navigator.pop(context);
           Fluttertoast.showToast(msg: response['message']);
+        } else if (response['code'] == 400) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainSection(),
+              ));
         } else {
           Fluttertoast.showToast(msg: response['message']);
           print(response['message']);
