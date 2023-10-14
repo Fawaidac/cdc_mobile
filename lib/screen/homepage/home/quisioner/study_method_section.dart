@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/job_street_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -46,11 +47,11 @@ class _StudyMethodSectionState extends State<StudyMethodSection> {
           ),
           title: InkWell(
             onTap: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => KompetensiSection(),
-              //     ));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => JobStreetSection(),
+                  ));
             },
             child: Text(
               "Kuisioner Metode Pembelajaran",
@@ -156,6 +157,7 @@ class _StudyMethodSectionState extends State<StudyMethodSection> {
                   ),
                 ),
               ),
+              
               Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -688,7 +690,7 @@ class _StudyMethodSectionState extends State<StudyMethodSection> {
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => StudyMethodSection(),
+              builder: (context) => JobStreetSection(),
             ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Gagal mengisi kuisioner , kamu belum mengisi quisioner sebelumnya') {

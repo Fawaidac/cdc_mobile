@@ -773,4 +773,29 @@ class ApiServices {
     final data = jsonDecode(response.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> quisionerJobsStreet(
+    String jobStart,
+    String before,
+    String after,
+  ) async {
+    final Map<String, dynamic> requestBody = {
+      "job_search_start": jobStart,
+      "before_graduation": before,
+      "after_graduation": after,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/jobstreet'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
 }
