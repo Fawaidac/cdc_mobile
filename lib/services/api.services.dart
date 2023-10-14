@@ -659,4 +659,38 @@ class ApiServices {
     final data = jsonDecode(response.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> quisionerStudy(
+      String studyFunding,
+      String univName,
+      String prodi,
+      String studyStart,
+      String educationFunding,
+      String finansial,
+      String studyJob,
+      String jobLevel) async {
+    final Map<String, dynamic> requestBody = {
+      "study_funding_source": studyFunding,
+      "univercity_name": univName,
+      "study_program": prodi,
+      "study_start_date": studyStart,
+      "education_funding_source": educationFunding,
+      "financial_source": finansial,
+      "study_job_relationship": studyJob,
+      "job_education_level": jobLevel,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/furthestudy'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
 }

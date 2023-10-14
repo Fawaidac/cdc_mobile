@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/furthestudy_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,10 +154,19 @@ class _MainSectionState extends State<MainSection> {
             color: primaryColor,
           ),
         ),
-        title: Text(
-          "Kuisioner Utama",
-          style: MyFont.poppins(
-              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+        title: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudySection(),
+                ));
+          },
+          child: Text(
+            "Kuisioner Utama",
+            style: MyFont.poppins(
+                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -239,6 +249,7 @@ class _MainSectionState extends State<MainSection> {
                 ),
               ),
             ),
+            
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
