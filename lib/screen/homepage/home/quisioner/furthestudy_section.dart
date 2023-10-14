@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/competence_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -86,7 +87,7 @@ class _StudySectionState extends State<StudySection> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => StudySection(),
+                  builder: (context) => KompetensiSection(),
                 ));
           },
           child: Text(
@@ -545,6 +546,10 @@ class _StudySectionState extends State<StudySection> {
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
         print("ok");
+      } else if (response['message'] ==
+          'gagal mengisi kuisioner Harap isi quisioner sebelumnya terlebih dahulu') {
+        Fluttertoast.showToast(
+            msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print(response['message']);

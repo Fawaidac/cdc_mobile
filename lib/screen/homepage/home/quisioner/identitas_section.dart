@@ -107,9 +107,15 @@ class _IdentitasSectionState extends State<IdentitasSection> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
+                              Expanded(
+                                child: Text(
+                                  "Pilih Program Studi",
+                                  style: GoogleFonts.poppins(fontSize: 12),
+                                ),
+                              ),
                               Text(
-                                "Pilih Program Studi",
-                                style: GoogleFonts.poppins(fontSize: 12),
+                                "*",
+                                style: MyFont.poppins(fontSize: 12, color: red),
                               )
                             ],
                           ),
@@ -184,6 +190,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: nim,
+                  isRequired: true,
                   label: "NIM / nimhsmsmh  (Gunakan Huruf Besar)",
                   keyboardType: TextInputType.text,
                   isEnable: true,
@@ -197,6 +204,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: nama,
+                  isRequired: true,
                   label: "Nama Lengkap / nmmhsmsmh",
                   keyboardType: TextInputType.text,
                   isEnable: true,
@@ -210,6 +218,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: telp,
+                  isRequired: true,
                   label: "Nomor Telepon/HP (Whatsapp) / telpomsmh",
                   keyboardType: TextInputType.number,
                   isEnable: true,
@@ -222,6 +231,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: email,
+                  isRequired: true,
                   label: "Alamat Email / emailmsmh",
                   keyboardType: TextInputType.emailAddress,
                   isEnable: true,
@@ -235,6 +245,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: tahunLulus,
+                  isRequired: true,
                   label: "Tahun Lulus",
                   keyboardType: TextInputType.number,
                   isEnable: true,
@@ -247,6 +258,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: nik,
+                  isRequired: true,
                   label: "NIK / nik (Nomor Induk Kependudukan/No KTP)",
                   keyboardType: TextInputType.number,
                   isEnable: true,
