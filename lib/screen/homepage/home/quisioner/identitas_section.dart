@@ -316,7 +316,6 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             npwp.text);
         if (response['code'] == 201) {
           Fluttertoast.showToast(msg: response['message']);
-        } else if (response['code'] == 400) {
           Navigator.push(
               context,
               MaterialPageRoute(

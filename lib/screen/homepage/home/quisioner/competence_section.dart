@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/study_method_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -55,7 +56,7 @@ class _KompetensiSectionState extends State<KompetensiSection> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => KompetensiSection(),
+                  builder: (context) => StudyMethodSection(),
                 ));
           },
           child: Text(
@@ -159,6 +160,7 @@ class _KompetensiSectionState extends State<KompetensiSection> {
                 ),
               ),
             ),
+            
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -1212,6 +1214,25 @@ class _KompetensiSectionState extends State<KompetensiSection> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        handleQuisionerKompetensi();
+                      },
+                      child: Text(
+                        "Selanjutnya",
+                        style: MyFont.poppins(
+                            fontSize: 12,
+                            color: primaryColor,
+                            fontWeight: FontWeight.bold),
+                      ))
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -1237,7 +1258,12 @@ class _KompetensiSectionState extends State<KompetensiSection> {
           selectedSelfDevNow.toString());
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
-        print("ok");
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StudyMethodSection(),
+            ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Quisioner level not found') {
         Fluttertoast.showToast(
@@ -1254,4 +1280,5 @@ class _KompetensiSectionState extends State<KompetensiSection> {
       print(e);
     }
   }
+
 }

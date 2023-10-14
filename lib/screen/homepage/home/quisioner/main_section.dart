@@ -1055,6 +1055,11 @@ class _MainSectionState extends State<MainSection> {
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
         print("ok");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => StudySection(),
+            ));
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print(response['message']);

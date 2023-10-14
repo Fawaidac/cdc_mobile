@@ -17,7 +17,7 @@ class StudySection extends StatefulWidget {
 
 class _StudySectionState extends State<StudySection> {
   String? selectedBiaya;
-  DateTime selectedDate = DateTime.now();
+  DateTime? selectedDate;
   String? selectedSumberdana;
   String? selectedHubungan;
   String? selectedTingkat;
@@ -56,7 +56,7 @@ class _StudySectionState extends State<StudySection> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: selectedDate ?? DateTime.now(),
       firstDate: DateTime(1800),
       lastDate: DateTime(2200),
     );
@@ -245,7 +245,9 @@ class _StudySectionState extends State<StudySection> {
                         children: [
                           Expanded(
                               child: Text(
-                            "${selectedDate.toLocal()}".split(' ')[0],
+                            selectedDate == null
+                                ? "yyyy/MM/dd"
+                                : "${selectedDate?.toLocal()}".split(' ')[0],
                             style: MyFont.poppins(fontSize: 13, color: black),
                           )),
                           InkWell(
@@ -531,7 +533,7 @@ class _StudySectionState extends State<StudySection> {
     String sumberDanaValue = selectedSumberdana == 'Lainnya'
         ? sumberDana.text
         : selectedSumberdana.toString();
-    String selectDateValue = "${selectedDate.toLocal()}".split(' ')[0];
+    String selectDateValue = "${selectedDate?.toLocal()}".split(' ')[0];
 
     try {
       final response = await ApiServices.quisionerStudy(
@@ -546,6 +548,11 @@ class _StudySectionState extends State<StudySection> {
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
         print("ok");
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => KompetensiSection(),
+            ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Harap isi quisioner sebelumnya terlebih dahulu') {
         Fluttertoast.showToast(
