@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/find_jobs_section.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -58,7 +59,7 @@ class _JobStreetSectionState extends State<JobStreetSection> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => JobStreetSection(),
+                    builder: (context) => FindJobsSection(),
                   ));
             },
             child: Text(
@@ -359,7 +360,7 @@ class _JobStreetSectionState extends State<JobStreetSection> {
           selectedJobs.toString(),
           selectedMonth.toString(),
           selectedWisuda.toString());
-      if (response['code'] == 200) {
+      if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
 
         Navigator.push(

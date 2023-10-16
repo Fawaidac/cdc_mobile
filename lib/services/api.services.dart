@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiServices {
   static const String baseUrl = "http://192.168.0.117:8000/api";
   static const String baseUrlImage = "http://192.168.0.117:8000/users/";
-  // static const String baseUrl = "http://10.10.2.131:8000/api";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {
@@ -789,6 +788,57 @@ class ApiServices {
 
     final response = await http.post(
       Uri.parse('$baseUrl/user/quisioner/jobstreet'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> quisionerFindJobs(
+    bool platform,
+    bool vacancies,
+    bool exchange,
+    bool internet,
+    bool company,
+    bool kemenakertrans,
+    bool comercial,
+    bool cdc,
+    bool alumni,
+    bool network,
+    bool relation,
+    bool self,
+    bool intern,
+    bool collage,
+    bool other,
+    String otherJobs,
+  ) async {
+    final Map<String, dynamic> requestBody = {
+      "news_paper": platform,
+      "unknown_vacancies": vacancies,
+      "exchange": exchange,
+      "contacted_company": company,
+      "Kemenakertrans": kemenakertrans,
+      "commercial_swasta": comercial,
+      "cdc": cdc,
+      "alumni": alumni,
+      "network_college": network,
+      "relation": relation,
+      "self_employed": self,
+      "intern": intern,
+      "workplace_during_college": collage,
+      "other": other,
+      "other_job_source": otherJobs,
+      "internet": internet,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/howtofindjobs'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
