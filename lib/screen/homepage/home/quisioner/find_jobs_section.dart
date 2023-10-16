@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/company_apply.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -65,7 +66,7 @@ class _FindJobsSectionState extends State<FindJobsSection> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => FindJobsSection(),
+                  builder: (context) => CompanyApply(),
                 ));
           },
           child: Text(
@@ -169,6 +170,7 @@ class _FindJobsSectionState extends State<FindJobsSection> {
                 ),
               ),
             ),
+            
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -1485,6 +1487,11 @@ class _FindJobsSectionState extends State<FindJobsSection> {
 
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CompanyApply(),
+            ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Gagal mengisi kuisioner , kamu belum mengisi quisioner sebelumnya') {
         Fluttertoast.showToast(
