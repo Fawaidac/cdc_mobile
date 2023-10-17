@@ -877,4 +877,51 @@ class ApiServices {
     final data = jsonDecode(response.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> quisionerJobsuitability(
+    String notReleated,
+    String notReleated2,
+    String notReason,
+    String notReason2,
+    String otherReason,
+    String otherReason2,
+    String otherReason3,
+    String otherReason4,
+    String otherReason5,
+    String otherReason6,
+    String otherReason7,
+    String otherReason8,
+    String otherReason9,
+    String otherReason10,
+  ) async {
+    final Map<String, dynamic> requestBody = {
+      "job_suitability_not_related": notReleated,
+      "job_suitability_not_related_2": notReleated2,
+      "job_suitability_reason": notReason,
+      "job_suitability_reason_2": notReason2,
+      "other_reason": otherReason,
+      "other_reason_2": otherReason2,
+      "other_reason_3": otherReason3,
+      "other_reason_4": otherReason4,
+      "other_reason_5": otherReason5,
+      "other_reason_6": otherReason6,
+      "other_reason_7": otherReason7,
+      "other_reason_8": otherReason8,
+      "other_reason_9": otherReason9,
+      "other_reason_10": otherReason10,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/quisioner/jobsuitability'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
 }

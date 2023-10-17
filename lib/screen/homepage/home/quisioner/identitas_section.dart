@@ -126,6 +126,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
                         SizedBox(
                           height: 50,
                           child: DropdownButtonFormField<String>(
+                            isExpanded: true,
                             value: selectedProdi,
                             icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
