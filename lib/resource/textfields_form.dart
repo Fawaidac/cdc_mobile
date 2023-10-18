@@ -13,6 +13,7 @@ class CustomTextFieldForm extends StatefulWidget {
   TextInputAction textInputAction;
   bool isReadOnly;
   bool isRequired;
+  int isLength;
   Function()? onTap;
   CustomTextFieldForm(
       {Key? key,
@@ -22,6 +23,7 @@ class CustomTextFieldForm extends StatefulWidget {
       this.isEnable = false,
       this.isReadOnly = false,
       this.isRequired = false,
+      this.isLength = 225,
       required this.inputFormatters,
       this.onTap,
       this.textInputAction = TextInputAction.done})
@@ -78,6 +80,7 @@ class _CustomTextFieldFormState extends State<CustomTextFieldForm> {
             },
             inputFormatters: [
               widget.inputFormatters,
+              LengthLimitingTextInputFormatter(widget.isLength),
             ],
             decoration: InputDecoration(
               // labelText: hintName,

@@ -247,6 +247,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               child: CustomTextFieldForm(
                   controller: tahunLulus,
                   isRequired: true,
+                  isLength: 4,
                   label: "Tahun Lulus",
                   keyboardType: TextInputType.number,
                   isEnable: true,
@@ -259,6 +260,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: nik,
+                  isLength: 16,
                   isRequired: true,
                   label: "NIK / nik (Nomor Induk Kependudukan/No KTP)",
                   keyboardType: TextInputType.number,
@@ -275,6 +277,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
                   label: "NPWP / npwp (Nomor Pokok Wajib Pajak)",
                   keyboardType: TextInputType.number,
                   isEnable: true,
+                  isRequired: true,
                   inputFormatters: FilteringTextInputFormatter.digitsOnly),
             ),
             Padding(

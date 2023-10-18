@@ -372,6 +372,9 @@ class _JobStreetSectionState extends State<JobStreetSection> {
           'gagal mengisi kuisioner Gagal mengisi kuisioner , kamu belum mengisi quisioner sebelumnya') {
         Fluttertoast.showToast(
             msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
+      } else if (response['message'] == 'Quisioner level not found') {
+        Fluttertoast.showToast(
+            msg: "Silahkan isi quisioner identitas terlebih dahulu");
       } else {
         Fluttertoast.showToast(msg: response['message']);
       }

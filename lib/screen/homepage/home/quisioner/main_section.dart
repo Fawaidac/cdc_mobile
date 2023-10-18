@@ -33,7 +33,7 @@ class _MainSectionState extends State<MainSection> {
 
   List<String> statusOptions = [
     'Bekerja (full time/part time)',
-    'Belum memungkinkan kerja',
+    'Belum memungkinkan bekerja',
     'Wiraswasta',
     'Melanjutkan Pendidikan',
     'Tidak kerja tapi sedang mencari kerja'
@@ -208,6 +208,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedStatus,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -255,7 +256,6 @@ class _MainSectionState extends State<MainSection> {
                 ),
               ),
             ),
-
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -290,6 +290,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedJobs,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -371,6 +372,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedMonth,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -418,82 +420,6 @@ class _MainSectionState extends State<MainSection> {
                 ),
               ),
             ),
-            
-            // Container(
-            //   margin: const EdgeInsets.only(bottom: 10),
-            //   padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
-            //   width: MediaQuery.of(context).size.width,
-            //   color: white,
-            //   child: Padding(
-            //     padding: const EdgeInsets.only(top: 10),
-            //     child: Column(
-            //       mainAxisAlignment: MainAxisAlignment.start,
-            //       children: [
-            //         Padding(
-            //           padding: const EdgeInsets.only(left: 5),
-            //           child: Row(
-            //             mainAxisAlignment: MainAxisAlignment.start,
-            //             children: [
-            //               Text(
-            //                 "Berapa rata-rata pendapatan Anda per bulan ?",
-            //                 style: GoogleFonts.poppins(fontSize: 12),
-            //               )
-            //             ],
-            //           ),
-            //         ),
-            //         const SizedBox(
-            //           height: 10,
-            //         ),
-            //         SizedBox(
-            //           height: 50,
-            //           child: DropdownButtonFormField<String>(
-            //             value: selectedPendapatan,
-            //             icon: Icon(
-            //               Icons.keyboard_arrow_down_rounded,
-            //               color: black,
-            //             ),
-            //             onChanged: (newValue) {
-            //               setState(() {
-            //                 selectedPendapatan = newValue;
-            //               });
-            //             },
-            //             items: pendapatanOptions.map((pendapatan) {
-            //               return DropdownMenuItem<String>(
-            //                 value: pendapatan,
-            //                 child: Text(
-            //                   pendapatan,
-            //                   style: MyFont.poppins(fontSize: 12, color: black),
-            //                 ),
-            //               );
-            //             }).toList(),
-            //             decoration: InputDecoration(
-            //               hintText: "Pilih",
-            //               isDense: true,
-            //               hintStyle:
-            //                   GoogleFonts.poppins(fontSize: 13, color: grey),
-            //               enabledBorder: OutlineInputBorder(
-            //                 borderSide: BorderSide(
-            //                   color: black,
-            //                   width: 1,
-            //                 ),
-            //                 borderRadius: BorderRadius.circular(10),
-            //               ),
-            //               focusedBorder: OutlineInputBorder(
-            //                 borderSide: BorderSide(
-            //                   color: black,
-            //                   width: 1,
-            //                 ),
-            //                 borderRadius: BorderRadius.circular(10),
-            //               ),
-            //               filled: true,
-            //               fillColor: const Color(0xFFFCFDFE),
-            //             ),
-            //           ),
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -502,11 +428,12 @@ class _MainSectionState extends State<MainSection> {
               child: CustomTextFieldForm(
                   controller: pendapatan,
                   isEnable: true,
+                  isRequired: true,
+                  isLength: 11,
                   label: "Rata-rata pendapatan perbulan",
                   keyboardType: TextInputType.number,
                   inputFormatters: FilteringTextInputFormatter.digitsOnly),
             ),
-
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -535,6 +462,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedAfter,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -617,6 +545,7 @@ class _MainSectionState extends State<MainSection> {
                       height: 50,
                       child: DropdownButtonFormField<Map<String, dynamic>>(
                         value: _selectedProvinsi,
+                        isExpanded: true,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: black,
@@ -701,6 +630,7 @@ class _MainSectionState extends State<MainSection> {
                       height: 50,
                       child: DropdownButtonFormField<Map<String, dynamic>>(
                         value: _selectedRegency,
+                        isExpanded: true,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
                           color: black,
@@ -783,6 +713,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedJenisInstansi,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -846,6 +777,7 @@ class _MainSectionState extends State<MainSection> {
               child: CustomTextFieldForm(
                   controller: namaPerusahaan,
                   isEnable: true,
+                  isRequired: true,
                   label: "Nama perusahaan/kantor",
                   keyboardType: TextInputType.text,
                   inputFormatters:
@@ -886,6 +818,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedJabatan,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -962,6 +895,7 @@ class _MainSectionState extends State<MainSection> {
                     SizedBox(
                       height: 50,
                       child: DropdownButtonFormField<String>(
+                        isExpanded: true,
                         value: selectedTingkatan,
                         icon: Icon(
                           Icons.keyboard_arrow_down_rounded,
@@ -1061,6 +995,9 @@ class _MainSectionState extends State<MainSection> {
             MaterialPageRoute(
               builder: (context) => StudySection(),
             ));
+      } else if (response['message'] == 'Quisioner level not found') {
+        Fluttertoast.showToast(
+            msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print(response['message']);

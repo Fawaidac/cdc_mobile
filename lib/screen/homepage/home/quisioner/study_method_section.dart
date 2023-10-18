@@ -157,7 +157,6 @@ class _StudyMethodSectionState extends State<StudyMethodSection> {
                   ),
                 ),
               ),
-              
               Container(
                 margin: const EdgeInsets.only(bottom: 10),
                 padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -696,6 +695,9 @@ class _StudyMethodSectionState extends State<StudyMethodSection> {
           'gagal mengisi kuisioner Gagal mengisi kuisioner , kamu belum mengisi quisioner sebelumnya') {
         Fluttertoast.showToast(
             msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
+      } else if (response['message'] == 'Quisioner level not found') {
+        Fluttertoast.showToast(
+            msg: "Silahkan isi quisioner identitas terlebih dahulu");
       } else {
         Fluttertoast.showToast(msg: response['message']);
         print(response['message']);

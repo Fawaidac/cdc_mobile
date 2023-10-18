@@ -446,9 +446,19 @@ class _StudySectionState extends State<StudySection> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
-                      child: Text(
-                        "Tingkat pendidikan apa yang paling tepat/sesuai untuk pekerjaan anda saat ini?",
-                        style: GoogleFonts.poppins(fontSize: 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Tingkat pendidikan apa yang paling tepat/sesuai untuk pekerjaan anda saat ini?",
+                              style: GoogleFonts.poppins(fontSize: 12),
+                            ),
+                          ),
+                          Text(
+                            "*",
+                            style: MyFont.poppins(fontSize: 12, color: red),
+                          )
+                        ],
                       ),
                     ),
                     const SizedBox(
@@ -533,14 +543,16 @@ class _StudySectionState extends State<StudySection> {
     String sumberDanaValue = selectedSumberdana == 'Lainnya'
         ? sumberDana.text
         : selectedSumberdana.toString();
-    String selectDateValue = "${selectedDate?.toLocal()}".split(' ')[0];
+    String? selectDateValue = selectedDate != null
+        ? "${selectedDate?.toLocal()}".split(' ')[0]
+        : null;
 
     try {
       final response = await ApiServices.quisionerStudy(
           selectedBiaya.toString(),
           namaPerguruan.text,
           namaProdi.text,
-          selectDateValue,
+          selectDateValue ?? "",
           sumberDanaValue,
           sumberDana.text,
           selectedHubungan.toString(),
@@ -555,6 +567,9 @@ class _StudySectionState extends State<StudySection> {
             ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Harap isi quisioner sebelumnya terlebih dahulu') {
+        Fluttertoast.showToast(
+            msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
+      } else if (response['message'] == 'Quisioner level not found') {
         Fluttertoast.showToast(
             msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
       } else {

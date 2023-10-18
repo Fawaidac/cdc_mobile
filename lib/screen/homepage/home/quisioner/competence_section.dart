@@ -160,7 +160,6 @@ class _KompetensiSectionState extends State<KompetensiSection> {
                 ),
               ),
             ),
-            
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
@@ -1264,8 +1263,7 @@ class _KompetensiSectionState extends State<KompetensiSection> {
             MaterialPageRoute(
               builder: (context) => StudyMethodSection(),
             ));
-      } else if (response['message'] ==
-          'gagal mengisi kuisioner Quisioner level not found') {
+      } else if (response['message'] == 'Quisioner level not found') {
         Fluttertoast.showToast(
             msg: "Silahkan isi quisioner identitas terlebih dahulu");
       } else if (response['message'] ==
@@ -1280,5 +1278,4 @@ class _KompetensiSectionState extends State<KompetensiSection> {
       print(e);
     }
   }
-
 }

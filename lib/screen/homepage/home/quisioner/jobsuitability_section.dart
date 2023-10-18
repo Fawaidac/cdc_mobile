@@ -2,6 +2,7 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
 import 'package:cdc_mobile/screen/homepage/home/quisioner/main_section.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,7 @@ class JobsuitabilitySection extends StatefulWidget {
 
 class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
   String? notReleated;
+  String? notReleated2;
   String? notReason;
   String? notReason2;
   String? otherReason;
@@ -28,7 +30,8 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
   String? otherReason7;
   String? otherReason8;
   String? otherReason9;
-
+  bool checkboxValue1 = false;
+  bool checkboxValue2 = false;
   var otherReason10 = TextEditingController();
 
   List<String> chooseOptions = [
@@ -61,7 +64,7 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
   ];
   List<String> chooseOptions7 = [
     'Pekerjaan saya sudah sesuai',
-    'Pekerjaan saya saat ini lebih memungkinkan saya mengambil pekerjaan tambahan/jadwal yang fleksibel, dll'
+    'Pekerjaan saya saat ini lebih memungkinkan saya mengambil pekerjaan tambahan/jadwal yang fleksibel dll'
   ];
   List<String> chooseOptions8 = [
     'Pekerjaan saya sudah sesuai',
@@ -73,9 +76,10 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
   ];
   List<String> chooseOptions10 = [
     'Pekerjaan saya sudah sesuai',
-    'Pada awal meniti karir ini, saya harus menerima pekerjaan yang tidak berhubungan dengan pendidikan saya'
+    'Pada awal meniti karir ini saya harus menerima pekerjaan yang tidak berhubungan dengan pendidikan saya'
   ];
   List<String> chooseOptions11 = ['Pekerjaan saya sudah sesuai', 'Lainnya'];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,6 +201,72 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
                           fillColor: const Color(0xFFFCFDFE),
                         ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
+              width: MediaQuery.of(context).size.width,
+              color: white,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Apakah pekerjaan anda saat ini tidak sesuai dengan pendidikan anda ?",
+                              style: GoogleFonts.poppins(fontSize: 12),
+                            ),
+                          ),
+                          Text(
+                            "*",
+                            style: MyFont.poppins(fontSize: 12, color: red),
+                          )
+                        ],
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: checkboxValue1,
+                          onChanged: (value) {
+                            setState(() {
+                              checkboxValue1 = value!;
+                            });
+                          },
+                        ),
+                        Expanded(
+                            child: Text(
+                          "Pekerjaan saya sudah sesuai",
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        ))
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: checkboxValue2,
+                          onChanged: (value) {
+                            setState(() {
+                              checkboxValue2 = value!;
+                            });
+                          },
+                        ),
+                        Expanded(
+                            child: Text(
+                          "Saya belum mendapatkan pekerjaan yang lebih sesuai",
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        ))
+                      ],
                     ),
                   ],
                 ),
@@ -1111,6 +1181,7 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
               color: white,
               child: CustomTextFieldForm(
                   controller: otherReason10,
+                  isRequired: true,
                   label:
                       "Apakah anda aktif mencari pekerjaan dalam 4 minggu terakhir (Selain jawaban diatas), Tuliskan",
                   keyboardType: TextInputType.text,
@@ -1152,10 +1223,28 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
   }
 
   void handlequisionerJobsUitability() async {
+    String releated2Value = '';
+    if (checkboxValue1 == true) {
+      setState(() {
+        releated2Value = "Pekerjaan saya sudah sesuai";
+      });
+    } else if (checkboxValue2 == true) {
+      setState(() {
+        releated2Value = "Saya belum mendapatkan pekerjaan yang lebih sesuai";
+      });
+    } else if (checkboxValue1 == true && checkboxValue2 == true) {
+      setState(() {
+        releated2Value =
+            "Pekerjaan saya sudah sesuai-Saya belum mendapatkan pekerjaan yang lebih sesuai";
+      });
+    } else {
+      Fluttertoast.showToast(msg: "Please fill in the required questions");
+    }
+    print(notReason2);
     try {
       final response = await ApiServices.quisionerJobsuitability(
           notReleated.toString(),
-          "notReleated2",
+          releated2Value,
           notReason.toString(),
           notReason2.toString(),
           otherReason.toString(),
@@ -1170,12 +1259,18 @@ class _JobsuitabilitySectionState extends State<JobsuitabilitySection> {
           otherReason10.text);
       if (response['code'] == 201) {
         Fluttertoast.showToast(msg: response['message']);
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ));
       } else if (response['message'] ==
           'gagal mengisi kuisioner Gagal mengisi kuisioner , kamu belum mengisi quisioner sebelumnya') {
         Fluttertoast.showToast(
             msg: "Silahkan isi quisioner sebelumnya terlebih dahulu");
       } else {
         Fluttertoast.showToast(msg: response['message']);
+        print(response['message']);
       }
     } catch (e) {
       print(e);
