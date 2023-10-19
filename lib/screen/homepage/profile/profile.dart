@@ -1,7 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:card_loading/card_loading.dart';
+import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
@@ -40,11 +44,50 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Future<void> fetchFollowerCount() async {
     try {
       final apiResponse = await ApiServices.getFollowers();
-      final apiResponse2 = await ApiServices.getFollowed();
-      setState(() {
-        followerCount = apiResponse.totalFollowers!;
-        followedCount = apiResponse2.totalFollowers!;
-      });
+      if (apiResponse['code'] == 200) {
+        FollowersModel followersModel = FollowersModel.fromJson(apiResponse);
+        setState(() {
+          followerCount = followersModel.totalFollowers ?? 0;
+        });
+      } else if (apiResponse['message'] ==
+          'ops , nampaknya akun kamu belum terverifikasi') {
+        // ignore: use_build_context_synchronously
+        GetAwesomeDialog.showCustomDialog(
+          context: context,
+          dialogType: DialogType.ERROR,
+          title: "Error",
+          desc:
+              "Ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
+          btnOkPress: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              )),
+          btnCancelPress: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              )),
+        );
+      }
+      // setState(() {
+      //   followedCount = apiResponse2.totalFollowers!;
+      // });
+    } catch (e) {
+      print('Error fetching follower count: $e');
+      // Handle errors if needed
+    }
+  }
+
+  Future<void> fetchFollowedCount() async {
+    try {
+      final apiResponse = await ApiServices.getFollowed();
+      if (apiResponse['code'] == 200) {
+        FollowedModel followersModel = FollowedModel.fromJson(apiResponse);
+        setState(() {
+          followedCount = followersModel.totalFollowers ?? 0;
+        });
+      }
     } catch (e) {
       print('Error fetching follower count: $e');
       // Handle errors if needed
@@ -60,6 +103,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     );
     getUser();
     fetchFollowerCount();
+    fetchFollowedCount();
     super.initState();
   }
 
@@ -115,7 +159,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 child: CircleAvatar(
                                   radius: 40,
                                   backgroundImage: NetworkImage(user?.foto ==
-                                          null
+                                          "http://192.168.0.117:8000/users/"
                                       ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
                                       : user?.foto ?? ""),
                                 )),

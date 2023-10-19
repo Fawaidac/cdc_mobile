@@ -5,12 +5,17 @@ import 'package:cdc_mobile/screen/homepage/screen1/detail%20user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
-class WidgetFollowers extends StatelessWidget {
-  const WidgetFollowers({super.key});
+class WidgetFollowers extends StatefulWidget {
+  const WidgetFollowers({Key? key}) : super(key: key);
 
   @override
+  State<WidgetFollowers> createState() => _WidgetFollowersState();
+}
+
+class _WidgetFollowersState extends State<WidgetFollowers> {
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<FollowersModel>(
+    return FutureBuilder<Map<String, dynamic>>(
       future: ApiServices.getFollowers(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -22,22 +27,25 @@ class WidgetFollowers extends StatelessWidget {
         } else if (!snapshot.hasData) {
           return const Center(child: Text('No data available'));
         } else {
-          final followersModel = snapshot.data!;
-          final followersList = followersModel.followers;
-          final followersCount = followersModel.totalFollowers;
+          final followersData = snapshot.data!;
+          final List<dynamic> followersList =
+              followersData['followers'] as List<dynamic>? ?? [];
 
           return ListView.builder(
-            itemCount: followersList?.length ?? 0,
+            itemCount: followersList.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final follower = followersList![index];
+              final followerData = followersList[index];
+              final Follower follower = Follower.fromJson(followerData);
+
               return ListTile(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailUser(id: follower.id ?? ""),
-                      ));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailUser(id: follower.id ?? ""),
+                    ),
+                  );
                 },
                 leading: CircleAvatar(
                   radius: 25,

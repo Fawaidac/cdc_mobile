@@ -6,6 +6,7 @@ import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
 import 'package:cdc_mobile/model/user.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -237,13 +238,8 @@ class ApiServices {
       Uri.parse(url),
       headers: {"Authorization": "Bearer $token"},
     );
-
-    print(url);
-
+    final Map<String, dynamic> jsonResponse = json.decode(response.body);
     if (response.statusCode == 200) {
-      // Parse the response JSON
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-
       if (jsonResponse['status'] == true) {
         final Map<String, dynamic> data = jsonResponse['data'];
         final int totalItems = data['total_items'];
@@ -267,11 +263,20 @@ class ApiServices {
 
         return userList;
       } else {
-        throw Exception('Failed to fetch users');
+        print('Failed to fetch users'); // Menampilkan pesan kesalahan ke konsol
       }
+    } else if (jsonResponse['message'] ==
+        "ops , nampaknya akun kamu belum terverifikasi") {
+      Fluttertoast.showToast(
+          msg:
+              "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi kuis terlebih dahulu");
+      print('Account is not verified');
     } else {
-      throw Exception('Failed to load data');
+      print(
+          'Failed to load data ${response.statusCode}'); // Menampilkan pesan kesalahan ke konsol
     }
+    // Mengembalikan Future yang selesai dengan nilai kosong
+    return Future.value([]);
   }
 
   static Future<UserDetail> fetchDetailUser(String userId) async {
@@ -297,47 +302,30 @@ class ApiServices {
     }
   }
 
-  static Future<FollowersModel> getFollowers() async {
+  static Future<Map<String, dynamic>> getFollowers() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await http.get(Uri.parse('$baseUrl/user/followers'),
           headers: {"Authorization": "Bearer $token"});
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        return FollowersModel.fromJson(jsonResponse['data']);
-      } else {
-        throw Exception('Failed to fetch followers');
-      }
+      final jsonResponse = json.decode(response.body);
+      return jsonResponse;
     } catch (e) {
       print('Error fetching followers: $e');
       throw e;
     }
   }
 
-  static Future<FollowedModel> getFollowed() async {
+  static Future<Map<String, dynamic>> getFollowed() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await http.get(Uri.parse('$baseUrl/user/followed'),
           headers: {"Authorization": "Bearer $token"});
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-
-        final int totalFollowers = jsonResponse['data']['total_followers'];
-        List<Follower> followers = [];
-        if (jsonResponse['data']['user']['followed'] != null) {
-          jsonResponse['data']['user']['followed'].forEach((followerData) {
-            followers.add(Follower.fromJson(followerData));
-          });
-        }
-        return FollowedModel(
-            totalFollowers: totalFollowers, followers: followers);
-      } else {
-        throw Exception('Failed to fetch followers');
-      }
+      final jsonResponse = json.decode(response.body);
+      return jsonResponse;
     } catch (e) {
       print('Error fetching followers: $e');
       throw e;
@@ -430,7 +418,7 @@ class ApiServices {
     final response = await http.get(Uri.parse('$baseUrl/user/jobs'),
         headers: {"Authorization": "Bearer $token"});
     final data = jsonDecode(response.body);
-    if (data['code'] == 202) {
+    if (data['code'] == 200) {
       List jsonResponse = data['data'];
       return jsonResponse.map((e) => JobsModel.fromJson(e)).toList();
     } else {
@@ -564,19 +552,15 @@ class ApiServices {
     return data;
   }
 
-  static Future<QuestionnaireCheck> quisionerCheck() async {
+  static Future<Map<String, dynamic>> quisionerCheck() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await http.get(
           Uri.parse('$baseUrl/user/quisioner/check'),
           headers: {"Authorization": "Bearer $token"});
-      if (response.statusCode == 200) {
-        final responseJson = jsonDecode(response.body);
-        return QuestionnaireCheck.fromJson(responseJson['data']);
-      } else {
-        throw Exception('Failed to fetch quisioner check');
-      }
+      final responseJson = jsonDecode(response.body);
+      return responseJson;
     } catch (e) {
       print('Error fetching quisioner check: $e');
       throw e;

@@ -18,7 +18,7 @@ class User {
   String? facebook;
   String? instagram;
   String? twitter;
-  String? accountStatus;
+  int? accountStatus;
   bool? isFollow;
 
   User({

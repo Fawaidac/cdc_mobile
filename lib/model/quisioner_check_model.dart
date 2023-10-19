@@ -31,19 +31,23 @@ class QuestionnaireCheck {
 
   factory QuestionnaireCheck.fromJson(Map<String, dynamic> json) {
     return QuestionnaireCheck(
-      id: json['id'],
-      userId: json['user_id'],
-      identitasSection: json['identitas_section'],
-      mainSection: json['main_section'],
-      furtheStudySection: json['furthe_study_section'],
-      competentLevelSection: json['competent_level_section'],
-      studyMethodSection: json['study_method_section'],
-      jobsStreetSection: json['jobs_street_section'],
-      howFindJobsSection: json['how_find_jobs_section'],
-      companyAppliedSection: json['company_applied_section'],
-      jobSuitabilitySection: json['job_suitability_section'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: json['id'] ?? 0,
+      userId: json['user_id'] ?? "",
+      identitasSection: json['identitas_section'] ?? 0,
+      mainSection: json['main_section'] ?? 0,
+      furtheStudySection: json['furthe_study_section'] ?? 0,
+      competentLevelSection: json['competent_level_section'] ?? 0,
+      studyMethodSection: json['study_method_section'] ?? 0,
+      jobsStreetSection: json['jobs_street_section'] ?? 0,
+      howFindJobsSection: json['how_find_jobs_section'] ?? 0,
+      companyAppliedSection: json['company_applied_section'] ?? 0,
+      jobSuitabilitySection: json['job_suitability_section'] ?? 0,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : DateTime(0),
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : DateTime(0),
     );
   }
 }

@@ -25,10 +25,13 @@ class _HomeState extends State<Home> {
 
   Future<void> fetchQuisionerCheck() async {
     try {
-      QuestionnaireCheck fetchedData = await ApiServices.quisionerCheck();
-      setState(() {
-        questionnaireCheck = fetchedData;
-      });
+      final fetchedData = await ApiServices.quisionerCheck();
+      if (fetchedData['code'] == 200) {
+        QuestionnaireCheck check = QuestionnaireCheck.fromJson(fetchedData);
+        setState(() {
+          questionnaireCheck = check;
+        });
+      }
     } catch (e) {
       print('Error fetching quisioner check: $e');
     }

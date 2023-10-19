@@ -104,7 +104,7 @@ class _VerifikasiOtpState extends State<VerifikasiOtp> {
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 50),
               child: Text(
-                "Masukkan 6 digit kode yang dikirim di nomor +62 0895 09512660  untuk verifikasi.",
+                "Masukkan 6 digit kode yang dikirim di nomor +62 ${widget.phone}  untuk verifikasi.",
                 style: MyFont.poppins(fontSize: 12, color: black),
               ),
             ),
