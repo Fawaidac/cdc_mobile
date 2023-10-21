@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
 import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
@@ -112,6 +116,45 @@ class ApiServices {
       print('Error updating profile image: $e');
       throw e;
     }
+  }
+
+  static Future<Map<String, dynamic>> post({
+    required File image,
+    required String linkApply,
+    required String company,
+    required String description,
+    required String expired,
+    required String typeJob,
+    required String position,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    // Buat request Multipart
+    final request =
+        http.MultipartRequest('POST', Uri.parse('$baseUrl/user/post'));
+    request.headers['Authorization'] = 'Bearer $token';
+
+    // Tambahkan data Multipart
+    request.fields['link_apply'] = linkApply;
+    request.fields['company'] = company;
+    request.fields['description'] = description;
+    request.fields['expired'] = expired;
+    request.fields['type_job'] = typeJob;
+    request.fields['position'] = position;
+
+    // Tambahkan gambar sebagai File Multipart
+    final imageFileName = path.basename(image.path);
+    final imageStream = http.ByteStream(image.openRead());
+    final imageLength = await image.length();
+    final imageUpload = http.MultipartFile('image', imageStream, imageLength,
+        filename: imageFileName);
+    request.files.add(imageUpload);
+
+    final response = await request.send();
+    final streamedResponse = await http.Response.fromStream(response);
+    final data = json.decode(streamedResponse.body);
+    return data;
   }
 
   static Future<List<Map<String, dynamic>>> getProdi() async {
@@ -221,7 +264,8 @@ class ApiServices {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchUserAll(int page,
+  static Future<List<Map<String, dynamic>>> fetchUserAll(
+      int page, BuildContext context,
       {int? angkatan, String? prodi}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -267,9 +311,22 @@ class ApiServices {
       }
     } else if (jsonResponse['message'] ==
         "ops , nampaknya akun kamu belum terverifikasi") {
-      Fluttertoast.showToast(
-          msg:
-              "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi kuis terlebih dahulu");
+      GetAwesomeDialog.showCustomDialog(
+        isTouch: false,
+        context: context,
+        dialogType: DialogType.ERROR,
+        title: "Error",
+        desc:
+            "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
+        btnOkPress: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+        },
+        btnCancelPress: () => Navigator.pop(context),
+      );
       print('Account is not verified');
     } else {
       print(
@@ -302,32 +359,56 @@ class ApiServices {
     }
   }
 
-  static Future<Map<String, dynamic>> getFollowers() async {
+  static Future<FollowersModel> getFollowers() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await http.get(Uri.parse('$baseUrl/user/followers'),
           headers: {"Authorization": "Bearer $token"});
 
-      final jsonResponse = json.decode(response.body);
-      return jsonResponse;
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final int totalFollowers = data['data']['total_followers'];
+        List<Follower> followers = [];
+        if (data['data']['followers'] != null) {
+          data['data']['followers'].forEach((followerData) {
+            followers.add(Follower.fromJson(followerData));
+          });
+        }
+        return FollowersModel(
+            totalFollowers: totalFollowers, followers: followers);
+      } else {
+        throw Exception('Failed to fetch followers data');
+      }
     } catch (e) {
       print('Error fetching followers: $e');
       throw e;
     }
   }
 
-  static Future<Map<String, dynamic>> getFollowed() async {
+  static Future<FollowedModel> getFollowed() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
       final response = await http.get(Uri.parse('$baseUrl/user/followed'),
           headers: {"Authorization": "Bearer $token"});
 
-      final jsonResponse = json.decode(response.body);
-      return jsonResponse;
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final int totalFollowers = data['data']['total_followers'];
+        List<Follower> followers = [];
+        if (data['data']['user']['followed'] != null) {
+          data['data']['user']['followed'].forEach((followerData) {
+            followers.add(Follower.fromJson(followerData));
+          });
+        }
+        return FollowedModel(
+            totalFollowers: totalFollowers, followed: followers);
+      } else {
+        throw Exception('Failed to fetch followed data');
+      }
     } catch (e) {
-      print('Error fetching followers: $e');
+      print('Error fetching followed data: $e');
       throw e;
     }
   }
@@ -907,5 +988,66 @@ class ApiServices {
     );
     final data = jsonDecode(response.body);
     return data;
+  }
+
+  static Future<Map<String, dynamic>> updateLocationUser(
+      double lat, double long) async {
+    final Map<String, dynamic> requestBody = {
+      "latitude": lat,
+      "longtitude": long,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/user/position'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(requestBody),
+    );
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<List<Map<String, dynamic>>?> fetchTopAlumni() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    String url = '$baseUrl/user/ranking/followers';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      if (jsonResponse['status'] == true) {
+        final List<Map<String, dynamic>> dataList =
+            List<Map<String, dynamic>>.from(jsonResponse['data']);
+
+        List<Map<String, dynamic>> userList = [];
+
+        for (var data in dataList) {
+          final Map<String, dynamic> userResponse = data;
+          List<Map<String, dynamic>> followers =
+              data['followers'].cast<Map<String, dynamic>>();
+          userResponse['followers'] = followers;
+          userList.add(userResponse);
+        }
+
+        return userList;
+      } else {
+        print('Failed to fetch users'); // Menampilkan pesan kesalahan ke konsol
+      }
+    } else {
+      print(
+          'Failed to load data ${response.statusCode}'); // Menampilkan pesan kesalahan ke konsol
+    }
+    // Mengembalikan Future yang selesai dengan nilai null
+    return null;
   }
 }

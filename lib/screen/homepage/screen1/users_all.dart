@@ -91,7 +91,7 @@ class _UsersAllState extends State<UsersAll> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 InkWell(
                   onTap: () {
@@ -110,24 +110,13 @@ class _UsersAllState extends State<UsersAll> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: EdgeInsets.only(right: 10),
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: primaryColor),
-                      borderRadius: BorderRadius.circular(10),
-                      color: white),
-                  child: Text(
-                    "Jurusan",
-                    style: MyFont.poppins(fontSize: 12, color: primaryColor),
-                  ),
-                ),
                 InkWell(
                   onTap: () {
                     _showProdiBottomSheet(context);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
+                    margin: EdgeInsets.only(right: 10),
                     decoration: BoxDecoration(
                         border: Border.all(width: 1, color: primaryColor),
                         borderRadius: BorderRadius.circular(10),
@@ -452,10 +441,9 @@ class _UsersAllState extends State<UsersAll> {
   }
 
   Future<void> _loadPage(int page) async {
-    print('Selected Prodi: $prodi');
     setState(() {
-      _usersFuture =
-          ApiServices.fetchUserAll(page, angkatan: angkatan, prodi: prodi);
+      _usersFuture = ApiServices.fetchUserAll(page, context,
+          angkatan: angkatan, prodi: prodi);
       currentPage = page;
     });
     _loadUsers();
@@ -540,6 +528,7 @@ class _UsersAllState extends State<UsersAll> {
                                 prodi = prodiList[index]['nama_prodi'];
                                 _usersFuture = ApiServices.fetchUserAll(
                                   currentPage,
+                                  context,
                                   angkatan: angkatan,
                                   prodi: prodi,
                                 );
@@ -609,6 +598,7 @@ class _UsersAllState extends State<UsersAll> {
                           angkatan = angkatanValue;
                           _usersFuture = ApiServices.fetchUserAll(
                             currentPage,
+                            context,
                             angkatan: angkatan,
                             prodi: prodi,
                           );

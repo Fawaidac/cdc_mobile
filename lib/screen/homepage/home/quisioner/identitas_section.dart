@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class IdentitasSection extends StatefulWidget {
   const IdentitasSection({super.key});
@@ -39,9 +41,61 @@ class _IdentitasSectionState extends State<IdentitasSection> {
     super.initState();
     kdptimsmh.text = "Politeknik Negeri Jember";
     fetchData();
+    requestLocationPermission();
   }
 
-  List<Map<String, dynamic>> prodiList = []; // Define a list to hold the data
+  Future<void> requestLocationPermission() async {
+    var status = await Permission.location.status;
+
+    if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
+
+    if (status.isDenied) {
+      await Permission.location.request();
+    }
+
+    if (status.isGranted) {
+      // Izin lokasi telah diberikan, Anda dapat mengambil lokasi di sini.
+      Map<String, double> locationData = await getCurrentLocation();
+      if (locationData != null) {
+        double latitude = locationData["latitude"] ?? 0.0;
+        double longitude = locationData["longitude"] ?? 0.0;
+        // Gunakan latitude dan longitude sesuai kebutuhan Anda.
+        print("latitude = ${latitude} longitude =${longitude}");
+
+        final res = await ApiServices.updateLocationUser(latitude, longitude);
+        if (res['code'] == 200) {
+          print("oke");
+        } else {
+          print(res['message']);
+        }
+      }
+    }
+  }
+
+  static Future<Map<String, double>> getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      double latitude = position.latitude;
+      double longitude = position.longitude;
+
+      Map<String, double> locationData = {
+        "latitude": latitude,
+        "longitude": longitude,
+      };
+
+      return locationData;
+    } catch (e) {
+      print("Error getting location: $e");
+      return Future.error("Error getting location: $e");
+    }
+  }
+
+  List<Map<String, dynamic>> prodiList = [];
 
   Future<void> fetchData() async {
     try {
@@ -430,6 +484,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             context: context,
             dialogType: DialogType.ERROR,
             title: "Error",
+            isTouch: false,
             desc: "Sesi anda habis ,Silahkan coba login ulang",
             btnOkPress: () async {
               SharedPreferences preferences =
@@ -448,6 +503,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
         } else {
           Fluttertoast.showToast(msg: response['message']);
           print(response['message']);
+          print(response['code']);
         }
       }
     } catch (e) {

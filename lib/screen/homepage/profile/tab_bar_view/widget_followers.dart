@@ -15,7 +15,7 @@ class WidgetFollowers extends StatefulWidget {
 class _WidgetFollowersState extends State<WidgetFollowers> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
+    return FutureBuilder<FollowersModel>(
       future: ApiServices.getFollowers(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -24,19 +24,17 @@ class _WidgetFollowersState extends State<WidgetFollowers> {
           return Center(
             child: Text('Error: ${snapshot.error}'),
           );
-        } else if (!snapshot.hasData) {
+        } else if (!snapshot.hasData || snapshot.data?.followers == null) {
           return const Center(child: Text('No data available'));
         } else {
           final followersData = snapshot.data!;
-          final List<dynamic> followersList =
-              followersData['followers'] as List<dynamic>? ?? [];
+          final followersList = followersData.followers;
 
           return ListView.builder(
-            itemCount: followersList.length,
+            itemCount: followersData.followers!.length,
             shrinkWrap: true,
             itemBuilder: (context, index) {
-              final followerData = followersList[index];
-              final Follower follower = Follower.fromJson(followerData);
+              final follower = followersList![index];
 
               return ListTile(
                 onTap: () {

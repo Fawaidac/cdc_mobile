@@ -6,6 +6,7 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class StudySection extends StatefulWidget {
@@ -543,16 +544,20 @@ class _StudySectionState extends State<StudySection> {
     String sumberDanaValue = selectedSumberdana == 'Lainnya'
         ? sumberDana.text
         : selectedSumberdana.toString();
-    String? selectDateValue = selectedDate != null
-        ? "${selectedDate?.toLocal()}".split(' ')[0]
-        : null;
+    DateTime selectDateValue = selectedDate != null
+        ? DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day)
+        : DateTime(0, 0, 0);
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectDateValue);
+
+    print(formattedDate);
 
     try {
       final response = await ApiServices.quisionerStudy(
           selectedBiaya.toString(),
           namaPerguruan.text,
           namaProdi.text,
-          selectDateValue ?? "",
+          formattedDate,
           sumberDanaValue,
           sumberDana.text,
           selectedHubungan.toString(),

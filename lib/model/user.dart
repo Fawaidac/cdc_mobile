@@ -20,6 +20,8 @@ class User {
   String? twitter;
   int? accountStatus;
   bool? isFollow;
+  String? lat;
+  String? long;
 
   User({
     this.id,
@@ -39,6 +41,8 @@ class User {
     this.twitter,
     this.accountStatus,
     this.isFollow,
+    this.lat,
+    this.long,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -60,6 +64,8 @@ class User {
       twitter: json['twiter'],
       accountStatus: json['account_status'],
       isFollow: json['isFollow'],
+      lat: json['latitude'],
+      long: json['longtitude'],
     );
   }
 }
@@ -103,7 +109,7 @@ class UserDetail {
 }
 
 class UserFollowersInfo {
-  int? totalFollowers;
+  late int totalFollowers;
   User? user;
   List<Follower>? followers;
 
@@ -125,7 +131,7 @@ class UserFollowersInfo {
 }
 
 class UserFollowedInfo {
-  int? totalFollowers;
+  late int totalFollowers;
   User? user;
   List<Follower>? followed;
 

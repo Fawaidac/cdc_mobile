@@ -44,35 +44,10 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Future<void> fetchFollowerCount() async {
     try {
       final apiResponse = await ApiServices.getFollowers();
-      if (apiResponse['code'] == 200) {
-        FollowersModel followersModel = FollowersModel.fromJson(apiResponse);
-        setState(() {
-          followerCount = followersModel.totalFollowers ?? 0;
-        });
-      } else if (apiResponse['message'] ==
-          'ops , nampaknya akun kamu belum terverifikasi') {
-        // ignore: use_build_context_synchronously
-        GetAwesomeDialog.showCustomDialog(
-          context: context,
-          dialogType: DialogType.ERROR,
-          title: "Error",
-          desc:
-              "Ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
-          btnOkPress: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              )),
-          btnCancelPress: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              )),
-        );
-      }
-      // setState(() {
-      //   followedCount = apiResponse2.totalFollowers!;
-      // });
+      
+      setState(() {
+        followerCount = apiResponse.totalFollowers;
+      });
     } catch (e) {
       print('Error fetching follower count: $e');
       // Handle errors if needed
@@ -82,12 +57,9 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
   Future<void> fetchFollowedCount() async {
     try {
       final apiResponse = await ApiServices.getFollowed();
-      if (apiResponse['code'] == 200) {
-        FollowedModel followersModel = FollowedModel.fromJson(apiResponse);
-        setState(() {
-          followedCount = followersModel.totalFollowers ?? 0;
-        });
-      }
+      setState(() {
+        followedCount = apiResponse.totalFollowers;
+      });
     } catch (e) {
       print('Error fetching follower count: $e');
       // Handle errors if needed

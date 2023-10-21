@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/home/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
@@ -167,9 +168,18 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         width: 15,
                       ),
-                      Icon(
-                        Icons.dashboard_customize_rounded,
-                        color: primaryColor,
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Fasilitas(),
+                              ));
+                        },
+                        child: Icon(
+                          Icons.dashboard_customize_rounded,
+                          color: primaryColor,
+                        ),
                       ),
                       const SizedBox(
                         width: 10,

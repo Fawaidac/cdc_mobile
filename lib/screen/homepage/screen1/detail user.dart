@@ -500,8 +500,8 @@ class _DetailUserState extends State<DetailUser>
       final apiResponse = await ApiServices.fetchUserFollowers(widget.id);
       final apiResponse2 = await ApiServices.fetchUserFollowed(widget.id);
       setState(() {
-        followerCount = apiResponse.totalFollowers!;
-        followedCount = apiResponse2.totalFollowers!;
+        followerCount = apiResponse.totalFollowers;
+        followedCount = apiResponse2.totalFollowers;
       });
     } catch (e) {
       print('Error fetching follower count: $e');

@@ -13,8 +13,10 @@ class Follower {
   String? facebook;
   String? instagram;
   String? twiter;
-  String? accountStatus;
+  int? accountStatus;
   bool? isFollow;
+  String? lat;
+  String? long;
 
   Follower({
     this.id,
@@ -33,6 +35,8 @@ class Follower {
     this.twiter,
     this.accountStatus,
     this.isFollow,
+    this.lat,
+    this.long,
   });
 
   Follower.fromJson(Map<String, dynamic> json) {
@@ -52,14 +56,16 @@ class Follower {
     twiter = json['twiter'];
     accountStatus = json['account_status'];
     isFollow = json['isFollow'];
+    lat = json['latitude'];
+    long = json['longtitude'];
   }
 }
 
 class FollowersModel {
-  int? totalFollowers;
+  late int totalFollowers;
   List<Follower>? followers;
 
-  FollowersModel({this.totalFollowers, this.followers});
+  FollowersModel({required this.totalFollowers, required this.followers});
 
   FollowersModel.fromJson(Map<String, dynamic> json) {
     totalFollowers = json['total_followers'];
@@ -73,17 +79,17 @@ class FollowersModel {
 }
 
 class FollowedModel {
-  int? totalFollowers;
-  List<Follower>? followers;
+  late int totalFollowers;
+  List<Follower>? followed;
 
-  FollowedModel({this.totalFollowers, this.followers});
+  FollowedModel({required this.totalFollowers, required this.followed});
 
   FollowedModel.fromJson(Map<String, dynamic> json) {
     totalFollowers = json['data']['total_followers'];
     if (json['followed'] != null) {
-      followers = [];
+      followed = [];
       json['followed'].forEach((v) {
-        followers!.add(Follower.fromJson(v));
+        followed!.add(Follower.fromJson(v));
       });
     }
   }

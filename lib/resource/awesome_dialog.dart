@@ -7,6 +7,7 @@ class GetAwesomeDialog {
     required DialogType dialogType,
     required String title,
     required String desc,
+    bool isTouch = true,
     required Function() btnOkPress,
     required Function()? btnCancelPress,
   }) {
@@ -15,6 +16,8 @@ class GetAwesomeDialog {
       animType: AnimType.SCALE,
       dialogType: dialogType,
       title: title,
+      // useRootNavigator: isTouch,
+      dismissOnTouchOutside: isTouch,
       titleTextStyle: TextStyle(
         fontSize: 25,
         fontWeight: FontWeight.bold,

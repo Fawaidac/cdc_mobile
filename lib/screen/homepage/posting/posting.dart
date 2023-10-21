@@ -1,13 +1,21 @@
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Posting extends StatefulWidget {
   const Posting({super.key});
@@ -19,8 +27,18 @@ class Posting extends StatefulWidget {
 class _PostingState extends State<Posting> {
   File? image;
   DateTime? selectedDate;
+  final ApiServices apiServices = ApiServices();
 
-  var keterangan = TextEditingController();
+  String? selectedType;
+  List<String> typeOptions = [
+    'Purnawaktu',
+    'Paruh Waktu',
+    'Wiraswasta',
+    'Pekerja Lepas',
+    'Kontrak',
+    'Musiman',
+  ];
+
   Future getImageGalery() async {
     final picker = ImagePicker();
     final imageFile = await picker.pickImage(source: ImageSource.gallery);
@@ -44,9 +62,84 @@ class _PostingState extends State<Posting> {
 
   var posisi = TextEditingController();
   var perusahaan = TextEditingController();
-  var lokasi = TextEditingController();
-  var jenisPekerjaan = TextEditingController();
   var tautan = TextEditingController();
+  var keterangan = TextEditingController();
+
+  void check() {
+    if (image == null) {
+      Fluttertoast.showToast(msg: "Silahkan pilih gambar");
+    } else {
+      submitPost();
+    }
+  }
+
+  void submitPost() async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
+    final response = await ApiServices.post(
+        image: image!,
+        linkApply: tautan.text,
+        company: perusahaan.text,
+        description: keterangan.text,
+        expired: formattedDate,
+        typeJob: selectedType.toString(),
+        position: posisi.text);
+    if (response['code'] == 201) {
+      // ignore: use_build_context_synchronously
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));
+      Fluttertoast.showToast(
+          msg:
+              "Berhasil mengunggah postingan, mohon menunggu verifikasi dari admin");
+    } else if (response['message'] ==
+        'your token is not valid , please login again') {
+      // ignore: use_build_context_synchronously
+      GetAwesomeDialog.showCustomDialog(
+        context: context,
+        dialogType: DialogType.ERROR,
+        title: "Error",
+        isTouch: false,
+        desc: "Sesi anda telah habis, cob alogin ulang",
+        btnOkPress: () async {
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.remove('token');
+          preferences.remove('tokenExpirationTime');
+          // ignore: use_build_context_synchronously
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Login(),
+              ));
+        },
+        btnCancelPress: () => Navigator.pop(context),
+      );
+    } else if (response['message'] ==
+        "ops , nampaknya akun kamu belum terverifikasi") {
+      // ignore: use_build_context_synchronously
+      GetAwesomeDialog.showCustomDialog(
+        isTouch: false,
+        context: context,
+        dialogType: DialogType.ERROR,
+        title: "Error",
+        desc:
+            "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
+        btnOkPress: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+        },
+        btnCancelPress: () => Navigator.pop(context),
+      );
+      print('Account is not verified');
+    } else {
+      print(response['message']);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,9 +205,20 @@ class _PostingState extends State<Posting> {
                           )),
               ),
             ),
-            Text(
-              "Tambah Keterangan",
-              style: MyFont.poppins(fontSize: 12, color: black),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    "Tambah Keterangan",
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+                Text(
+                  "*",
+                  style: MyFont.poppins(fontSize: 12, color: red),
+                )
+              ],
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20),
@@ -171,8 +275,8 @@ class _PostingState extends State<Posting> {
                     child: CustomTextFieldForm(
                         isEnable: true,
                         controller: posisi,
-                        isRequired: true,
                         label: "Nama Posisi",
+                        isRequired: true,
                         keyboardType: TextInputType.name,
                         inputFormatters:
                             FilteringTextInputFormatter.singleLineFormatter)),
@@ -190,29 +294,75 @@ class _PostingState extends State<Posting> {
                             FilteringTextInputFormatter.singleLineFormatter)),
               ],
             ),
-            Row(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Expanded(
-                    child: CustomTextFieldForm(
-                        isEnable: true,
-                        controller: lokasi,
-                        isRequired: true,
-                        label: "Lokasi",
-                        keyboardType: TextInputType.name,
-                        inputFormatters:
-                            FilteringTextInputFormatter.singleLineFormatter)),
-                const SizedBox(
-                  width: 10,
+                Padding(
+                  padding: const EdgeInsets.only(left: 5, top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Jenis Pekerjaan",
+                          style: GoogleFonts.poppins(fontSize: 12),
+                        ),
+                      ),
+                      Text(
+                        "*",
+                        style: MyFont.poppins(fontSize: 12, color: red),
+                      )
+                    ],
+                  ),
                 ),
-                Expanded(
-                    child: CustomTextFieldForm(
-                        isEnable: true,
-                        controller: jenisPekerjaan,
-                        isRequired: true,
-                        label: "Jenis Pekerjaan",
-                        keyboardType: TextInputType.name,
-                        inputFormatters:
-                            FilteringTextInputFormatter.singleLineFormatter)),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 50,
+                  child: DropdownButtonFormField<String>(
+                    value: selectedType,
+                    icon: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: black,
+                    ),
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedType = newValue;
+                      });
+                    },
+                    items: typeOptions.map((v) {
+                      return DropdownMenuItem<String>(
+                        value: v,
+                        child: Text(
+                          v,
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        ),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      hintText: "Pilih",
+                      isDense: true,
+                      hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      filled: true,
+                      fillColor: const Color(0xFFFCFDFE),
+                    ),
+                  ),
+                ),
               ],
             ),
             Padding(
@@ -220,9 +370,15 @@ class _PostingState extends State<Posting> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Expanded(
+                    child: Text(
+                      "Tanggal Tutup",
+                      style: GoogleFonts.poppins(fontSize: 12),
+                    ),
+                  ),
                   Text(
-                    "Tanggal Tutup",
-                    style: GoogleFonts.poppins(fontSize: 12),
+                    "*",
+                    style: MyFont.poppins(fontSize: 12, color: red),
                   )
                 ],
               ),
@@ -301,7 +457,7 @@ class _PostingState extends State<Posting> {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onPressed: () {
-                    // checkLogin();
+                    check();
                   },
                   child: Text('Unggah',
                       style: MyFont.poppins(
