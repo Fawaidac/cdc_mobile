@@ -1,5 +1,6 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:cdc_mobile/resource/colors.dart';
+import 'package:cdc_mobile/screen/homepage/profile/post/widget_detail_post_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
@@ -94,13 +95,28 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
               if (index == postList.length - 1) {
                 loadMoreData();
               }
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  image: DecorationImage(
-                    image:
-                        NetworkImage(post['image']), // Perbarui kunci 'image'
-                    fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WidgetDetailPost(
+                            image: post['image'],
+                            description: post['description']),
+                      ));
+                },
+                child: Hero(
+                  tag: 'postDetail',
+                  transitionOnUserGestures: true,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                            post['image']), // Perbarui kunci 'image'
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
               );
