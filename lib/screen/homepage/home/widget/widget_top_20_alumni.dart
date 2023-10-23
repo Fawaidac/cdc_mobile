@@ -101,30 +101,52 @@ class _Top20AlumniState extends State<Top20Alumni> {
                                     color: black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                totalFollowers.toString(),
-                                style: MyFont.poppins(
-                                    fontSize: 12,
-                                    color: softgrey,
-                                    fontWeight: FontWeight.normal),
-                              ),
                               Container(
-                                margin: EdgeInsets.only(top: 8),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 20),
+                                margin: const EdgeInsets.only(top: 5),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: Color(0xffFAC301)),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: alumni['gender'] == "male"
+                                            ? primaryColor
+                                            : Colors.pink),
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: white),
                                 child: Column(
                                   children: [
-                                    Text(
-                                      "Lihat Profile",
-                                      style: MyFont.poppins(
-                                          fontSize: 12,
-                                          color: black,
-                                          fontWeight: FontWeight.bold),
-                                    )
+                                    alumni['gender'] == "male"
+                                        ? Icon(
+                                            Icons.male,
+                                            size: 15,
+                                            color: primaryColor,
+                                          )
+                                        : const Icon(
+                                            Icons.female,
+                                            size: 15,
+                                            color: Colors.pink,
+                                          ),
                                   ],
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 20),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Color(0xffFAC301)),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "Lihat Profile",
+                                        style: MyFont.poppins(
+                                            fontSize: 12,
+                                            color: black,
+                                            fontWeight: FontWeight.bold),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               )
                             ],

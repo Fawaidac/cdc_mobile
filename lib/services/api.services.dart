@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cdc_mobile/model/comment_model.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
@@ -1049,5 +1050,51 @@ class ApiServices {
     }
     // Mengembalikan Future yang selesai dengan nilai null
     return null;
+  }
+
+  static Future<Map<String, dynamic>> getData(int page) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception("Token not found");
+      }
+
+      final response = await http.get(
+        Uri.parse('$baseUrl/user/post?page=$page'),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonResponse['data'];
+        final int totalItems = data['total_item'];
+        final int totalPage = data['total_page'];
+        final List<Map<String, dynamic>> postList = [];
+
+        for (var i = 0; i < totalItems; i++) {
+          final Map<String, dynamic> postResponse = data[i.toString()];
+          final List<Map<String, dynamic>> commentsData =
+              data[i.toString()]['comments'].cast<Map<String, dynamic>>();
+          List<CommentModel> comments = commentsData
+              .map((commentData) => CommentModel.fromJson(commentData))
+              .toList();
+
+          // Tambahkan objek komentar ke dalam postResponse
+          postResponse['comments'] = comments;
+          postList.add(postResponse);
+        }
+
+        return {'data': postList, 'totalPage': totalPage};
+      } else {
+        throw Exception("Failed to fetch data ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+      return Future.value({'data': [], 'totalPage': 0});
+    }
   }
 }

@@ -262,117 +262,103 @@ class _UsersAllState extends State<UsersAll> {
                                     ),
                                   ));
                             },
-                            child: Container(
-                              height: 150,
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.only(bottom: 10),
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: 130,
-                                    decoration: BoxDecoration(
-                                        color: grey.withOpacity(0.2),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                  const SizedBox(
-                                    width: 15,
-                                  ),
-                                  Expanded(
-                                      child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        user['fullname'],
-                                        style: MyFont.poppins(
-                                            fontSize: 14,
-                                            color: black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      const SizedBox(
-                                        height: 8,
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: user['gender'] == "male"
-                                                    ? primaryColor
-                                                    : Colors.pink),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                            color: white),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                      color: grey.withOpacity(0.2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                                const SizedBox(
+                                  width: 15,
+                                ),
+                                Expanded(
+                                    child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      user['fullname'],
+                                      style: MyFont.poppins(
+                                          fontSize: 14,
+                                          color: black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(
+                                      height: 8,
+                                    ),
+                                    for (var education in filteredEducations)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
                                         child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            user['gender'] == "male"
-                                                ? Icon(
-                                                    Icons.male,
-                                                    size: 15,
-                                                    color: primaryColor,
-                                                  )
-                                                : const Icon(
-                                                    Icons.female,
-                                                    size: 15,
-                                                    color: Colors.pink,
-                                                  ),
+                                            Text(
+                                              'Jurusan : ${education['jurusan']}',
+                                              style: MyFont.poppins(
+                                                  fontSize: 12,
+                                                  color: black,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ),
+                                            Text(
+                                              'Program studi : ${education['prodi']}',
+                                              style: MyFont.poppins(
+                                                  fontSize: 12, color: black),
+                                            ),
+                                            const SizedBox(
+                                              height: 5,
+                                            ),
+                                            Container(
+                                              width: double.infinity,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4),
+                                              decoration: BoxDecoration(
+                                                  color: primaryColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(5)),
+                                              child: Text(
+                                                '${education['tahun_masuk']}',
+                                                textAlign: TextAlign.center,
+                                                style: MyFont.poppins(
+                                                    fontSize: 12, color: white),
+                                              ),
+                                            ),
+                                            Align(
+                                              alignment: Alignment.bottomRight,
+                                              child: Container(
+                                                // alignment: Alignment.bottomRight,
+                                                margin: const EdgeInsets.only(
+                                                    top: 10),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 5,
+                                                        horizontal: 15),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  color: Color(0xffFAC301),
+                                                ),
+                                                child: Text(
+                                                  "Kunjungi",
+                                                  style: MyFont.poppins(
+                                                      fontSize: 12,
+                                                      color: primaryColor,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            )
                                           ],
                                         ),
                                       ),
-                                      for (var education in filteredEducations)
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '${education['jurusan']}',
-                                                style: MyFont.poppins(
-                                                    fontSize: 12,
-                                                    color: black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Text(
-                                                '${education['prodi']}',
-                                                style: MyFont.poppins(
-                                                    fontSize: 12, color: black),
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Container(
-                                                width: double.infinity,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 4),
-                                                decoration: BoxDecoration(
-                                                    color: primaryColor,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5)),
-                                                child: Text(
-                                                  '${education['tahun_masuk']}',
-                                                  textAlign: TextAlign.center,
-                                                  style: MyFont.poppins(
-                                                      fontSize: 12,
-                                                      color: white),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                    ],
-                                  ))
-                                ],
-                              ),
+                                  ],
+                                ))
+                              ],
                             ),
                           );
                         },
@@ -526,6 +512,7 @@ class _UsersAllState extends State<UsersAll> {
                               Navigator.pop(context);
                               setState(() {
                                 prodi = prodiList[index]['nama_prodi'];
+
                                 _usersFuture = ApiServices.fetchUserAll(
                                   currentPage,
                                   context,
