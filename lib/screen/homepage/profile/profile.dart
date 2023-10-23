@@ -8,6 +8,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/homepage/profile/followers.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/show_jobs.dart';
+import 'package:cdc_mobile/screen/homepage/profile/post/widget_post_user.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/update_profile.dart';
@@ -40,11 +41,26 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
 
   int followerCount = 0;
   int followedCount = 0;
+  int postCount = 0;
+
+  Future<void> fetchPostCount() async {
+    try {
+      final apiResponse = await ApiServices.getPostUserLogin();
+      final data = apiResponse;
+
+      setState(() {
+        postCount = data['total_item'];
+      });
+    } catch (e) {
+      print('Error fetching post count: $e');
+      // Handle errors if needed
+    }
+  }
 
   Future<void> fetchFollowerCount() async {
     try {
       final apiResponse = await ApiServices.getFollowers();
-      
+
       setState(() {
         followerCount = apiResponse.totalFollowers;
       });
@@ -76,6 +92,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
     getUser();
     fetchFollowerCount();
     fetchFollowedCount();
+    fetchPostCount();
     super.initState();
   }
 
@@ -232,7 +249,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "80",
+                                        "$postCount",
                                         style: MyFont.poppins(
                                             fontSize: 20,
                                             color: black,
@@ -384,26 +401,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TabBarView(controller: _tabController, children: [
-                GridView.builder(
-                  shrinkWrap: false,
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 1,
-                    crossAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: 60,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: grey.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    );
-                  },
-                ),
+                WidgetPostUser(),
                 MyEducations(),
                 MyJobs(),
               ]),

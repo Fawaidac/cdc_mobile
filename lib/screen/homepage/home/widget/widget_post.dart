@@ -21,7 +21,7 @@ class _WidgetPostState extends State<WidgetPost> {
     try {
       final dataAndTotalPage = await ApiServices.getData(page);
       final data = dataAndTotalPage['data'];
-
+      print(data);
       // Set totalPage only if it's not null
       if (totalPage == null) {
         setState(() {

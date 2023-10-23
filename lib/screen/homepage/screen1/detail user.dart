@@ -132,7 +132,14 @@ class _DetailUserState extends State<DetailUser>
                             ),
                             Spacer(),
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showDetailUser(
+                                      '${userDetail?.user.fullname}',
+                                      '${userDetail?.user.tempatTanggalLahir}',
+                                      '${userDetail?.user.email}',
+                                      '${userDetail?.user.nik}',
+                                      '${userDetail?.user.noTelp}');
+                                },
                                 icon: Icon(
                                   Icons.info_outline,
                                   color: primaryColor,
@@ -341,12 +348,14 @@ class _DetailUserState extends State<DetailUser>
                               onTap: () async {
                                 String linkedin =
                                     userDetail?.user.linkedin ?? "";
-                                String url =
-                                    "http://www.linkedin.com/in/$linkedin";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw "Could not launch $url";
+                                if (linkedin != null && linkedin.isNotEmpty) {
+                                  String url =
+                                      "http://www.linkedin.com/in/$linkedin";
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  } else {
+                                    throw "Could not launch $url";
+                                  }
                                 }
                               },
                               child: Image.asset(
@@ -357,14 +366,14 @@ class _DetailUserState extends State<DetailUser>
                             ),
                             InkWell(
                               onTap: () async {
-                                String linkedin =
-                                    userDetail?.user.instagram ?? "";
-                                String url =
-                                    "http://www.linkedin.com/in/$linkedin";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw "Could not launch $url";
+                                String ig = userDetail?.user.instagram ?? "";
+                                if (ig != null && ig.isNotEmpty) {
+                                  String url = "https://www.instagram.com/$ig/";
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  } else {
+                                    throw "Could not launch $url";
+                                  }
                                 }
                               },
                               child: Image.asset(
@@ -377,12 +386,13 @@ class _DetailUserState extends State<DetailUser>
                               onTap: () async {
                                 String linkedin =
                                     userDetail?.user.twitter ?? "";
-                                String url =
-                                    "http://www.linkedin.com/in/$linkedin";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw "Could not launch $url";
+                                if (linkedin != null && linkedin.isNotEmpty) {
+                                  String url = "https://twitter.com/$linkedin";
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  } else {
+                                    throw "Could not launch $url";
+                                  }
                                 }
                               },
                               child: Image.asset(
@@ -395,12 +405,14 @@ class _DetailUserState extends State<DetailUser>
                               onTap: () async {
                                 String linkedin =
                                     userDetail?.user.facebook ?? "";
-                                String url =
-                                    "http://www.linkedin.com/in/$linkedin";
-                                if (await canLaunch(url)) {
-                                  await launch(url);
-                                } else {
-                                  throw "Could not launch $url";
+                                if (linkedin != null && linkedin.isNotEmpty) {
+                                  String url =
+                                      "https://www.facebook.com/$linkedin";
+                                  if (await canLaunch(url)) {
+                                    await launch(url);
+                                  } else {
+                                    throw "Could not launch $url";
+                                  }
                                 }
                               },
                               child: Image.asset(
@@ -533,5 +545,107 @@ class _DetailUserState extends State<DetailUser>
     } else {
       handleFollow();
     }
+  }
+
+  void _showDetailUser(
+      String nama, String ttl, String email, String nik, String telp) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Detail Profil",
+                style: MyFont.poppins(
+                    fontSize: 14, color: black, fontWeight: FontWeight.bold),
+              ),
+              Container(
+                height: 2,
+                margin: const EdgeInsets.only(top: 3),
+                width: MediaQuery.of(context).size.width,
+                color: primaryColor,
+              )
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Nama",
+                  style: MyFont.poppins(
+                      fontSize: 12, color: black, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Text(
+                    nama,
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+                Divider(),
+                Text(
+                  "Tempat, Tanggal Lahir",
+                  style: MyFont.poppins(
+                      fontSize: 12, color: black, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Text(
+                    ttl,
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+                Divider(),
+                Text(
+                  "Email",
+                  style: MyFont.poppins(
+                      fontSize: 12, color: black, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Text(
+                    email,
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+                Divider(),
+                Text(
+                  "NIK",
+                  style: MyFont.poppins(
+                      fontSize: 12, color: black, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Text(
+                    nik,
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+                Divider(),
+                Text(
+                  "Telepon",
+                  style: MyFont.poppins(
+                      fontSize: 12, color: black, fontWeight: FontWeight.bold),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 3.0),
+                  child: Text(
+                    telp,
+                    style: MyFont.poppins(fontSize: 12, color: black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+                10.0), // Sesuaikan dengan radius yang Anda inginkan
+          ),
+        );
+      },
+    );
   }
 }

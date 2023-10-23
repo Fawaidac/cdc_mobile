@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:card_loading/card_loading.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
@@ -30,7 +31,20 @@ class MyJobs extends StatelessWidget {
       future: ApiServices.fetchJobs(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return ListView.builder(
+            itemCount: 3,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                child: CardLoading(
+                  height: 125,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              );
+            },
+          );
         } else if (snapshot.hasError) {
           return Center(
             child: Text('Error: ${snapshot.error}'),
