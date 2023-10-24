@@ -133,7 +133,7 @@ class MyJobs extends StatelessWidget {
                               dialogType: DialogType.WARNING,
                               title: "Perhatian",
                               desc:
-                                  "Apakah anda yakin untuk menghapus data pekerjaan anda?",
+                                  "Apakah anda yakin untuk menghapus data\npekerjaan anda?",
                               btnOkPress: () async {
                                 handleDeleteJobs("${jobs.id}");
                                 Navigator.pushReplacement(

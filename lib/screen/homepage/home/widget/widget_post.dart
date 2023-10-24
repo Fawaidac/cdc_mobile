@@ -21,6 +21,7 @@ class _WidgetPostState extends State<WidgetPost> {
     try {
       final dataAndTotalPage = await ApiServices.getData(page);
       final data = dataAndTotalPage['data'];
+      print(data);
       // Set totalPage only if it's not null
       if (totalPage == null) {
         setState(() {
@@ -70,7 +71,6 @@ class _WidgetPostState extends State<WidgetPost> {
             itemCount: postList.length,
             itemBuilder: (context, index) {
               final post = postList[index];
-              final description = post['description'];
 
               if (index == postList.length - 1) {
                 loadMoreData();
@@ -91,7 +91,10 @@ class _WidgetPostState extends State<WidgetPost> {
                       children: [
                         CircleAvatar(
                           radius: 25,
-                          backgroundColor: Colors.white,
+                          backgroundImage: NetworkImage(post['uploader'].foto ==
+                                  ApiServices.baseUrlImage
+                              ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
+                              : post['uploader'].foto),
                         ),
                         const SizedBox(
                           width: 10,
@@ -102,7 +105,7 @@ class _WidgetPostState extends State<WidgetPost> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Someone",
+                              post['uploader'].fullname,
                               style: MyFont.poppins(fontSize: 12, color: black),
                             )
                           ],

@@ -133,7 +133,7 @@ class MyEducations extends StatelessWidget {
                               dialogType: DialogType.WARNING,
                               title: "Perhatian",
                               desc:
-                                  "Apakah anda yakin untuk menghapus data pendidikan anda",
+                                  "Apakah anda yakin untuk menghapus data\npendidikan anda",
                               btnOkPress: () {
                                 handleDeleteEducation("${educations.id}");
                                 Navigator.pushReplacement(

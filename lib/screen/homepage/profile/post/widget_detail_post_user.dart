@@ -1,8 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class WidgetDetailPost extends StatefulWidget {
   final String image;
@@ -43,9 +46,9 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
   Future<void> handleUpdateComment(String postId) async {
     final bool option = checkBool(); // Convert bool to String
     final response = await ApiServices.nonActiveComment(postId, option);
-    print(postId);
     if (response['code'] == 200) {
       print('ok can comment');
+      // ignore: use_build_context_synchronously
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -56,12 +59,43 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
     }
   }
 
+  Future<void> handleDeletePost() async {
+    final response = await ApiServices.deletePostingan(widget.id);
+    if (response['code'] == 200) {
+      Fluttertoast.showToast(msg: response['message']);
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));
+    } else if (response['message'] == 'Ops , akun kamu belum terverifikasi') {
+      // ignore: use_build_context_synchronously
+      GetAwesomeDialog.showCustomDialog(
+        isTouch: false,
+        context: context,
+        dialogType: DialogType.ERROR,
+        title: "Error",
+        desc:
+            "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
+        btnOkPress: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+        },
+        btnCancelPress: () => Navigator.pop(context),
+      );
+    } else {
+      print(response['message']);
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkBool();
-    print(checkBool());
   }
 
   @override
@@ -222,6 +256,19 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
                                 ]).then((value) {
                               if (value != null) {
                                 if (value == 1) {
+                                  GetAwesomeDialog.showCustomDialog(
+                                    context: context,
+                                    dialogType: DialogType.WARNING,
+                                    title: "Perhatian",
+                                    desc:
+                                        "Apakah anda ingin menghapus postingan?",
+                                    btnOkPress: () {
+                                      handleDeletePost();
+                                    },
+                                    btnCancelPress: () {
+                                      Navigator.pop(context);
+                                    },
+                                  );
                                 } else if (value == 2) {
                                   handleUpdateComment(
                                     widget.id,

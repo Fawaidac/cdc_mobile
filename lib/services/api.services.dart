@@ -17,8 +17,8 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.0.117:8000/api";
-  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
+  static const String baseUrl = "http://10.10.177.240:8000/api";
+  static const String baseUrlImage = "http://10.10.177.240:8000/users/";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {
@@ -1085,6 +1085,12 @@ class ApiServices {
 
           // Tambahkan objek komentar ke dalam postResponse
           postResponse['comments'] = comments;
+
+          final Map<String, dynamic> uploaderData = postResponse['uploader'];
+          User uploader = User.fromJson(uploaderData);
+
+          // Tambahkan objek pengunggah ke dalam postResponse
+          postResponse['uploader'] = uploader;
           postList.add(postResponse);
         }
 
@@ -1160,6 +1166,16 @@ class ApiServices {
           "Authorization": "Bearer $token",
           'Content-Type': 'application/json',
         });
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> deletePostingan(String postId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.delete(
+        Uri.parse('$baseUrl/user/post/delete/$postId'),
+        headers: {"Authorization": "Bearer $token"});
     final data = jsonDecode(response.body);
     return data;
   }
