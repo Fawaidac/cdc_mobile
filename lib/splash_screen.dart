@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/intro/onboarding.dart';
 import 'package:cdc_mobile/screen/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Login(),
+            builder: (context) => OnBoarding(),
           ),
         );
       }
@@ -49,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => Login(),
+          builder: (context) => OnBoarding(),
         ),
       );
     }

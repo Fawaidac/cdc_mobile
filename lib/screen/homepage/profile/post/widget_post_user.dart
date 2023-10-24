@@ -5,7 +5,9 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
 class WidgetPostUser extends StatefulWidget {
-  const WidgetPostUser({super.key});
+  String name;
+  String image;
+  WidgetPostUser({required this.image, required this.name, super.key});
 
   @override
   State<WidgetPostUser> createState() => _WidgetPostUserState();
@@ -101,21 +103,27 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => WidgetDetailPost(
-                            image: post['image'],
-                            description: post['description']),
+                          image: post['image'],
+                          description: post['description'],
+                          company: post['company'],
+                          expired: post['expired'],
+                          position: post['position'],
+                          typeJobs: post['type_jobs'],
+                          verified: post['verified'],
+                          name: widget.name,
+                          profile: widget.image,
+                          id: post['id'],
+                          can: post['can_comment'],
+                        ),
                       ));
                 },
-                child: Hero(
-                  tag: 'postDetail',
-                  transitionOnUserGestures: true,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                            post['image']), // Perbarui kunci 'image'
-                        fit: BoxFit.cover,
-                      ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    image: DecorationImage(
+                      image:
+                          NetworkImage(post['image']), // Perbarui kunci 'image'
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),

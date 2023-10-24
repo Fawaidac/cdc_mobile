@@ -4,6 +4,7 @@ import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/update_education.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -135,6 +136,11 @@ class MyEducations extends StatelessWidget {
                                   "Apakah anda yakin untuk menghapus data pendidikan anda",
                               btnOkPress: () {
                                 handleDeleteEducation("${educations.id}");
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HomePage(),
+                                    ));
                               },
                               btnCancelPress: () {
                                 Navigator.pop(context);

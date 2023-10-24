@@ -148,7 +148,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                 child: CircleAvatar(
                                   radius: 40,
                                   backgroundImage: NetworkImage(user?.foto ==
-                                          "http://192.168.0.117:8000/users/"
+                                          ApiServices.baseUrlImage
                                       ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
                                       : user?.foto ?? ""),
                                 )),
@@ -401,7 +401,8 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TabBarView(controller: _tabController, children: [
-                WidgetPostUser(),
+                WidgetPostUser(
+                    image: user?.foto ?? "", name: user?.fullname ?? ""),
                 MyEducations(),
                 MyJobs(),
               ]),

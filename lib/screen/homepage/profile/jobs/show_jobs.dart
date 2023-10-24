@@ -4,6 +4,7 @@ import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/update_jobs.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -133,8 +134,13 @@ class MyJobs extends StatelessWidget {
                               title: "Perhatian",
                               desc:
                                   "Apakah anda yakin untuk menghapus data pekerjaan anda?",
-                              btnOkPress: () {
+                              btnOkPress: () async {
                                 handleDeleteJobs("${jobs.id}");
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HomePage(),
+                                    ));
                               },
                               btnCancelPress: () {
                                 Navigator.pop(context);

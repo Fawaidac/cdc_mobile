@@ -1134,7 +1134,6 @@ class ApiServices {
           return postMap;
         }).toList();
 
-        print('totalItem: $totalItems');
         return {
           'data': postList,
           'total_page': totalPage,
@@ -1147,5 +1146,21 @@ class ApiServices {
       print("Error fetching data: $e");
       return Future.value({'data': [], 'total_page': 0, 'total_item': 0});
     }
+  }
+
+  static Future<Map<String, dynamic>> nonActiveComment(
+      String postId, bool option) async {
+    final Map<String, dynamic> requestBody = {"option": option};
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.put(
+        Uri.parse('$baseUrl/user/post/update/comment/$postId'),
+        body: jsonEncode(requestBody),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        });
+    final data = jsonDecode(response.body);
+    return data;
   }
 }
