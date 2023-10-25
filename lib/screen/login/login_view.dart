@@ -3,7 +3,8 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login_controller.dart';
 import 'package:cdc_mobile/screen/login/lupa_sandi.dart';
-import 'package:cdc_mobile/screen/register/register.dart';
+import 'package:cdc_mobile/screen/register/register_view.dart';
+import 'package:cdc_mobile/screen/verifikasi/verifikasi_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -18,7 +19,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   var nik = TextEditingController();
-  var pw = TextEditingController();
+  var password = TextEditingController();
   bool showpass = true;
 
   final controller = LoginController();
@@ -26,10 +27,10 @@ class _LoginViewState extends State<LoginView> {
   void checkLogin() async {
     if (nik.text.isEmpty) {
       Fluttertoast.showToast(msg: "Email atau NIK harus diisi");
-    } else if (pw.text.isEmpty) {
+    } else if (password.text.isEmpty) {
       Fluttertoast.showToast(msg: "Password harus diisi");
     } else {
-      await controller.handleLogin(nik.text, pw.text, context);
+      await controller.handleLogin(nik.text, password.text, context);
     }
   }
 
@@ -69,11 +70,11 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     TextFormField(
                       textInputAction: TextInputAction.done,
-                      controller: pw,
+                      controller: password,
                       obscureText: showpass,
                       style: MyFont.poppins(fontSize: 13, color: black),
                       keyboardType: TextInputType.text,
-                      onSaved: (val) => pw = val as TextEditingController,
+                      onSaved: (val) => password = val as TextEditingController,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter password';
@@ -182,7 +183,7 @@ class _LoginViewState extends State<LoginView> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Register(),
+                            builder: (context) => VerifikasiView(),
                           ));
                     },
                     child: Text(

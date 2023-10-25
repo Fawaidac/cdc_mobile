@@ -2,72 +2,91 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
+import 'package:cdc_mobile/screen/register/register_controller.dart';
 import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class RegisterView extends StatefulWidget {
+  String namaLengkap;
+  String email;
+  String nim;
+  String alamat;
+  String prodi;
+  RegisterView(
+      {required this.namaLengkap,
+      required this.email,
+      required this.nim,
+      required this.alamat,
+      required this.prodi,
+      super.key});
   static String verify = "";
   @override
-  State<Register> createState() => _RegisterState();
+  State<RegisterView> createState() => _RegisterViewState();
 }
 
-class _RegisterState extends State<Register> {
+class _RegisterViewState extends State<RegisterView> {
   var email = TextEditingController();
   var alamat = TextEditingController();
   var fullname = TextEditingController();
-  var no_telp = TextEditingController();
   var nik = TextEditingController();
   var pw = TextEditingController();
   var nim = TextEditingController();
   var conpw = TextEditingController();
+  var countrycode = TextEditingController();
+
   bool showpass = true;
   bool conpass = true;
   var phone = "";
+
   String? selectedProdi;
   String? idProdi;
-  var countrycode = TextEditingController();
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     // TODO: implement initState
     countrycode.text = "+62";
+    alamat.text = widget.alamat;
+    fullname.text = widget.namaLengkap;
+    nim.text = widget.nim;
+    email.text = widget.email;
+    selectedProdi = widget.prodi;
     super.initState();
   }
 
-  registerWithMobileNumber() async {
-    try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: countrycode.text + phone,
-        verificationCompleted: (PhoneAuthCredential authCredential) async {},
-        verificationFailed: (FirebaseAuthException e) {},
-        codeSent: (verificationId, forceResendingToken) {
-          Register.verify = verificationId;
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => VerifikasiOtp(
-                  fullname: fullname.text,
-                  email: email.text,
-                  pw: pw.text,
-                  phone: phone,
-                  alamat: alamat.text,
-                  nik: nik.text,
-                  nim: nim.text,
-                  kode_prodi: idProdi,
-                ),
-              ));
-        },
-        codeAutoRetrievalTimeout: (verificationId) {},
-      );
-    } catch (e) {
-      print(e.toString());
+  final controller = RegisterController();
+
+  void handleRegister() async {
+    if (email.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Email harus diisi");
+    } else if (nik.text.isEmpty) {
+      Fluttertoast.showToast(msg: "NIK harus diisi");
+    } else if (pw.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Password harus diisi");
+    } else if (pw.text.length < 8) {
+      Fluttertoast.showToast(
+          msg: "Password tidak boleh kurang dari 8 karakter");
+    } else if (conpw.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Konfirmasi password harus diisi");
+    } else if (pw.text != conpw.text) {
+      Fluttertoast.showToast(
+          msg: "Password dan konfirmasi password harus sama");
+    } else {
+      await controller.checkEmail(
+          email.text,
+          context,
+          countrycode.text,
+          phone,
+          fullname.text,
+          pw.text,
+          alamat.text,
+          nik.text,
+          nim.text,
+          idProdi ?? "");
     }
   }
 
@@ -417,7 +436,7 @@ class _RegisterState extends State<Register> {
                           borderRadius: BorderRadius.circular(15),
                         )),
                     onPressed: () {
-                      registerWithMobileNumber();
+                      handleRegister();
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,

@@ -20,16 +20,6 @@ class ApiServices {
   static const String baseUrl = "http://192.168.0.117:8000/api";
   static const String baseUrlImage = "http://192.168.0.117:8000/users/";
 
-  static Future<Map<String, dynamic>> login(
-      String emailOrNik, String password) async {
-    final res = await http.post(Uri.parse('$baseUrl/auth/login'), body: {
-      'emailOrNik': emailOrNik,
-      'password': password,
-    });
-    final data = jsonDecode(res.body);
-    return data;
-  }
-
   static Future<Map<String, dynamic>> register(String email, String nik,
       String fullname, String password, String no_telp, String alamat) async {
     final res =

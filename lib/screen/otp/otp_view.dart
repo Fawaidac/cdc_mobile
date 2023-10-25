@@ -1,14 +1,10 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/login/login_view.dart';
-import 'package:cdc_mobile/screen/register/register_view.dart';
-import 'package:cdc_mobile/services/api.services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cdc_mobile/screen/otp/otp_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pinput/pinput.dart';
 
-class VerifikasiOtp extends StatefulWidget {
+class OtpView extends StatefulWidget {
   var fullname;
   var email;
   var pw;
@@ -17,7 +13,7 @@ class VerifikasiOtp extends StatefulWidget {
   var nik;
   var nim;
   var kode_prodi;
-  VerifikasiOtp(
+  OtpView(
       {required this.fullname,
       required this.email,
       required this.pw,
@@ -29,50 +25,14 @@ class VerifikasiOtp extends StatefulWidget {
       super.key});
 
   @override
-  State<VerifikasiOtp> createState() => _VerifikasiOtpState();
+  State<OtpView> createState() => _OtpViewState();
 }
 
-class _VerifikasiOtpState extends State<VerifikasiOtp> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  verifikasiOtp() async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: RegisterView.verify, smsCode: code);
-      await auth.signInWithCredential(credential);
-      handleRegister();
-    } catch (e) {
-      Fluttertoast.showToast(msg: "Kode Otp Salah");
-    }
-  }
-
-  void handleRegister() async {
-    try {
-      final response = await ApiServices.register(widget.email, widget.nik,
-          widget.fullname, widget.pw, "0" + widget.phone, widget.alamat);
-      if (response['code'] == 201) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LoginView(),
-            ));
-        Fluttertoast.showToast(msg: response['message']);
-      } else {
-        Fluttertoast.showToast(msg: response['message']);
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    print(widget.email);
-  }
+class _OtpViewState extends State<OtpView> {
+  final controller = OtpController();
 
   var code = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,8 +89,18 @@ class _VerifikasiOtpState extends State<VerifikasiOtp> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       )),
-                  onPressed: () {
-                    verifikasiOtp();
+                  onPressed: () async {
+                    await controller.verifikasiOtp(
+                        code,
+                        widget.email,
+                        widget.nik,
+                        widget.fullname,
+                        widget.pw,
+                        widget.phone,
+                        widget.alamat,
+                        widget.nim,
+                        widget.kode_prodi,
+                        context);
                   },
                   child: Text('Verifikasi',
                       style: MyFont.poppins(
