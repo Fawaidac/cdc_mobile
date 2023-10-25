@@ -4,7 +4,7 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
 import 'package:cdc_mobile/screen/homepage/home/quisioner/main_section.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -495,7 +495,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
               Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Login(),
+                    builder: (context) => LoginView(),
                   ));
             },
             btnCancelPress: () => Navigator.pop(context),

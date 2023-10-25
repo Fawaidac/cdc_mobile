@@ -1,84 +1,35 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
-import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/login/login_controller.dart';
 import 'package:cdc_mobile/screen/login/lupa_sandi.dart';
 import 'package:cdc_mobile/screen/register/register.dart';
-import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jwt_decode/jwt_decode.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginViewState extends State<LoginView> {
   var nik = TextEditingController();
   var pw = TextEditingController();
   bool showpass = true;
 
-  bool isTokenExpired(String token) {
-    try {
-      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
-      if (decodedToken.containsKey('exp')) {
-        int expirationTimestamp =
-            decodedToken['exp'] * 1000; // Convert to milliseconds
-        DateTime expirationDateTime =
-            DateTime.fromMillisecondsSinceEpoch(expirationTimestamp);
-        DateTime currentDateTime = DateTime.now();
+  final controller = LoginController();
 
-        return currentDateTime.isAfter(expirationDateTime);
-      }
-    } catch (e) {
-      print('Error decoding token: $e');
-    }
-
-    // Return true if unable to decode or expiration check failed
-    return true;
-  }
-
-  void checkLogin() {
+  void checkLogin() async {
     if (nik.text.isEmpty) {
       Fluttertoast.showToast(msg: "Email atau NIK harus diisi");
     } else if (pw.text.isEmpty) {
       Fluttertoast.showToast(msg: "Password harus diisi");
     } else {
-      handleLogin();
-    }
-  }
-
-  void handleLogin() async {
-    final emailOrNik = nik.text;
-    final password = pw.text;
-    try {
-      final response = await ApiServices.login(emailOrNik, password);
-      if (response['code'] == 200) {
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', response['data']['token']);
-
-        DateTime expirationTime = DateTime.now().add(Duration(days: 7));
-        prefs.setInt(
-            'tokenExpirationTime', expirationTime.millisecondsSinceEpoch);
-        print('Token will expire on: ${expirationTime.toLocal()}');
-        Fluttertoast.showToast(msg: response['message']);
-        // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomePage(),
-            ));
-      } else {
-        Fluttertoast.showToast(msg: response['message']);
-      }
-    } catch (e) {
-      print(e);
+      await controller.handleLogin(nik.text, pw.text, context);
     }
   }
 
@@ -87,7 +38,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -155,14 +106,14 @@ class _LoginState extends State<Login> {
                         hintStyle:
                             GoogleFonts.poppins(fontSize: 13, color: grey),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.transparent,
                             width: 1,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: Colors.transparent,
                             width: 1,
                           ),

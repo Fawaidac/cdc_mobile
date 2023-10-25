@@ -3,7 +3,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/jobs/add_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/tentang.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -84,7 +84,7 @@ class _SettingState extends State<Setting> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Login(),
+                        builder: (context) => LoginView(),
                       ));
                 },
                 child: get("Keluar", Icons.logout)),

@@ -6,7 +6,7 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +110,7 @@ class _PostingState extends State<Posting> {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => Login(),
+                builder: (context) => LoginView(),
               ));
         },
         btnCancelPress: () => Navigator.pop(context),

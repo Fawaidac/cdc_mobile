@@ -12,7 +12,7 @@ import 'package:cdc_mobile/screen/homepage/profile/post/widget_post_user.dart';
 import 'package:cdc_mobile/screen/homepage/profile/setting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/education/show_education.dart';
 import 'package:cdc_mobile/screen/homepage/profile/update_profile.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -142,7 +142,7 @@ class _ProfileState extends State<Profile> with SingleTickerProviderStateMixin {
                                   Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => Login(),
+                                        builder: (context) => LoginView(),
                                       ));
                                 },
                                 child: CircleAvatar(

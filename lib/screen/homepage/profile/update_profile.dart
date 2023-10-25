@@ -7,7 +7,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields_form.dart';
 import 'package:cdc_mobile/resource/textfields_with_checkbox.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -553,7 +553,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => Login(),
+                        builder: (context) => LoginView(),
                       )); // Navigate to login screen
                   Fluttertoast.showToast(
                     msg: "Email updated successfully. Please log in again.",

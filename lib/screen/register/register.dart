@@ -1,7 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -446,7 +446,7 @@ class _RegisterState extends State<Register> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Login(),
+                            builder: (context) => LoginView(),
                           ));
                     },
                     child: Text(

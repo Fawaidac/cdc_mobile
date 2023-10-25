@@ -3,7 +3,7 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/intro/intropage1.dart';
 import 'package:cdc_mobile/screen/intro/intropage2.dart';
 import 'package:cdc_mobile/screen/intro/intropage3.dart';
-import 'package:cdc_mobile/screen/login/login.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -60,7 +60,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 Navigator.pushReplacement(
                                     context,
                                     PageTransition(
-                                        child: Login(),
+                                        child: LoginView(),
                                         type: PageTransitionType.fade));
                               },
                               child: Container(
