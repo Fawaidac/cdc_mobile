@@ -4,7 +4,7 @@ import 'package:cdc_mobile/screen/homepage/home/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
-import 'package:cdc_mobile/screen/homepage/screen1/users_all.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
 import 'package:cdc_mobile/screen/homepage/ikapj/ikapj_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

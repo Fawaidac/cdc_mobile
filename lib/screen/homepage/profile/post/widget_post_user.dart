@@ -108,11 +108,13 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                           company: post['company'],
                           expired: post['expired'],
                           position: post['position'],
+                          isUser: true,
                           typeJobs: post['type_jobs'],
                           verified: post['verified'],
                           name: widget.name,
                           profile: widget.image,
                           id: post['id'],
+                          commentModel: post['comments'],
                           can: post['can_comment'],
                         ),
                       ));

@@ -1,10 +1,14 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cdc_mobile/model/comment_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class WidgetDetailPost extends StatefulWidget {
@@ -19,8 +23,10 @@ class WidgetDetailPost extends StatefulWidget {
   final String name;
   final String profile;
   final int can;
+  final bool isUser;
+  List<CommentModel> commentModel;
 
-  const WidgetDetailPost(
+  WidgetDetailPost(
       {required this.image,
       required this.description,
       required this.id,
@@ -28,10 +34,12 @@ class WidgetDetailPost extends StatefulWidget {
       required this.company,
       required this.typeJobs,
       required this.expired,
+      required this.isUser,
       required this.verified,
       required this.name,
       required this.profile,
       required this.can,
+      required this.commentModel,
       super.key});
 
   @override
@@ -91,11 +99,13 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
     }
   }
 
+  List<CommentModel> comments = [];
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     checkBool();
+    comments = widget.commentModel;
   }
 
   @override
@@ -181,107 +191,108 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
                             ],
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            showMenu(
-                                context: context,
-                                position: RelativeRect.fromLTRB(
-                                    MediaQuery.of(context).size.width -
-                                        20, // right
-                                    20,
-                                    0,
-                                    0),
-                                items: [
-                                  PopupMenuItem<int>(
-                                      value: 0,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.edit,
-                                            color: primaryColor,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Edit",
-                                            style: MyFont.poppins(
-                                                fontSize: 12, color: black),
-                                          ),
-                                        ],
-                                      )),
-                                  PopupMenuItem<int>(
-                                      value: 1,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.delete,
-                                            color: primaryColor,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            "Hapus",
-                                            style: MyFont.poppins(
-                                                fontSize: 12, color: black),
-                                          ),
-                                        ],
-                                      )),
-                                  PopupMenuItem<int>(
-                                      value: 2,
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            widget.can == 1
-                                                ? Icons.not_interested_sharp
-                                                : Icons.chat_outlined,
-                                            color: primaryColor,
-                                            size: 20,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            widget.can == 1
-                                                ? "Nonaktifkan Komentar"
-                                                : "Aktifkan Komentar",
-                                            style: MyFont.poppins(
-                                                fontSize: 12, color: black),
-                                          ),
-                                        ],
-                                      )),
-                                ]).then((value) {
-                              if (value != null) {
-                                if (value == 1) {
-                                  GetAwesomeDialog.showCustomDialog(
-                                    context: context,
-                                    dialogType: DialogType.WARNING,
-                                    title: "Perhatian",
-                                    desc:
-                                        "Apakah anda ingin menghapus postingan?",
-                                    btnOkPress: () {
-                                      handleDeletePost();
-                                    },
-                                    btnCancelPress: () {
-                                      Navigator.pop(context);
-                                    },
-                                  );
-                                } else if (value == 2) {
-                                  handleUpdateComment(
-                                    widget.id,
-                                  );
+                        if (widget.isUser == true)
+                          IconButton(
+                            onPressed: () {
+                              showMenu(
+                                  context: context,
+                                  position: RelativeRect.fromLTRB(
+                                      MediaQuery.of(context).size.width -
+                                          20, // right
+                                      20,
+                                      0,
+                                      0),
+                                  items: [
+                                    PopupMenuItem<int>(
+                                        value: 0,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.edit,
+                                              color: primaryColor,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Edit",
+                                              style: MyFont.poppins(
+                                                  fontSize: 12, color: black),
+                                            ),
+                                          ],
+                                        )),
+                                    PopupMenuItem<int>(
+                                        value: 1,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: primaryColor,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              "Hapus",
+                                              style: MyFont.poppins(
+                                                  fontSize: 12, color: black),
+                                            ),
+                                          ],
+                                        )),
+                                    PopupMenuItem<int>(
+                                        value: 2,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              widget.can == 1
+                                                  ? Icons.not_interested_sharp
+                                                  : Icons.chat_outlined,
+                                              color: primaryColor,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(
+                                              widget.can == 1
+                                                  ? "Nonaktifkan Komentar"
+                                                  : "Aktifkan Komentar",
+                                              style: MyFont.poppins(
+                                                  fontSize: 12, color: black),
+                                            ),
+                                          ],
+                                        )),
+                                  ]).then((value) {
+                                if (value != null) {
+                                  if (value == 1) {
+                                    GetAwesomeDialog.showCustomDialog(
+                                      context: context,
+                                      dialogType: DialogType.WARNING,
+                                      title: "Perhatian",
+                                      desc:
+                                          "Apakah anda ingin menghapus postingan?",
+                                      btnOkPress: () {
+                                        handleDeletePost();
+                                      },
+                                      btnCancelPress: () {
+                                        Navigator.pop(context);
+                                      },
+                                    );
+                                  } else if (value == 2) {
+                                    handleUpdateComment(
+                                      widget.id,
+                                    );
+                                  }
                                 }
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: black,
+                              });
+                            },
+                            icon: Icon(
+                              Icons.more_vert,
+                              color: black,
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -350,7 +361,105 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
                     child: Align(
                       alignment: Alignment.bottomRight,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (builder) {
+                                return SingleChildScrollView(
+                                  padding: EdgeInsets.only(
+                                    top: 10,
+                                    left: 15,
+                                    right: 15,
+                                    bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom +
+                                        20,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.center,
+                                        height: 8,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: grey.withOpacity(0.1),
+                                        ),
+                                      ),
+
+                                      SizedBox(
+                                        height: 400,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: comments.length,
+                                          itemBuilder: (context, index) {
+                                            final comment = comments[index];
+                                            String dateTime =
+                                                comment.createdAt.toString();
+                                            final date =
+                                                DateTime.parse(dateTime);
+                                            initializeDateFormatting(
+                                                'id_ID', null);
+                                            final dateFormat = DateFormat(
+                                                'dd MMMM yyyy', 'id_ID');
+                                            final timeFormat =
+                                                DateFormat('HH:mm');
+                                            final formattedDate =
+                                                dateFormat.format(date);
+                                            final formattedTime =
+                                                timeFormat.format(date);
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                  // Tampilkan foto profil pengguna komentar di sini
+                                                  // comment.userProfileImage
+                                                  ),
+                                              title: Text(
+                                                "$formattedDate,  $formattedTime",
+                                                style: MyFont.poppins(
+                                                    fontSize: 11, color: black),
+                                              ), // Ganti dengan yang sesuai
+                                              subtitle: Text(comment.comment,
+                                                  style: MyFont.poppins(
+                                                      fontSize: 12,
+                                                      color: black)),
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                      // TextField untuk menulis komentar
+                                      TextField(
+                                        textInputAction: TextInputAction.done,
+                                        controller: comment,
+                                        style: MyFont.poppins(
+                                          fontSize: 14,
+                                          color: black,
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        readOnly: false,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                          LengthLimitingTextInputFormatter(225)
+                                        ],
+                                        decoration: InputDecoration(
+                                          hintText: "Tambahkan komentar...",
+                                          isDense: false,
+                                          border: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: primaryColor)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           icon: Icon(
                             Icons.chat_outlined,
                             color: primaryColor,
@@ -472,6 +581,175 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
           ),
         );
       },
+    );
+  }
+
+  var comment = TextEditingController();
+  void _showModalSheet(BuildContext context) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (builder) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 15,
+            right: 15,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                alignment: Alignment.center,
+                height: 8,
+                width: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: grey.withOpacity(0.1),
+                ),
+              ),
+              // Gunakan FutureBuilder untuk menampilkan data komentar
+              SizedBox(
+                height: 400,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: comments.length,
+                  itemBuilder: (context, index) {
+                    final comment = comments[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                          // Tampilkan foto profil pengguna komentar di sini
+                          // comment.userProfileImage
+                          ),
+                      title: Text(comment.createdAt
+                          .toString()), // Ganti dengan yang sesuai
+                      subtitle: Text(comment.comment),
+                    );
+                  },
+                ),
+              ),
+
+              // TextField untuk menulis komentar
+              TextField(
+                textInputAction: TextInputAction.done,
+                controller: comment,
+                style: MyFont.poppins(
+                  fontSize: 14,
+                  color: black,
+                ),
+                keyboardType: TextInputType.text,
+                readOnly: false,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(225)
+                ],
+                decoration: InputDecoration(
+                  hintText: "Tambahkan komentar...",
+                  isDense: false,
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: primaryColor)),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class CommentListWidget extends StatelessWidget {
+  var comment = TextEditingController();
+  CommentListWidget({required this.comment, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: EdgeInsets.only(
+        top: 10,
+        left: 15,
+        right: 15,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            height: 8,
+            width: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              color: grey.withOpacity(0.1),
+            ),
+          ),
+          // Gunakan FutureBuilder untuk menampilkan data komentar
+          FutureBuilder<Map<String, dynamic>>(
+            future: ApiServices.getData(1), // Ganti dengan metode yang sesuai
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // Ambil daftar komentar dari data snapshot
+                final List<CommentModel> comments =
+                    snapshot.data?['comments'] ?? [];
+                if (comments.isEmpty) {
+                  // Tampilkan pesan jika tidak ada komentar
+                  return const SizedBox(
+                      height: 400,
+                      child: Center(
+                          child: Text(
+                        'Tidak ada komentar',
+                      )));
+                }
+                return SizedBox(
+                  height: 400,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = comments[index];
+                      return ListTile(
+                        leading: CircleAvatar(
+                            // Tampilkan foto profil pengguna komentar di sini
+                            // comment.userProfileImage
+                            ),
+                        title: Text(comment.createdAt
+                            .toString()), // Ganti dengan yang sesuai
+                        subtitle: Text(comment.comment),
+                      );
+                    },
+                  ),
+                );
+              }
+            },
+          ),
+          // TextField untuk menulis komentar
+          TextField(
+            textInputAction: TextInputAction.done,
+            controller: comment,
+            style: MyFont.poppins(
+              fontSize: 14,
+              color: black,
+            ),
+            keyboardType: TextInputType.text,
+            readOnly: false,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(225)
+            ],
+            decoration: InputDecoration(
+              hintText: "Tambahkan komentar...",
+              isDense: false,
+              border: UnderlineInputBorder(
+                  borderSide: BorderSide(color: primaryColor)),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

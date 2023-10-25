@@ -3,7 +3,6 @@ class CommentModel {
   final String comment;
   final String postId;
   final String userId;
-  final String typeJobs;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -12,7 +11,6 @@ class CommentModel {
     required this.comment,
     required this.postId,
     required this.userId,
-    required this.typeJobs,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,7 +21,6 @@ class CommentModel {
       comment: json['comment'],
       postId: json['post_id'],
       userId: json['user_id'],
-      typeJobs: json['type_jobs'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );

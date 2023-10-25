@@ -17,8 +17,8 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://10.10.177.240:8000/api";
-  static const String baseUrlImage = "http://10.10.177.240:8000/users/";
+  static const String baseUrl = "http://192.168.0.117:8000/api";
+  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
 
   static Future<Map<String, dynamic>> login(
       String emailOrNik, String password) async {
@@ -312,6 +312,7 @@ class ApiServices {
       }
     } else if (jsonResponse['message'] ==
         "ops , nampaknya akun kamu belum terverifikasi") {
+      // ignore: use_build_context_synchronously
       GetAwesomeDialog.showCustomDialog(
         isTouch: false,
         context: context,
@@ -1070,6 +1071,7 @@ class ApiServices {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
 
       if (response.statusCode == 200) {
+        print(token);
         final Map<String, dynamic> data = jsonResponse['data'];
         final int totalItems = data['total_item'];
         final int totalPage = data['total_page'];

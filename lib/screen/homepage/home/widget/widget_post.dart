@@ -1,7 +1,11 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/profile/post/widget_detail_post_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 
 class WidgetPost extends StatefulWidget {
   const WidgetPost({Key? key});
@@ -52,6 +56,49 @@ class _WidgetPostState extends State<WidgetPost> {
     if (totalPage != null && page < totalPage!) {
       page++;
       fetchData();
+    }
+  }
+
+  var commentController = TextEditingController();
+  String formatTimeAgoo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inSeconds < 60) {
+      return "${difference.inSeconds} detik yang lalu";
+    } else if (difference.inMinutes < 60) {
+      return "${difference.inMinutes} menit yang lalu";
+    } else if (difference.inHours < 1) {
+      return "${difference.inHours} jam yang lalu";
+    } else if (difference.inHours < 24) {
+      return "${difference.inHours} jam yang lalu";
+    } else if (difference.inHours < 48) {
+      return "1 hari yang lalu";
+    } else if (difference.inDays < 7) {
+      return "${difference.inDays} hari yang lalu";
+    } else if (difference.inDays < 28) {
+      final weeks = difference.inDays ~/ 7;
+      return "$weeks minggu yang lalu";
+    } else if (difference.inDays < 365) {
+      final months = difference.inDays ~/ 30;
+      return "$months bulan yang lalu";
+    } else {
+      final years = difference.inDays ~/ 365;
+      return "$years tahun yang lalu";
+    }
+  }
+
+  String formatTimeAgo(int hours, int minutes) {
+    if (hours >= 24) {
+      final days = hours ~/ 24;
+      return "$days hari yang lalu";
+    } else if (hours > 0) {
+      final remainingMinutes = minutes % 60;
+      return "$hours jam $remainingMinutes menit yang lalu";
+    } else if (minutes > 0) {
+      return "$minutes menit yang lalu";
+    } else {
+      return "Baru saja";
     }
   }
 
@@ -173,7 +220,108 @@ class _WidgetPostState extends State<WidgetPost> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              builder: (builder) {
+                                return SingleChildScrollView(
+                                  padding: EdgeInsets.only(
+                                    top: 10,
+                                    left: 15,
+                                    right: 15,
+                                    bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom +
+                                        20,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        alignment: Alignment.center,
+                                        height: 8,
+                                        width: 100,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: grey.withOpacity(0.1),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 400,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: post['comments'].length,
+                                          itemBuilder: (context, index) {
+                                            initializeDateFormatting(
+                                                'id_ID', null);
+                                            final comment =
+                                                post['comments'][index];
+                                            String dateTime =
+                                                comment.createdAt.toString();
+                                            final date =
+                                                DateTime.parse(dateTime);
+                                            initializeDateFormatting(
+                                                'id_ID', null);
+                                            final dateFormat = DateFormat(
+                                                'dd MMMM yyyy', 'id_ID');
+                                            final timeFormat =
+                                                DateFormat('HH:mm');
+                                            final formattedDate =
+                                                dateFormat.format(date);
+                                            final formattedTime =
+                                                timeFormat.format(date);
+
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                  // Tampilkan foto profil pengguna komentar di sini
+                                                  // comment.userProfileImage
+                                                  ),
+                                              title: Text(
+                                                "$formattedDate $formattedTime",
+                                                style: MyFont.poppins(
+                                                    fontSize: 11, color: black),
+                                              ), // Ganti dengan yang sesuai
+                                              subtitle: Text(comment.comment,
+                                                  style: MyFont.poppins(
+                                                      fontSize: 12,
+                                                      color: black)),
+                                            );
+                                          },
+                                        ),
+                                      ),
+
+                                      // TextField untuk menulis komentar
+                                      TextField(
+                                        textInputAction: TextInputAction.done,
+                                        controller: commentController,
+                                        style: MyFont.poppins(
+                                          fontSize: 14,
+                                          color: black,
+                                        ),
+                                        keyboardType: TextInputType.text,
+                                        readOnly: false,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter
+                                              .digitsOnly,
+                                          LengthLimitingTextInputFormatter(225)
+                                        ],
+                                        decoration: InputDecoration(
+                                          hintText: "Tambahkan komentar...",
+                                          isDense: false,
+                                          border: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: primaryColor)),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           icon: Icon(
                             Icons.chat_outlined,
                             color: primaryColor,

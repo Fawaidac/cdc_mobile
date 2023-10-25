@@ -1,6 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/screen1/detail%20user.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 
