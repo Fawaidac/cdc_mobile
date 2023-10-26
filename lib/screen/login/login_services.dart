@@ -14,4 +14,13 @@ class LoginServices {
     final data = jsonDecode(res.body);
     return data;
   }
+
+  static Future<Map<String, dynamic>> sendFcmToken(String token) async {
+    final res = await http
+        .put(Uri.parse('${ApiServices.baseUrl}/user/fcmtoken'), body: {
+      'token': token,
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
 }

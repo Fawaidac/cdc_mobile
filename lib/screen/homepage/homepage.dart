@@ -8,6 +8,7 @@ import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
 import 'package:cdc_mobile/screen/homepage/ikapj/ikapj_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -106,6 +107,29 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       index = value;
     });
+  }
+   late PermissionStatus _notificationStatus;
+  late PermissionStatus _storageStatus;
+
+  Future<void> requestPermissions() async {
+    // Request notification permission
+    final notificationStatus = await Permission.notification.request();
+    setState(() {
+      _notificationStatus = notificationStatus;
+    });
+
+    // Request external storage permission
+    final storageStatus = await Permission.storage.request();
+    setState(() {
+      _storageStatus = storageStatus;
+    });
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    requestPermissions();
+
   }
 
   bool active = true;

@@ -2,9 +2,12 @@ import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/login/login_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController {
+  final firebaseMessaging = FirebaseMessaging.instance;
+
   Future<void> handleLogin(
       String emailOrNik, String password, BuildContext context) async {
     try {
@@ -16,8 +19,11 @@ class LoginController {
         DateTime expirationTime = DateTime.now().add(Duration(days: 7));
         prefs.setInt(
             'tokenExpirationTime', expirationTime.millisecondsSinceEpoch);
-
+        String? fcmToken = await firebaseMessaging.getToken();
+        await LoginServices.sendFcmToken(fcmToken!);
         Fluttertoast.showToast(msg: response['message']);
+        await firebaseMessaging.subscribeToTopic('all');
+
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
             context,
