@@ -4,6 +4,7 @@ import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart'
 import 'package:cdc_mobile/screen/homepage/profile/jobs/add_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/tentang.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,6 +81,7 @@ class _SettingState extends State<Setting> {
                       await SharedPreferences.getInstance();
                   preferences.remove('token');
                   preferences.remove('tokenExpirationTime');
+                  await ApiServices.logout();
                   // ignore: use_build_context_synchronously
                   Navigator.pushReplacement(
                       context,

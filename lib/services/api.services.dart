@@ -20,6 +20,18 @@ class ApiServices {
   static const String baseUrl = "http://192.168.0.117:8000/api";
   static const String baseUrlImage = "http://192.168.0.117:8000/users/";
 
+  static Future<Map<String, dynamic>> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final res = await http
+        .post(Uri.parse('${ApiServices.baseUrl}/user/logout'), headers: {
+      "Authorization": "Bearer $token",
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
+
   static Future<User?> userInfo() async {
     try {
       final prefs = await SharedPreferences.getInstance();
