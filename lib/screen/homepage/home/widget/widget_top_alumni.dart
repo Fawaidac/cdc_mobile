@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/home/widget/widget_top_20_alumni.dart';
+import 'package:cdc_mobile/screen/homepage/home/widget/widget_top_20_salary.dart';
 import 'package:flutter/material.dart';
 
 class WidgetTopAlumni extends StatelessWidget {
@@ -23,6 +24,12 @@ class WidgetTopAlumni extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Top20Alumni(),
+                      ));
+                } else {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Top20Salary(),
                       ));
                 }
               },

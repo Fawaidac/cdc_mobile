@@ -10,14 +10,20 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class MyEducations extends StatelessWidget {
+class MyEducations extends StatefulWidget {
   const MyEducations({super.key});
 
+  @override
+  State<MyEducations> createState() => _MyEducationsState();
+}
+
+class _MyEducationsState extends State<MyEducations> {
   void handleDeleteEducation(String educationId) async {
     try {
       final response = await ApiServices.deleteEducations(educationId);
       if (response['code'] == 200) {
         Fluttertoast.showToast(msg: response['message']);
+        setState(() {});
       } else {
         Fluttertoast.showToast(msg: response['message']);
       }
@@ -136,11 +142,6 @@ class MyEducations extends StatelessWidget {
                                   "Apakah anda yakin untuk menghapus data\npendidikan anda",
                               btnOkPress: () {
                                 handleDeleteEducation("${educations.id}");
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ));
                               },
                               btnCancelPress: () {
                                 Navigator.pop(context);

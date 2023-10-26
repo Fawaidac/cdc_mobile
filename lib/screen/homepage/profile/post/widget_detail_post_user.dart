@@ -4,6 +4,7 @@ import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/homepage/profile/post/widget_update_post.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ class WidgetDetailPost extends StatefulWidget {
   final String position;
   final String company;
   final String typeJobs;
+  final String linkApply;
   final String expired;
   final String verified;
   final String name;
@@ -31,6 +33,7 @@ class WidgetDetailPost extends StatefulWidget {
       required this.description,
       required this.id,
       required this.position,
+      required this.linkApply,
       required this.company,
       required this.typeJobs,
       required this.expired,
@@ -55,9 +58,8 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
     final bool option = checkBool(); // Convert bool to String
     final response = await ApiServices.nonActiveComment(postId, option);
     if (response['code'] == 200) {
-      print('ok can comment');
       // ignore: use_build_context_synchronously
-      Navigator.push(
+      Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => HomePage(),
@@ -284,6 +286,21 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
                                     handleUpdateComment(
                                       widget.id,
                                     );
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => UpdatePosting(
+                                            idPost: widget.id,
+                                            image: widget.image,
+                                            description: widget.description,
+                                            company: widget.description,
+                                            expired: widget.expired,
+                                            position: widget.position,
+                                            typeJobs: widget.typeJobs,
+                                            linkApply: widget.linkApply,
+                                          ),
+                                        ));
                                   }
                                 }
                               });
@@ -356,116 +373,88 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
                             fit: BoxFit.cover)),
                     width: MediaQuery.of(context).size.width,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (builder) {
-                                return SingleChildScrollView(
-                                  padding: EdgeInsets.only(
-                                    top: 10,
-                                    left: 15,
-                                    right: 15,
-                                    bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom +
-                                        20,
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        context: context,
+                        builder: (builder) {
+                          return SingleChildScrollView(
+                            padding: EdgeInsets.only(
+                              top: 10,
+                              left: 15,
+                              right: 15,
+                              bottom:
+                                  MediaQuery.of(context).viewInsets.bottom + 20,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 8,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: grey.withOpacity(0.1),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height: 8,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: grey.withOpacity(0.1),
-                                        ),
-                                      ),
+                                ),
 
-                                      SizedBox(
-                                        height: 400,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: comments.length,
-                                          itemBuilder: (context, index) {
-                                            final comment = comments[index];
-                                            String dateTime =
-                                                comment.createdAt.toString();
-                                            final date =
-                                                DateTime.parse(dateTime);
-                                            initializeDateFormatting(
-                                                'id_ID', null);
-                                            final dateFormat = DateFormat(
-                                                'dd MMMM yyyy', 'id_ID');
-                                            final timeFormat =
-                                                DateFormat('HH:mm');
-                                            final formattedDate =
-                                                dateFormat.format(date);
-                                            final formattedTime =
-                                                timeFormat.format(date);
-                                            return ListTile(
-                                              leading: CircleAvatar(
-                                                  // Tampilkan foto profil pengguna komentar di sini
-                                                  // comment.userProfileImage
-                                                  ),
-                                              title: Text(
-                                                "$formattedDate,  $formattedTime",
-                                                style: MyFont.poppins(
-                                                    fontSize: 11, color: black),
-                                              ), // Ganti dengan yang sesuai
-                                              subtitle: Text(comment.comment,
-                                                  style: MyFont.poppins(
-                                                      fontSize: 12,
-                                                      color: black)),
-                                            );
-                                          },
-                                        ),
-                                      ),
-
-                                      // TextField untuk menulis komentar
-                                      TextField(
-                                        textInputAction: TextInputAction.done,
-                                        controller: comment,
-                                        style: MyFont.poppins(
-                                          fontSize: 14,
-                                          color: black,
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        readOnly: false,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          LengthLimitingTextInputFormatter(225)
-                                        ],
-                                        decoration: InputDecoration(
-                                          hintText: "Tambahkan komentar...",
-                                          isDense: false,
-                                          border: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: primaryColor)),
-                                        ),
-                                      ),
-                                    ],
+                                SizedBox(
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: comments.length,
+                                    itemBuilder: (context, index) {
+                                      final comment = comments[index];
+                                      String dateTime =
+                                          comment.createdAt.toString();
+                                      final date = DateTime.parse(dateTime);
+                                      initializeDateFormatting('id_ID', null);
+                                      final dateFormat =
+                                          DateFormat('dd MMMM yyyy', 'id_ID');
+                                      final timeFormat = DateFormat('HH:mm');
+                                      final formattedDate =
+                                          dateFormat.format(date);
+                                      final formattedTime =
+                                          timeFormat.format(date);
+                                      return ListTile(
+                                        leading: CircleAvatar(
+                                            // Tampilkan foto profil pengguna komentar di sini
+                                            // comment.userProfileImage
+                                            ),
+                                        title: Text(
+                                          "$formattedDate,  $formattedTime",
+                                          style: MyFont.poppins(
+                                              fontSize: 11, color: black),
+                                        ), // Ganti dengan yang sesuai
+                                        subtitle: Text(comment.comment,
+                                            style: MyFont.poppins(
+                                                fontSize: 12, color: black)),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            );
-                          },
-                          icon: Icon(
-                            Icons.chat_outlined,
-                            color: primaryColor,
-                          )),
+                                ),
+
+                                // TextField untuk menulis komentar
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10, top: 10),
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Image.asset(
+                          "images/comment.png",
+                          height: 30,
+                          color: primaryColor,
+                        ),
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

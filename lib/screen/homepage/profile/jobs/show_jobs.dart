@@ -10,14 +10,20 @@ import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class MyJobs extends StatelessWidget {
+class MyJobs extends StatefulWidget {
   const MyJobs({super.key});
 
+  @override
+  State<MyJobs> createState() => _MyJobsState();
+}
+
+class _MyJobsState extends State<MyJobs> {
   void handleDeleteJobs(String jobsId) async {
     try {
       final response = await ApiServices.deleteJobs(jobsId);
       if (response['code'] == 200) {
         Fluttertoast.showToast(msg: response['message']);
+        setState(() {});
       } else {
         Fluttertoast.showToast(msg: response['message']);
       }
@@ -136,11 +142,6 @@ class MyJobs extends StatelessWidget {
                                   "Apakah anda yakin untuk menghapus data\npekerjaan anda?",
                               btnOkPress: () async {
                                 handleDeleteJobs("${jobs.id}");
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ));
                               },
                               btnCancelPress: () {
                                 Navigator.pop(context);

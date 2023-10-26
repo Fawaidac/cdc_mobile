@@ -113,6 +113,7 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                           verified: post['verified'],
                           name: widget.name,
                           profile: widget.image,
+                          linkApply: post['link_apply'],
                           id: post['id'],
                           commentModel: post['comments'],
                           can: post['can_comment'],
@@ -129,6 +130,7 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                     ),
                   ),
                 ),
+                
               );
             },
           );

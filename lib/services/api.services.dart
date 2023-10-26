@@ -7,6 +7,7 @@ import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
+import 'package:cdc_mobile/model/salary_model.dart';
 import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
@@ -142,6 +143,41 @@ class ApiServices {
     final response = await request.send();
     final streamedResponse = await http.Response.fromStream(response);
     final data = json.decode(streamedResponse.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> updatePostUser(
+    String linkApply,
+    String company,
+    String description,
+    String expired,
+    String typeJob,
+    String position,
+    String postAt,
+    String idPost,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    final Map<String, dynamic> requestBody = {
+      "description": description,
+      "link": linkApply,
+      "type_jobs": typeJob,
+      "company": company,
+      "position": position,
+      "post_at": postAt,
+      "expired": expired,
+    };
+
+    final response =
+        await http.put(Uri.parse('$baseUrl/user/post/update/$idPost'),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(requestBody));
+
+    final data = jsonDecode(response.body);
     return data;
   }
 
@@ -1040,6 +1076,54 @@ class ApiServices {
     return null;
   }
 
+  static Future<List<UserProfile>> fetchTopSalary() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    String url = '$baseUrl/user/ranking/salary';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {"Authorization": "Bearer $token"},
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          final List<dynamic> dataList = jsonResponse['data'];
+
+          if (dataList.isNotEmpty) {
+            List<UserProfile> userProfiles = [];
+            for (var userData in dataList) {
+              userProfiles.add(
+                UserProfile(
+                  fullname: userData['fullname'],
+                  lastPosition: userData['last_position'],
+                  highestSalary: userData['highest_salary'],
+                  company: userData['company'],
+                ),
+              );
+            }
+            return userProfiles;
+          } else {
+            print('No data available');
+          }
+        } else {
+          print('Failed to fetch user data');
+        }
+      } else {
+        print('Failed to load data ${response.statusCode}');
+      }
+
+      return []; // Return an empty list when no data is available
+    } catch (e) {
+      print('Error: $e');
+      return []; // Return an empty list in case of an error
+    }
+  }
+
   static Future<Map<String, dynamic>> getData(int page) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -1080,6 +1164,20 @@ class ApiServices {
 
           // Tambahkan objek pengunggah ke dalam postResponse
           postResponse['uploader'] = uploader;
+          // Periksa apakah objek 'user' dalam komentar tidak null
+          if (comments.isNotEmpty) {
+            final CommentModel comment =
+                comments[0]; // Mengakses objek CommentModel
+            final User user =
+                comment.user; // Mengakses objek user dari CommentModel
+
+            if (user != null) {
+              // Pastikan user tidak null sebelum mengakses properti User
+              // Misalnya, user.fullname
+              postResponse['comments'][0].user = user;
+            }
+          }
+
           postList.add(postResponse);
         }
 
@@ -1165,6 +1263,24 @@ class ApiServices {
     final response = await http.delete(
         Uri.parse('$baseUrl/user/post/delete/$postId'),
         headers: {"Authorization": "Bearer $token"});
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
+  static Future<Map<String, dynamic>> sendComment(
+      String postId, String comment) async {
+    final Map<String, dynamic> requestBody = {
+      "comment": comment,
+      "post_id": postId
+    };
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final response = await http.post(Uri.parse('$baseUrl/user/post/comment'),
+        body: jsonEncode(requestBody),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        });
     final data = jsonDecode(response.body);
     return data;
   }

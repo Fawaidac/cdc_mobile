@@ -149,6 +149,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
       if (imageUrl != null) {
         // Update the UI or save the image URL wherever needed.
         print('Image URL: $imageUrl');
+        setState(() {});
       } else {
         // Handle null image URL
       }
@@ -509,6 +510,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
       } else {
         Fluttertoast.showToast(msg: response['message']);
       }
+      setState(() {});
     } catch (e) {
       print(e);
     }

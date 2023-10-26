@@ -13,7 +13,10 @@ class CustomTextField extends StatefulWidget {
   bool isObscure;
   IconData icon;
   int isLength;
+  bool isWhite;
   TextInputAction textInputAction;
+  Function()? onTap;
+
   CustomTextField(
       {Key? key,
       required this.controller,
@@ -21,9 +24,11 @@ class CustomTextField extends StatefulWidget {
       required this.keyboardType,
       this.isEnable = false,
       this.isObscure = false,
+      this.isWhite = false,
       required this.inputFormatters,
       required this.icon,
       this.isLength = 225,
+      this.onTap,
       this.textInputAction = TextInputAction.done})
       : super(key: key);
 
@@ -59,9 +64,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ],
             decoration: InputDecoration(
               hintText: widget.label,
-              suffixIcon: Icon(
-                widget.icon,
-                color: grey,
+              suffixIcon: InkWell(
+                onTap: widget.onTap,
+                child: Icon(
+                  widget.icon,
+                  color: widget.isWhite == true ? black : grey,
+                ),
               ),
               isDense: true,
               hintStyle: GoogleFonts.poppins(fontSize: 13, color: grey),
@@ -80,7 +88,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 borderRadius: BorderRadius.circular(10),
               ),
               filled: true,
-              fillColor: Color(0xffC4C4C4).withOpacity(0.2),
+              fillColor: widget.isWhite == true
+                  ? white
+                  : Color(0xffC4C4C4).withOpacity(0.2),
             ),
           )
         ],

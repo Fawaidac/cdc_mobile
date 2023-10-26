@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/home/widget/widget_detail_all_post.dart';
 import 'package:cdc_mobile/screen/homepage/profile/post/widget_detail_post_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -205,96 +206,26 @@ class _WidgetPostState extends State<WidgetPost> {
                     ),
                     InkWell(
                       onTap: () {
-                        showModalBottomSheet(
-                          isScrollControlled: true,
-                          useSafeArea: false,
-                          context: context,
-                          builder: (builder) {
-                            return SingleChildScrollView(
-                              padding: EdgeInsets.only(
-                                top: 10,
-                                left: 15,
-                                right: 15,
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom +
-                                        20,
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WidgetDetailAllPost(
+                                image: post['image'],
+                                description: post['description'],
+                                id: post['id'],
+                                position: post['position'],
+                                company: post['company'],
+                                typeJobs: post['type_jobs'],
+                                expired: post['expired'],
+                                isUser: false,
+                                verified: post['verified'],
+                                name: post['uploader'].fullname,
+                                profile: post['uploader'].foto,
+                                can: post['can_comment'],
+                                postAt: post['post_at'],
+                                commentModel: post['comments'],
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    alignment: Alignment.center,
-                                    height: 8,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(8),
-                                      color: grey.withOpacity(0.1),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 300,
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: post['comments'].length,
-                                      itemBuilder: (context, index) {
-                                        final comment = post['comments'][index];
-                                        String dateTime =
-                                            comment.createdAt.toString();
-                                        final date = DateTime.parse(dateTime);
-                                        initializeDateFormatting('id_ID', null);
-                                        final dateFormat =
-                                            DateFormat('dd MMMM yyyy', 'id_ID');
-                                        final timeFormat = DateFormat('HH:mm');
-                                        final formattedDate =
-                                            dateFormat.format(date);
-                                        final formattedTime =
-                                            timeFormat.format(date);
-
-                                        return ListTile(
-                                          leading: CircleAvatar(
-                                              // Tampilkan foto profil pengguna komentar di sini
-                                              // comment.userProfileImage
-                                              ),
-                                          title: Text(
-                                            "$formattedDate $formattedTime",
-                                            style: MyFont.poppins(
-                                                fontSize: 11, color: black),
-                                          ), // Ganti dengan yang sesuai
-                                          subtitle: Text(comment.comment,
-                                              style: MyFont.poppins(
-                                                  fontSize: 12, color: black)),
-                                        );
-                                      },
-                                    ),
-                                  ),
-
-                                  // TextField untuk menulis komentar
-                                  TextField(
-                                    textInputAction: TextInputAction.done,
-                                    controller: commentController,
-                                    style: MyFont.poppins(
-                                      fontSize: 14,
-                                      color: black,
-                                    ),
-                                    keyboardType: TextInputType.text,
-                                    readOnly: false,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                      LengthLimitingTextInputFormatter(225)
-                                    ],
-                                    decoration: InputDecoration(
-                                      hintText: "Tambahkan komentar...",
-                                      isDense: false,
-                                      border: UnderlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: primaryColor)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
+                            ));
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(right: 10),

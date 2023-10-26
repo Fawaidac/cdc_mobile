@@ -1,3 +1,5 @@
+import 'package:cdc_mobile/model/user_model.dart';
+
 class CommentModel {
   final String id;
   final String comment;
@@ -5,7 +7,7 @@ class CommentModel {
   final String userId;
   final DateTime createdAt;
   final DateTime updatedAt;
-
+  User user;
   CommentModel({
     required this.id,
     required this.comment,
@@ -13,6 +15,7 @@ class CommentModel {
     required this.userId,
     required this.createdAt,
     required this.updatedAt,
+    required this.user,
   });
 
   factory CommentModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +26,7 @@ class CommentModel {
       userId: json['user_id'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
+      user: User.fromJson(json['user']),
     );
   }
 }
