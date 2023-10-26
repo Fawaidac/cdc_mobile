@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
 
 class WidgetPost extends StatefulWidget {
   const WidgetPost({Key? key});
@@ -122,75 +123,59 @@ class _WidgetPostState extends State<WidgetPost> {
               if (index == postList.length - 1) {
                 loadMoreData();
               }
+              String dateTime = post['post_at'];
+              final date = DateTime.parse(dateTime);
+              initializeDateFormatting('id_ID', null);
+              final dateFormat = DateFormat('dd MMMM yyyy', 'id_ID');
+              final timeFormat = DateFormat('HH:mm');
+              final formattedDate = dateFormat.format(date);
+              final formattedTime = timeFormat.format(date);
 
               return Container(
-                margin: const EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.only(top: 10),
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(0xff74BCFF).withOpacity(0.1),
+                  color: white,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(post['uploader'].foto ==
-                                  ApiServices.baseUrlImage
-                              ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
-                              : post['uploader'].foto),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              post['uploader'].fullname,
-                              style: MyFont.poppins(fontSize: 12, color: black),
-                            )
-                          ],
-                        ))
-                      ],
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: white,
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  post['position'],
-                                  style: MyFont.poppins(
-                                      fontSize: 14,
-                                      color: black,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  post['company'],
-                                  style: MyFont.poppins(
-                                      fontSize: 12, color: black),
-                                )
-                              ],
-                            ),
+                          CircleAvatar(
+                            radius: 20,
+                            backgroundImage: NetworkImage(post['uploader']
+                                        .foto ==
+                                    ApiServices.baseUrlImage
+                                ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
+                                : post['uploader'].foto),
                           ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                post['uploader'].fullname,
+                                style: MyFont.poppins(
+                                    fontSize: 12,
+                                    color: black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '$formattedDate, $formattedTime',
+                                style:
+                                    MyFont.poppins(fontSize: 11, color: black),
+                              )
+                            ],
+                          )),
                           InkWell(
                             onTap: () {
                               _showDescriptionDialog(
@@ -201,132 +186,146 @@ class _WidgetPostState extends State<WidgetPost> {
                                   post['expired']);
                             },
                             child: Icon(
-                              Icons.keyboard_arrow_down_rounded,
+                              Icons.info_outline,
                               color: black,
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),
                     Container(
-                      height: 250,
+                      margin: const EdgeInsets.only(top: 20, bottom: 10),
+                      height: 500,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
+                          // borderRadius: BorderRadius.circular(10),
                           image: DecorationImage(
                               image: NetworkImage(post['image']),
                               fit: BoxFit.cover)),
                       width: MediaQuery.of(context).size.width,
                     ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: IconButton(
-                          onPressed: () {
-                            showModalBottomSheet(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (builder) {
-                                return SingleChildScrollView(
-                                  padding: EdgeInsets.only(
-                                    top: 10,
-                                    left: 15,
-                                    right: 15,
-                                    bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom +
+                    InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          useSafeArea: false,
+                          context: context,
+                          builder: (builder) {
+                            return SingleChildScrollView(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                left: 15,
+                                right: 15,
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom +
                                         20,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 8,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: grey.withOpacity(0.1),
+                                    ),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        alignment: Alignment.center,
-                                        height: 8,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          color: grey.withOpacity(0.1),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 400,
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: post['comments'].length,
-                                          itemBuilder: (context, index) {
-                                            initializeDateFormatting(
-                                                'id_ID', null);
-                                            final comment =
-                                                post['comments'][index];
-                                            String dateTime =
-                                                comment.createdAt.toString();
-                                            final date =
-                                                DateTime.parse(dateTime);
-                                            initializeDateFormatting(
-                                                'id_ID', null);
-                                            final dateFormat = DateFormat(
-                                                'dd MMMM yyyy', 'id_ID');
-                                            final timeFormat =
-                                                DateFormat('HH:mm');
-                                            final formattedDate =
-                                                dateFormat.format(date);
-                                            final formattedTime =
-                                                timeFormat.format(date);
+                                  SizedBox(
+                                    height: 300,
+                                    child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: post['comments'].length,
+                                      itemBuilder: (context, index) {
+                                        final comment = post['comments'][index];
+                                        String dateTime =
+                                            comment.createdAt.toString();
+                                        final date = DateTime.parse(dateTime);
+                                        initializeDateFormatting('id_ID', null);
+                                        final dateFormat =
+                                            DateFormat('dd MMMM yyyy', 'id_ID');
+                                        final timeFormat = DateFormat('HH:mm');
+                                        final formattedDate =
+                                            dateFormat.format(date);
+                                        final formattedTime =
+                                            timeFormat.format(date);
 
-                                            return ListTile(
-                                              leading: CircleAvatar(
-                                                  // Tampilkan foto profil pengguna komentar di sini
-                                                  // comment.userProfileImage
-                                                  ),
-                                              title: Text(
-                                                "$formattedDate $formattedTime",
-                                                style: MyFont.poppins(
-                                                    fontSize: 11, color: black),
-                                              ), // Ganti dengan yang sesuai
-                                              subtitle: Text(comment.comment,
-                                                  style: MyFont.poppins(
-                                                      fontSize: 12,
-                                                      color: black)),
-                                            );
-                                          },
-                                        ),
-                                      ),
+                                        return ListTile(
+                                          leading: CircleAvatar(
+                                              // Tampilkan foto profil pengguna komentar di sini
+                                              // comment.userProfileImage
+                                              ),
+                                          title: Text(
+                                            "$formattedDate $formattedTime",
+                                            style: MyFont.poppins(
+                                                fontSize: 11, color: black),
+                                          ), // Ganti dengan yang sesuai
+                                          subtitle: Text(comment.comment,
+                                              style: MyFont.poppins(
+                                                  fontSize: 12, color: black)),
+                                        );
+                                      },
+                                    ),
+                                  ),
 
-                                      // TextField untuk menulis komentar
-                                      TextField(
-                                        textInputAction: TextInputAction.done,
-                                        controller: commentController,
-                                        style: MyFont.poppins(
-                                          fontSize: 14,
-                                          color: black,
-                                        ),
-                                        keyboardType: TextInputType.text,
-                                        readOnly: false,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          LengthLimitingTextInputFormatter(225)
-                                        ],
-                                        decoration: InputDecoration(
-                                          hintText: "Tambahkan komentar...",
-                                          isDense: false,
-                                          border: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: primaryColor)),
-                                        ),
-                                      ),
+                                  // TextField untuk menulis komentar
+                                  TextField(
+                                    textInputAction: TextInputAction.done,
+                                    controller: commentController,
+                                    style: MyFont.poppins(
+                                      fontSize: 14,
+                                      color: black,
+                                    ),
+                                    keyboardType: TextInputType.text,
+                                    readOnly: false,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(225)
                                     ],
+                                    decoration: InputDecoration(
+                                      hintText: "Tambahkan komentar...",
+                                      isDense: false,
+                                      border: UnderlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: primaryColor)),
+                                    ),
                                   ),
-                                );
-                              },
+                                ],
+                              ),
                             );
                           },
-                          icon: Icon(
-                            Icons.chat_outlined,
-                            color: primaryColor,
-                          )),
-                    )
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: Image.asset(
+                            "images/comment.png",
+                            height: 30,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                        padding:
+                            const EdgeInsets.only(right: 10, left: 10, top: 10),
+                        child: ReadMoreText(
+                          post['description'],
+                          trimLines: 2,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: "Baca Selengkapnya",
+                          trimExpandedText: "...Lebih Sedikit",
+                          lessStyle: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                          moreStyle: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        ))
                   ],
                 ),
               );

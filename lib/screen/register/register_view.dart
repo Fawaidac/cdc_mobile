@@ -3,7 +3,6 @@ import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/screen/register/register_controller.dart';
-import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

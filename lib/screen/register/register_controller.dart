@@ -1,6 +1,6 @@
+import 'package:cdc_mobile/screen/otp/otp_view.dart';
 import 'package:cdc_mobile/screen/register/register_services.dart';
 import 'package:cdc_mobile/screen/register/register_view.dart';
-import 'package:cdc_mobile/screen/register/verifikasi_otp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -54,7 +54,7 @@ class RegisterController {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => VerifikasiOtp(
+              builder: (context) => OtpView(
                 fullname: fullname,
                 email: email,
                 pw: pw,

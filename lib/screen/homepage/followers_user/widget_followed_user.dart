@@ -1,5 +1,5 @@
 import 'package:cdc_mobile/model/followers_model.dart';
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';

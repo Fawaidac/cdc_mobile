@@ -1,5 +1,5 @@
 import 'package:card_loading/card_loading.dart';
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/followers_user/followers_user.dart';

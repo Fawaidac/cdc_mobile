@@ -2,7 +2,7 @@ import 'package:card_loading/card_loading.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';
@@ -269,6 +269,12 @@ class _UsersAllState extends State<UsersAll> {
                                   height: 100,
                                   decoration: BoxDecoration(
                                       color: grey.withOpacity(0.2),
+                                      image: DecorationImage(
+                                          image: NetworkImage(user['foto'] ==
+                                                  ApiServices.baseUrlImage
+                                              ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
+                                              : user['foto']),
+                                          fit: BoxFit.cover),
                                       borderRadius: BorderRadius.circular(10)),
                                 ),
                                 const SizedBox(
@@ -277,21 +283,22 @@ class _UsersAllState extends State<UsersAll> {
                                 Expanded(
                                     child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      user['fullname'],
-                                      style: MyFont.poppins(
-                                          fontSize: 14,
-                                          color: black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5.0),
+                                      child: Text(
+                                        user['fullname'],
+                                        style: MyFont.poppins(
+                                            fontSize: 14,
+                                            color: black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                     ),
                                     for (var education in filteredEducations)
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(top: 8.0),
+                                            const EdgeInsets.only(top: 5.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

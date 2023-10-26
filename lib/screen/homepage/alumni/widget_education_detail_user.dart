@@ -1,4 +1,4 @@
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/services/api.services.dart';

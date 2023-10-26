@@ -9,7 +9,7 @@ class WidgetTopAlumni extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.only(left: 0, bottom: 10, top: 10),
+        margin: const EdgeInsets.only(left: 10, bottom: 10, top: 10),
         height: 100,
         child: ListView.builder(
           itemCount: 2,

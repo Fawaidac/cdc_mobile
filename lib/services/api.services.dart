@@ -7,7 +7,7 @@ import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
-import 'package:cdc_mobile/model/user.dart';
+import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:flutter/material.dart';
@@ -19,21 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ApiServices {
   static const String baseUrl = "http://192.168.0.117:8000/api";
   static const String baseUrlImage = "http://192.168.0.117:8000/users/";
-
-  static Future<Map<String, dynamic>> register(String email, String nik,
-      String fullname, String password, String no_telp, String alamat) async {
-    final res =
-        await http.post(Uri.parse('$baseUrl/auth/user/register'), body: {
-      'email': email,
-      'nik': nik,
-      'fullname': fullname,
-      'password': password,
-      'no_telp': no_telp,
-      'alamat': alamat,
-    });
-    final data = jsonDecode(res.body);
-    return data;
-  }
 
   static Future<User?> userInfo() async {
     try {

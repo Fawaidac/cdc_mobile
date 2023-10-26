@@ -12,6 +12,7 @@ class CustomTextField extends StatefulWidget {
   bool isEnable;
   bool isObscure;
   IconData icon;
+  int isLength;
   TextInputAction textInputAction;
   CustomTextField(
       {Key? key,
@@ -22,6 +23,7 @@ class CustomTextField extends StatefulWidget {
       this.isObscure = false,
       required this.inputFormatters,
       required this.icon,
+      this.isLength = 225,
       this.textInputAction = TextInputAction.done})
       : super(key: key);
 
@@ -53,6 +55,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
             },
             inputFormatters: [
               widget.inputFormatters,
+              LengthLimitingTextInputFormatter(widget.isLength),
             ],
             decoration: InputDecoration(
               hintText: widget.label,

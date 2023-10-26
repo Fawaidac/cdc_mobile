@@ -72,6 +72,7 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
             child: Container(
               height: 150,
               padding: const EdgeInsets.all(15),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -115,26 +116,29 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
             ),
           ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
           child: LinearProgressIndicator(
             value: totalSection == 0 ? 0.0 : completedSection / totalSection,
             backgroundColor: Colors.grey[300],
             valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "Lengkapi kuisioner anda agar akun anda terverifikasi",
-              style: MyFont.poppins(fontSize: 12, color: softgrey),
-            ),
-            Text(
-              '$completedSection/$totalSection',
-              textAlign: TextAlign.end,
-              style: MyFont.poppins(fontSize: 12, color: softgrey),
-            ),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Lengkapi kuisioner anda agar akun anda terverifikasi",
+                style: MyFont.poppins(fontSize: 12, color: softgrey),
+              ),
+              Text(
+                '$completedSection/$totalSection',
+                textAlign: TextAlign.end,
+                style: MyFont.poppins(fontSize: 12, color: softgrey),
+              ),
+            ],
+          ),
         ),
       ],
     );

@@ -1,8 +1,10 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
+import 'package:cdc_mobile/screen/aktifasi_akun/aktifasi_akun_view.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/screen/verifikasi/verifikasi_controller.dart';
+import 'package:cdc_mobile/screen/verifikasi/verifikasi_services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -26,21 +28,80 @@ class _VerifikasiViewState extends State<VerifikasiView> {
     }
   }
 
+  void update() async {
+    await VerifikasiServices.update();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    update();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                      MediaQuery.of(context).size.width - 20, // right
+                      20,
+                      0,
+                      0),
+                  items: [
+                    PopupMenuItem<int>(
+                        value: 1,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.login,
+                              color: primaryColor,
+                              size: 20,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Aktifasi akun",
+                              style: MyFont.poppins(fontSize: 12, color: black),
+                            ),
+                          ],
+                        )),
+                  ]).then((value) {
+                if (value != null) {
+                  if (value == 1) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AktifasiAkunView(),
+                        ));
+                  }
+                }
+              });
+            },
+            icon: Icon(
+              Icons.more_vert,
+              color: black,
+            ),
+          ),
+        ],
+      ),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(25),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 50,
-              ),
               Text(
                 "Verifikasi Alumni",
-                style: MyFont.poppins(fontSize: 24, color: black),
+                style: MyFont.poppins(
+                    fontSize: 24, color: black, fontWeight: FontWeight.bold),
               ),
               Text(
                 "Masukan NIM / Email anda",

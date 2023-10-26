@@ -1,6 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
-import 'package:cdc_mobile/screen/homepage/home/fasilitas.dart';
+import 'package:cdc_mobile/screen/homepage/home/fasilitas/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';

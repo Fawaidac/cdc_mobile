@@ -2,7 +2,7 @@ import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/login/login_controller.dart';
-import 'package:cdc_mobile/screen/login/lupa_sandi.dart';
+import 'package:cdc_mobile/screen/lupa_sandi/lupa_sandi_view.dart';
 import 'package:cdc_mobile/screen/register/register_view.dart';
 import 'package:cdc_mobile/screen/verifikasi/verifikasi_view.dart';
 import 'package:flutter/material.dart';
@@ -137,7 +137,7 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => LupaSandi(),
+                                builder: (context) => LupaSandiView(),
                               ));
                         },
                         child: Text(
