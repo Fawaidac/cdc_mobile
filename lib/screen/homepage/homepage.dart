@@ -1,11 +1,13 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';
 import 'package:cdc_mobile/screen/homepage/home/fasilitas/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
 import 'package:cdc_mobile/screen/homepage/ikapj/ikapj_screen.dart';
+import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -133,6 +135,8 @@ class _HomePageState extends State<HomePage> {
     requestPermissions();
   }
 
+  List<Map<String, dynamic>> searchResult = [];
+
   bool active = true;
   var searh = TextEditingController();
   @override
@@ -153,6 +157,19 @@ class _HomePageState extends State<HomePage> {
                   },
                   textInputAction: TextInputAction.done,
                   controller: searh,
+                  onChanged: (value) {
+                    // Panggil metode searchUser dengan kata kunci (value) dari TextField
+                    ApiServices.searchUser(value).then((users) {
+                      // Lakukan sesuatu dengan hasil pencarian pengguna di sini
+                      // Misalnya, Anda dapat memperbarui state untuk menampilkan hasilnya.
+                      setState(() {
+                        searchResult = users;
+                      });
+                    }).catchError((error) {
+                      // Tangani kesalahan jika terjadi
+                      print("Error searching users: $error");
+                    });
+                  },
                   style: MyFont.poppins(fontSize: 12, color: black),
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
@@ -230,84 +247,62 @@ class _HomePageState extends State<HomePage> {
       body: active
           ? screen[index]
           : ListView.builder(
-              itemCount: 3,
+              itemCount: searchResult.length,
               itemBuilder: (context, index) {
-                List<Map<String, String>> users = [
-                  {
-                    'name': 'John Doe',
-                    'job': 'Software Engineer',
-                    'alamat': 'Indonesia',
-                    'image':
-                        'https://th.bing.com/th/id/OIP.pt5YNjPj8LATRUq63w-t6wHaEK?w=315&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7',
-                  },
-                  {
-                    'name': 'Jane Smith',
-                    'job': 'Product Manager',
-                    'alamat': 'United State',
-                    'image':
-                        'https://th.bing.com/th/id/OIP.AytO0mQGWx8RpzBt5qWkcwHaE8?w=276&h=184&c=7&r=0&o=5&dpr=1.1&pid=1.7',
-                  },
-                  {
-                    'name': 'Michael Johnson',
-                    'job': 'UI/UX Designer',
-                    'alamat': 'Korea Selatan',
-                    'image':
-                        'https://th.bing.com/th/id/OIP.l8SaJQUqU1rtrv_84wNzFgHaEK?w=316&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7',
-                  },
-                ];
+                final user = searchResult[index];
 
                 return Column(
                   children: [
                     GestureDetector(
                       onTap: () {
-                        // Navigator.push(
-                        //     context,
-                        //     MaterialPageRoute(
-                        //       builder: (context) => Screen3(
-                        //           name: users[index]['name']!,
-                        //           job: users[index]['job']!,
-                        //           image: users[index]['image']!,
-                        //           alamat: users[index]['alamat']!),
-                        //     ));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailUser(
+                                id: user['id'],
+                              ),
+                            ));
                       },
                       child: Container(
-                          height: 50,
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          padding: EdgeInsets.all(8),
-                          width: MediaQuery.of(context).size.width,
-                          color: white,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage:
-                                    NetworkImage(users[index]['image']!),
-                              ),
-                              const SizedBox(
-                                width: 8,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    users[index]['name']!,
-                                    style: MyFont.poppins(
-                                        fontSize: 14,
-                                        color: black,
-                                        fontWeight: FontWeight.bold),
+                        height: 50,
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        padding: EdgeInsets.all(8),
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.white,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(user['foto']),
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  user['fullname'],
+                                  style: MyFont.poppins(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  Text(
-                                    users[index]['job']!,
-                                    style: MyFont.poppins(
-                                        fontSize: 12,
-                                        color: black,
-                                        fontWeight: FontWeight.normal),
+                                ),
+                                Text(
+                                  user['gender'],
+                                  style: MyFont.poppins(
+                                    fontSize: 12,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal,
                                   ),
-                                ],
-                              )
-                            ],
-                          )),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 );

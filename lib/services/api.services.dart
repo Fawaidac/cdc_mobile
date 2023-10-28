@@ -1361,4 +1361,60 @@ class ApiServices {
     final data = jsonDecode(response.body);
     return data;
   }
+
+  static Future<List<Map<String, dynamic>>> searchUser(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception("Token not found");
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/search'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'key': key}),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data['status'] == true) {
+        final List<dynamic> dataList = data['data'];
+
+        // Membuat daftar data yang akan di-return
+        List<Map<String, dynamic>> result = [];
+
+        for (var item in dataList) {
+          result.add({
+            'id': item['id'],
+            'fullname': item['fullname'],
+            'email': item['email'],
+            'nik': item['nik'],
+            'no_telp': item['no_telp'],
+            'foto': item['foto'],
+            'ttl': item['ttl'],
+            'alamat': item['alamat'],
+            'about': item['about'],
+            'gender': item['gender'],
+            'level': item['level'],
+            'linkedin': item['linkedin'],
+            'facebook': item['facebook'],
+            'instagram': item['instagram'],
+            'twiter': item['twiter'],
+            'account_status': item['account_status'],
+          });
+        }
+
+        return result;
+      } else {
+        throw Exception(data['message']);
+      }
+    } else {
+      throw Exception('Failed to fetch user data');
+    }
+  }
 }
