@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:readmore/readmore.dart';
 
 class WidgetDetailAllPost extends StatefulWidget {
   final String image;
@@ -19,6 +20,7 @@ class WidgetDetailAllPost extends StatefulWidget {
   final String description;
   final String position;
   final String company;
+  final String linkApply;
   final String typeJobs;
   final String expired;
   final String verified;
@@ -38,6 +40,7 @@ class WidgetDetailAllPost extends StatefulWidget {
       required this.typeJobs,
       required this.expired,
       required this.isUser,
+      required this.linkApply,
       required this.verified,
       required this.name,
       required this.profile,
@@ -66,6 +69,20 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
     final response = await ApiServices.sendComment(widget.id, comment.text);
     if (response['code'] == 201) {
       Fluttertoast.showToast(msg: "Berhasil mengomentari postingan");
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));
+    } else {
+      Fluttertoast.showToast(msg: response['message']);
+    }
+  }
+
+  Future<void> deleteComment(String idComment) async {
+    final response = await ApiServices.deleteComment(widget.id, idComment);
+    if (response['code'] == 200) {
+      Fluttertoast.showToast(msg: "Berhasil menghapus komentar");
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -132,8 +149,7 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Expanded(
-                            child: Column(
+                        Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -149,22 +165,28 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
                               style: MyFont.poppins(fontSize: 11, color: black),
                             )
                           ],
-                        )),
-                        InkWell(
-                          onTap: () {
-                            _showDescriptionDialog(
-                                widget.position,
-                                widget.company,
-                                widget.typeJobs,
-                                widget.description,
-                                widget.expired);
-                          },
-                          child: Icon(
-                            Icons.info_outline,
-                            color: black,
-                          ),
                         ),
                       ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.verified != 'verified',
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      width: double.infinity,
+                      decoration: BoxDecoration(color: primaryColor),
+                      child: Column(
+                        children: [
+                          Visibility(
+                            visible: widget.verified != 'verified',
+                            child: Text(
+                              "! Postingan ini belum terverifikasi ${widget.verified}",
+                              style: MyFont.poppins(fontSize: 12, color: white),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Container(
@@ -177,17 +199,150 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
                             fit: BoxFit.cover)),
                     width: MediaQuery.of(context).size.width,
                   ),
-                  CustomTextField(
-                      controller: comment,
-                      label: "Tulis Komentar...",
-                      keyboardType: TextInputType.text,
-                      inputFormatters:
-                          FilteringTextInputFormatter.singleLineFormatter,
-                      isLength: 255,
-                      isEnable: true,
-                      isWhite: true,
-                      onTap: () => sendComment(),
-                      icon: Icons.send),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          widget.position,
+                          style: MyFont.poppins(
+                              fontSize: 14,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          widget.company,
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        ),
+                        const Divider(
+                          height: 50,
+                        ),
+                        Text(
+                          "Jenis Pekerjaan",
+                          style: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 5, bottom: 10),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 15),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0xffF2F2F2)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                widget.typeJobs,
+                                style:
+                                    MyFont.poppins(fontSize: 12, color: black),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Ditutup",
+                                  style: MyFont.poppins(
+                                      fontSize: 12,
+                                      color: black,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 5, horizontal: 15),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Color(0xffF2F2F2)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        widget.expired,
+                                        style: MyFont.poppins(
+                                            fontSize: 12, color: black),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.send,
+                                  color: black,
+                                  size: 20,
+                                ),
+                                Text(
+                                  "Kunjungi",
+                                  style: MyFont.poppins(
+                                      fontSize: 12, color: black),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          "Deskripsi",
+                          style: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        ReadMoreText(
+                          widget.description,
+                          trimLines: 2,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: "Baca Selengkapnya",
+                          trimExpandedText: "...Lebih Sedikit",
+                          lessStyle: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                          moreStyle: MyFont.poppins(
+                              fontSize: 12,
+                              color: black,
+                              fontWeight: FontWeight.bold),
+                          style: MyFont.poppins(fontSize: 12, color: black),
+                        )
+                      ],
+                    ),
+                  ),
+                  Visibility(
+                    visible: widget.isUser == false,
+                    child: CustomTextField(
+                        controller: comment,
+                        label: "Tulis Komentar...",
+                        keyboardType: TextInputType.text,
+                        inputFormatters:
+                            FilteringTextInputFormatter.singleLineFormatter,
+                        isLength: 255,
+                        isEnable: true,
+                        isWhite: true,
+                        onTap: () => sendComment(),
+                        icon: Icons.send),
+                  ),
                   SizedBox(
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -230,6 +385,9 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
                                 style:
                                     MyFont.poppins(fontSize: 12, color: black),
                               ),
+                              onTap: () {
+                                _showModalSheet(context, comment.id);
+                              },
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 8.0),
@@ -255,109 +413,30 @@ class _WidgetDetailAllPostState extends State<WidgetDetailAllPost> {
     );
   }
 
-  void _showDescriptionDialog(String position, String company, String typeJobs,
-      String description, String expired) {
-    showDialog(
+  void _showModalSheet(BuildContext context, String idComment) {
+    showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                position,
-                style: MyFont.poppins(
-                    fontSize: 14, color: black, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                company,
-                style: MyFont.poppins(
-                    fontSize: 12, color: black, fontWeight: FontWeight.normal),
-              ),
+      builder: (builder) {
+        return SingleChildScrollView(
+          padding: EdgeInsets.only(
+            top: 10,
+            left: 15,
+            right: 15,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.delete, color: black),
+                title: Text(
+                  "Hapus Komentar",
+                  style: MyFont.poppins(fontSize: 12, color: black),
+                ),
+                onTap: () => deleteComment(idComment),
+              )
             ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Jenis Pekerjaan",
-                            style: MyFont.poppins(fontSize: 12, color: black),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: white),
-                            child: Text(
-                              typeJobs,
-                              style: MyFont.poppins(fontSize: 12, color: black),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.send_rounded,
-                          color: black,
-                        ),
-                        Text(
-                          "Kunjungi",
-                          style: MyFont.poppins(fontSize: 12, color: black),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-                Text(
-                  "Deskripsi",
-                  style: MyFont.poppins(fontSize: 12, color: black),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), color: white),
-                  child: Text(
-                    description,
-                    style: MyFont.poppins(fontSize: 12, color: black),
-                  ),
-                ),
-                Text(
-                  "Ditutup",
-                  style: MyFont.poppins(fontSize: 12, color: black),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5), color: white),
-                  child: Text(
-                    expired,
-                    style: MyFont.poppins(fontSize: 12, color: black),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-                10.0), // Sesuaikan dengan radius yang Anda inginkan
           ),
         );
       },

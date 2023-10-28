@@ -15,6 +15,7 @@ class CustomTextField extends StatefulWidget {
   int isLength;
   bool isWhite;
   TextInputAction textInputAction;
+  final Function(String)? onChange;
   Function()? onTap;
 
   CustomTextField(
@@ -29,6 +30,7 @@ class CustomTextField extends StatefulWidget {
       required this.icon,
       this.isLength = 225,
       this.onTap,
+      this.onChange,
       this.textInputAction = TextInputAction.done})
       : super(key: key);
 
@@ -51,6 +53,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
             style: MyFont.poppins(fontSize: 13, color: black),
             keyboardType: widget.keyboardType,
             enabled: widget.isEnable,
+            onChanged: (value) {
+              if (widget.onChange != null) {
+                widget.onChange!(
+                    value); 
+              }
+            },
             onSaved: (val) => widget.controller = val as TextEditingController,
             validator: (value) {
               if (value == null || value.isEmpty) {

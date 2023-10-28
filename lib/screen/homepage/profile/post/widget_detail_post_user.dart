@@ -646,6 +646,7 @@ class _WidgetDetailPostState extends State<WidgetDetailPost> {
       },
     );
   }
+
 }
 
 class CommentListWidget extends StatelessWidget {

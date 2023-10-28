@@ -108,7 +108,8 @@ class _HomePageState extends State<HomePage> {
       index = value;
     });
   }
-   late PermissionStatus _notificationStatus;
+
+  late PermissionStatus _notificationStatus;
   late PermissionStatus _storageStatus;
 
   Future<void> requestPermissions() async {
@@ -124,12 +125,12 @@ class _HomePageState extends State<HomePage> {
       _storageStatus = storageStatus;
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     requestPermissions();
-
   }
 
   bool active = true;
@@ -145,14 +146,26 @@ class _HomePageState extends State<HomePage> {
               title: SizedBox(
                 height: 48,
                 child: TextFormField(
+                  onTap: () {
+                    setState(() {
+                      active = false;
+                    });
+                  },
                   textInputAction: TextInputAction.done,
                   controller: searh,
                   style: MyFont.poppins(fontSize: 12, color: black),
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: primaryColor,
+                    prefixIcon: InkWell(
+                      onTap: () {
+                        setState(() {
+                          active = true;
+                        });
+                      },
+                      child: Icon(
+                        active ? Icons.search : Icons.close,
+                        color: primaryColor,
+                      ),
                     ),
                     hintText: "Search",
                     isDense: true,
@@ -296,9 +309,6 @@ class _HomePageState extends State<HomePage> {
                             ],
                           )),
                     ),
-                    Divider(
-                      height: 5,
-                    )
                   ],
                 );
               },

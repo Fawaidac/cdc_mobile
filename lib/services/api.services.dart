@@ -1191,6 +1191,83 @@ class ApiServices {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> searchData(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception("Token not found");
+    }
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/user/post/search'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'key': key}),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      if (data['status'] == true) {
+        final List<dynamic> dataList = data['data'];
+
+        // Membuat daftar data yang akan di-return
+        List<Map<String, dynamic>> result = [];
+
+        for (var item in dataList) {
+          result.add({
+            'id': item['id'],
+            'linkApply': item['link_apply'],
+            'image': item['image'],
+            'description': item['description'],
+            'company': item['company'],
+            'position': item['position'],
+            'expired': item['expired'],
+            'postAt': item['post_at'],
+            'canComment': item['can_comment'],
+            'verified': item['verified'],
+          });
+        }
+
+        return result;
+      } else if (response.statusCode == 404) {
+        throw Exception("Data not found: ${data['message']}");
+      } else {
+        throw Exception(data['message']);
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  static Future<Map<String, dynamic>> deleteComment(
+      String postID, String commentID) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception("Token not found");
+    }
+
+    final response = await http.delete(
+      Uri.parse('$baseUrl/user/post/comment'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'post_id': postID,
+        'comment_id': commentID,
+      }),
+    );
+
+    final data = jsonDecode(response.body);
+    return data;
+  }
+
   static Future<Map<String, dynamic>> getPostUserLogin({int? page}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -1213,8 +1290,8 @@ class ApiServices {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonResponse['data'];
-        final int totalItems = data['pagination']['total_item'];
-        final int totalPage = data['pagination']['total_page'];
+        final int totalItems = data['total_item'];
+        final int totalPage = data['total_page'];
         final List<Map<String, dynamic>> postList =
             (data['posts'] as List).map((postData) {
           final Map<String, dynamic> postMap = postData as Map<String, dynamic>;

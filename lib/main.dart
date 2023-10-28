@@ -3,6 +3,7 @@ import 'package:cdc_mobile/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/services.dart';
 
 Future<void> _backgroundMessageHandler(RemoteMessage message) async {
   // Notifikasi diterima saat aplikasi ditutup (terminated)
@@ -18,12 +19,10 @@ void main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_backgroundMessageHandler);
   LocalNotificationsServices.initialized();
-
-  // FirebaseMessaging.instance.subscribeToTopic('all');
-  // SystemChrome.setPreferredOrientations([
-  //   DeviceOrientation.portraitUp,
-  //   DeviceOrientation.portraitDown,
-  // ]);
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(const MyApp());
 }
 
@@ -88,7 +87,6 @@ class _MyAppState extends State<MyApp> {
     LocalNotificationsServices.showNotificationForeground(message);
   }
 
-  // This widget is the root of your application.
   @override
   void initState() {
     super.initState();

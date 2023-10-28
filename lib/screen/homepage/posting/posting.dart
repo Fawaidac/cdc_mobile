@@ -135,6 +135,9 @@ class _PostingState extends State<Posting> {
         btnCancelPress: () => Navigator.pop(context),
       );
       print('Account is not verified');
+    } else if (response['message'] ==
+        "The image must not be greater than 1048 kilobytes.") {
+      Fluttertoast.showToast(msg: "Gambar tidak boleh melebihi 1048 Kb");
     } else {
       print(response['message']);
     }
@@ -386,33 +389,38 @@ class _PostingState extends State<Posting> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              height: 48,
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 1, color: black)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: Text(
-                    selectedDate == null
-                        ? "yyyy/MM/dd"
-                        : "${selectedDate?.toLocal()}".split(' ')[0],
-                    style: MyFont.poppins(fontSize: 13, color: black),
-                  )),
-                  InkWell(
-                    onTap: () {
-                      _selectDate(context);
-                    },
-                    child: Icon(
-                      Icons.calendar_month_outlined,
-                      color: black,
-                    ),
-                  )
-                ],
+            GestureDetector(
+              onTap: () {
+                _selectDate(context);
+              },
+              child: Container(
+                height: 48,
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(width: 1, color: black)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                        child: Text(
+                      selectedDate == null
+                          ? "yyyy/MM/dd"
+                          : "${selectedDate?.toLocal()}".split(' ')[0],
+                      style: MyFont.poppins(fontSize: 13, color: black),
+                    )),
+                    InkWell(
+                      onTap: () {
+                        _selectDate(context);
+                      },
+                      child: Icon(
+                        Icons.calendar_month_outlined,
+                        color: black,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             CustomTextFieldForm(

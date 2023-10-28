@@ -1,5 +1,6 @@
 import 'package:card_loading/card_loading.dart';
 import 'package:cdc_mobile/resource/colors.dart';
+import 'package:cdc_mobile/screen/homepage/home/widget/widget_detail_all_post.dart';
 import 'package:cdc_mobile/screen/homepage/profile/post/widget_detail_post_user.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
@@ -102,13 +103,14 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => WidgetDetailPost(
+                        builder: (context) => WidgetDetailAllPost(
                           image: post['image'],
                           description: post['description'],
                           company: post['company'],
                           expired: post['expired'],
                           position: post['position'],
                           isUser: true,
+                          postAt: post['post_at'],
                           typeJobs: post['type_jobs'],
                           verified: post['verified'],
                           name: widget.name,
@@ -130,7 +132,6 @@ class _WidgetPostUserState extends State<WidgetPostUser> {
                     ),
                   ),
                 ),
-                
               );
             },
           );
