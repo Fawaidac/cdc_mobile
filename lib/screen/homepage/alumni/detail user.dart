@@ -2,6 +2,8 @@ import 'package:card_loading/card_loading.dart';
 import 'package:cdc_mobile/model/user_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/test.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/widget_post_detail_user.dart';
 import 'package:cdc_mobile/screen/homepage/followers_user/followers_user.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/widget_education_detail_user.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/widget_jobs_detail_user.dart';
@@ -34,6 +36,7 @@ class _DetailUserState extends State<DetailUser>
       vsync: this,
     );
     handleUser();
+    print(widget.id);
     fetchFollowerCount();
   }
 
@@ -227,7 +230,7 @@ class _DetailUserState extends State<DetailUser>
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        "80",
+                                        "$postCount",
                                         style: MyFont.poppins(
                                             fontSize: 20,
                                             color: black,
@@ -451,26 +454,7 @@ class _DetailUserState extends State<DetailUser>
             body: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TabBarView(controller: _tabController, children: [
-                GridView.builder(
-                  shrinkWrap: false,
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: 1,
-                    crossAxisSpacing: 10,
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemCount: 60,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: grey.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                    );
-                  },
-                ),
+                WidgetPostDetailUser(userId: widget.id),
                 EducationDetailUser(userId: userDetail?.user.id ?? ""),
                 JobsDetailUser(userId: userDetail?.user.id ?? ""),
               ]),
@@ -506,14 +490,18 @@ class _DetailUserState extends State<DetailUser>
 
   int followerCount = 0;
   int followedCount = 0;
+  int postCount = 0;
 
   Future<void> fetchFollowerCount() async {
     try {
       final apiResponse = await ApiServices.fetchUserFollowers(widget.id);
       final apiResponse2 = await ApiServices.fetchUserFollowed(widget.id);
+      final apiResponse3 = await ApiServices.fetchDataPostById(widget.id);
       setState(() {
         followerCount = apiResponse.totalFollowers;
         followedCount = apiResponse2.totalFollowers;
+        postCount = apiResponse3.totalItem;
+        print(apiResponse3);
       });
     } catch (e) {
       print('Error fetching follower count: $e');

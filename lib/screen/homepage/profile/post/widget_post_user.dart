@@ -16,7 +16,7 @@ class WidgetPostUser extends StatefulWidget {
 
 class _WidgetPostUserState extends State<WidgetPostUser> {
   int page = 1;
-  int? totalPage;
+  int? totalPage ;
   Future<Map<String, dynamic>>? postFuture;
   List<Map<String, dynamic>> postList = [];
 

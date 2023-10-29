@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
+import 'package:cdc_mobile/model/post_model.dart';
 
 class User {
   String? id;
@@ -151,3 +152,24 @@ class UserFollowedInfo {
     }
   }
 }
+
+class PostDetail {
+  final List<PostAllModel> posts;
+  final int totalPage;
+  final int totalItem;
+
+  PostDetail({
+    required this.posts,
+    required this.totalPage,
+    required this.totalItem,
+  });
+
+  factory PostDetail.fromJson(Map<String, dynamic> json) {
+    final List<dynamic> postsJson = json['posts'];
+    final List<PostAllModel> posts = postsJson.map((postJson) => PostAllModel.fromJson(postJson)).toList();
+    final int totalPage = json['pagination']['total_page'];
+    final int totalItem = json['pagination']['total_item'];
+    return PostDetail(posts: posts, totalPage: totalPage, totalItem: totalItem);
+  }
+}
+

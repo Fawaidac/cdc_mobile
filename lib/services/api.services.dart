@@ -6,6 +6,7 @@ import 'package:cdc_mobile/model/comment_model.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
+import 'package:cdc_mobile/model/post_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
 import 'package:cdc_mobile/model/salary_model.dart';
 import 'package:cdc_mobile/model/user_model.dart';
@@ -1140,50 +1141,115 @@ class ApiServices {
         },
       );
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(jsonResponse['data']);
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final Map<String, dynamic> data = jsonResponse['data'];
+
+        // Extract total_page and total_item
+        final int totalPage = data['total_page'];
+        final int totalItem = data['total_item'];
+
+        final List<PostAllModel> postList = data.entries.where((entry) {
+          // Filter out entries with non-numeric keys (0, 1, 2, etc.)
+          return int.tryParse(entry.key) != null;
+        }).map((entry) {
+          final Map<String, dynamic> postData = entry.value;
+
+          List<CommentModel> comments = (postData['comments'] as List)
+              .map((commentData) => CommentModel.fromJson(commentData))
+              .toList();
+
+          // Parse uploader data
+          final Map<String, dynamic> uploaderData = postData['uploader'];
+          User uploader = User.fromJson(uploaderData);
+
+          // Create a PostAllModel instance
+          return PostAllModel(
+            id: postData['id'],
+            userId: postData['user_id'],
+            linkApply: postData['link_apply'],
+            image: postData['image'],
+            description: postData['description'],
+            company: postData['company'],
+            position: postData['position'],
+            expired: postData['expired'],
+            postAt: postData['post_at'],
+            canComment: postData['can_comment'],
+            verified: postData['verified'],
+            comments: comments,
+            typeJobs: postData['type_jobs'],
+            uploader: uploader,
+          );
+        }).toList();
+
+        return {
+          "postList": postList,
+          "totalPage": totalPage,
+          "totalItem": totalItem,
+        };
+      } else {
+        throw Exception("Failed to fetch data ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+      return {
+        "postList": [],
+        "totalPage": 0,
+        "totalItem": 0,
+      };
+    }
+  }
+
+  static Future<Map<String, dynamic>> getDataByIdUser(String userId,
+      {int? page}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      String uid = "970b9009-82b9-45d1-8d15-6a843bbb5113";
+      if (token == null) {
+        throw Exception("Token not found");
+      }
+      String url = '$baseUrl/user/post/detail/$uid';
+      if (page != null) {
+        url += '&page=$page';
+      }
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          "Authorization": "Bearer $token",
+        },
+      );
+      final Map<String, dynamic> jsonResponse = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        print(token);
         final Map<String, dynamic> data = jsonResponse['data'];
-        final int totalItems = data['total_item'];
-        final int totalPage = data['total_page'];
-        final List<Map<String, dynamic>> postList = [];
+        final int totalPage = data['pagination']['total_page'];
 
-        for (var i = 0; i < totalItems; i++) {
-          final Map<String, dynamic> postResponse = data[i.toString()];
+        // Hapus cast yang tidak diperlukan
+        List<Map<String, dynamic>> updatedPostList =
+            data['posts'].map((postResponse) {
           final List<Map<String, dynamic>> commentsData =
-              data[i.toString()]['comments'].cast<Map<String, dynamic>>();
+              postResponse['comments'].cast<Map<String, dynamic>>();
           List<CommentModel> comments = commentsData
               .map((commentData) => CommentModel.fromJson(commentData))
               .toList();
 
-          // Tambahkan objek komentar ke dalam postResponse
           postResponse['comments'] = comments;
 
           final Map<String, dynamic> uploaderData = postResponse['uploader'];
           User uploader = User.fromJson(uploaderData);
 
-          // Tambahkan objek pengunggah ke dalam postResponse
           postResponse['uploader'] = uploader;
-          // Periksa apakah objek 'user' dalam komentar tidak null
-          if (comments.isNotEmpty) {
-            final CommentModel comment =
-                comments[0]; // Mengakses objek CommentModel
-            final User user =
-                comment.user; // Mengakses objek user dari CommentModel
 
-            if (user != null) {
-              // Pastikan user tidak null sebelum mengakses properti User
-              // Misalnya, user.fullname
-              postResponse['comments'][0].user = user;
-            }
-          }
+          return postResponse;
+        }).toList();
 
-          postList.add(postResponse);
-        }
-
-        return {'data': postList, 'totalPage': totalPage};
+        return {'data': updatedPostList, 'totalPage': totalPage};
       } else {
-        throw Exception("Failed to fetch data ${response.statusCode}");
+        final String errorMessage = jsonResponse['message'];
+        final String errorData = jsonResponse['data'];
+        throw Exception("Failed to fetch data: $errorMessage,$errorData ");
       }
     } catch (e) {
       print("Error fetching data: $e");
@@ -1191,55 +1257,69 @@ class ApiServices {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> searchData(String key) async {
+  static Future<PostDetail> fetchDataPostById(String userId,
+      {int? page}) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
     if (token == null) {
       throw Exception("Token not found");
     }
-
-    final response = await http.post(
-      Uri.parse('$baseUrl/user/post/search'),
+    String url = '$baseUrl/user/post/detail/$userId';
+    if (page != null) {
+      url += '&page=$page';
+    }
+    final response = await http.get(
+      Uri.parse(url),
       headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
+        "Authorization": "Bearer $token",
       },
-      body: jsonEncode({'key': key}),
     );
-
+    final data = json.decode(response.body);
     if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-
-      if (data['status'] == true) {
-        final List<dynamic> dataList = data['data'];
-
-        // Membuat daftar data yang akan di-return
-        List<Map<String, dynamic>> result = [];
-
-        for (var item in dataList) {
-          result.add({
-            'id': item['id'],
-            'linkApply': item['link_apply'],
-            'image': item['image'],
-            'description': item['description'],
-            'company': item['company'],
-            'position': item['position'],
-            'expired': item['expired'],
-            'postAt': item['post_at'],
-            'canComment': item['can_comment'],
-            'verified': item['verified'],
-          });
-        }
-
-        return result;
-      } else if (response.statusCode == 404) {
-        throw Exception("Data not found: ${data['message']}");
-      } else {
-        throw Exception(data['message']);
-      }
+      return PostDetail.fromJson(data['data']);
     } else {
-      throw Exception('Failed to load data');
+      throw Exception('Failed to load data : ${data['message']}');
+    }
+  }
+
+  static Future<List<PostAllModel>> searchData(String key) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+
+      if (token == null) {
+        throw Exception("Token not found");
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/user/post/search'),
+        headers: {
+          "Authorization": "Bearer $token",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'key': key}),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+
+        if (jsonResponse.containsKey('data') && jsonResponse['data'] is List) {
+          final List<dynamic> data = jsonResponse['data'];
+
+          List<PostAllModel> posts =
+              data.map((postJson) => PostAllModel.fromJson(postJson)).toList();
+
+          return posts;
+        } else {
+          throw Exception("Response does not contain data");
+        }
+      } else {
+        throw Exception("Failed to fetch data ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching data: $e");
+      return [];
     }
   }
 
@@ -1290,8 +1370,8 @@ class ApiServices {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonResponse['data'];
-        final int totalItems = data['total_item'];
-        final int totalPage = data['total_page'];
+        final int totalItems = data['pagination']['total_item'];
+        final int totalPage = data['pagination']['total_page'];
         final List<Map<String, dynamic>> postList =
             (data['posts'] as List).map((postData) {
           final Map<String, dynamic> postMap = postData as Map<String, dynamic>;
@@ -1415,6 +1495,38 @@ class ApiServices {
       }
     } else {
       throw Exception('Failed to fetch user data');
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>?> getNews() async {
+    final Uri url = Uri.parse('$baseUrl/user/news');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception("Token not found");
+    }
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        final List<Map<String, dynamic>> data =
+            List<Map<String, dynamic>>.from(jsonResponse['data']);
+        print(data);
+        return data;
+      } else {
+        print('Failed to fetch news: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching news: $e');
+      return null;
     }
   }
 }

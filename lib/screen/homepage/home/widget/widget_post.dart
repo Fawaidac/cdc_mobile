@@ -1,3 +1,4 @@
+import 'package:cdc_mobile/model/post_model.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
@@ -20,75 +21,47 @@ class WidgetPost extends StatefulWidget {
 class _WidgetPostState extends State<WidgetPost> {
   int page = 1;
   int? totalPage;
-  Future<Map<String, dynamic>>? postFuture; // Change the type here
-  List<Map<String, dynamic>> postList = [];
+  Future<Map<String, dynamic>>? postFuture;
+  List<PostAllModel> postList = [];
 
-  Future<Map<String, dynamic>> fetchData() async {
-    // Change the return type here
+  bool isLoading = false;
+
+  Future<Map<String, dynamic>> fetchData(int page) async {
     try {
-      final dataAndTotalPage = await ApiServices.getData(page);
-      final data = dataAndTotalPage['data'];
-      print(data);
-      // Set totalPage only if it's not null
-      if (totalPage == null) {
-        setState(() {
-          totalPage = dataAndTotalPage['totalPage'];
-        });
+      final data = await ApiServices.getData(page);
+      if (data.containsKey('totalPage')) {
+        totalPage = data['totalPage'];
+        print("Total Page: $totalPage");
       }
-
-      if (totalPage != null && page <= totalPage!) {
-        setState(() {
-          postList.addAll(data);
-        });
-      }
-
-      return dataAndTotalPage; // Return the data
+      return data;
     } catch (e) {
       print("Error fetching data: $e");
-      return Future.value({'data': [], 'totalPage': 0});
+      return {
+        "postList": [],
+        "totalPage": 0,
+        "totalItem": 0,
+      };
     }
   }
 
-  Future<void> performSearch(String? searchKeyword) async {
-    try {
-      if (searchKeyword != null && searchKeyword.isNotEmpty) {
-        final searchResult = await ApiServices.searchData(searchKeyword);
-        print(searchResult);
-        if (searchResult.isNotEmpty) {
-          // Jika hasil pencarian tidak kosong, perbarui postList
-          setState(() {
-            postList.clear();
-            postList.addAll(searchResult);
-          });
-        } else {
-          // Jika hasil pencarian kosong, tampilkan pesan "No data available"
-          setState(() {
-            postList.clear();
-          });
-          // Tampilkan pesan "No data available" atau lakukan tindakan lain
-          // Di sini Anda dapat menampilkan pesan atau melakukan tindakan lain.
-        }
-      } else {
-        fetchData();
-      }
-    } catch (e) {
-      print("Error searching data: $e");
-      // Tampilkan pesan kesalahan atau lakukan tindakan lain
-      // Di sini Anda dapat menampilkan pesan kesalahan atau melakukan tindakan lain.
+  Future<void> loadMoreData() async {
+    if (totalPage != null && page < totalPage!) {
+      page++;
+      print("Loading page $page");
+      final newData = await fetchData(page);
+      if (newData['postList'].isNotEmpty) {
+        setState(() {
+          postList.addAll(newData['postList']);
+        });
+      } else {}
+      print("Loaded page $page");
     }
   }
 
   @override
   void initState() {
     super.initState();
-    postFuture = fetchData(); // Initialize the Future here
-  }
-
-  Future<void> loadMoreData() async {
-    if (totalPage != null && page < totalPage!) {
-      page++;
-      fetchData();
-    }
+    postFuture = fetchData(page);
   }
 
   var search = TextEditingController();
@@ -106,19 +79,25 @@ class _WidgetPostState extends State<WidgetPost> {
             isWhite: true,
             onTap: () {},
             onChange: (value) {
-              performSearch(value);
+              ApiServices.searchData(value).then((searchResults) {
+                setState(() {
+                  postList = searchResults;
+                  print('seach : $postList');
+                });
+              });
             },
             icon: Icons.search),
         FutureBuilder<Map<String, dynamic>>(
-          future: postFuture, // Use the pre-initialized Future
+          future: postFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
-            } else if (postList.isEmpty) {
-              return Text('No data available');
             } else {
+              if (page == 1) {
+                postList = snapshot.data?['postList'] ?? [];
+              }
               return ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
@@ -126,10 +105,11 @@ class _WidgetPostState extends State<WidgetPost> {
                 itemBuilder: (context, index) {
                   final post = postList[index];
 
-                  if (index == postList.length - 1) {
+                  if (index == postList.length - 1 && page < totalPage!) {
                     loadMoreData();
                   }
-                  String dateTime = post['post_at'];
+
+                  String dateTime = post.postAt;
                   final date = DateTime.parse(dateTime);
                   initializeDateFormatting('id_ID', null);
                   final dateFormat = DateFormat('dd MMMM yyyy', 'id_ID');
@@ -154,11 +134,11 @@ class _WidgetPostState extends State<WidgetPost> {
                             children: [
                               CircleAvatar(
                                 radius: 20,
-                                backgroundImage: NetworkImage(post['uploader']
-                                            .foto ==
+                                backgroundImage: NetworkImage(post
+                                            .uploader.foto ==
                                         ApiServices.baseUrlImage
                                     ? "https://th.bing.com/th/id/OIP.dcLFW3GT9AKU4wXacZ_iYAHaGe?pid=ImgDet&rs=1"
-                                    : post['uploader'].foto),
+                                    : post.uploader.foto ?? ""),
                               ),
                               const SizedBox(
                                 width: 10,
@@ -169,7 +149,7 @@ class _WidgetPostState extends State<WidgetPost> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    post['uploader'].fullname,
+                                    post.uploader.fullname ?? "",
                                     style: MyFont.poppins(
                                         fontSize: 12,
                                         color: black,
@@ -185,11 +165,11 @@ class _WidgetPostState extends State<WidgetPost> {
                               InkWell(
                                 onTap: () {
                                   _showDescriptionDialog(
-                                      post['position'],
-                                      post['company'],
-                                      post['type_jobs'],
-                                      post['description'],
-                                      post['expired']);
+                                      post.position,
+                                      post.company,
+                                      post.typeJobs,
+                                      post.description,
+                                      post.expired);
                                 },
                                 child: Icon(
                                   Icons.info_outline,
@@ -205,7 +185,7 @@ class _WidgetPostState extends State<WidgetPost> {
                           decoration: BoxDecoration(
                               // borderRadius: BorderRadius.circular(10),
                               image: DecorationImage(
-                                  image: NetworkImage(post['image']),
+                                  image: NetworkImage(post.image),
                                   fit: BoxFit.cover)),
                           width: MediaQuery.of(context).size.width,
                         ),
@@ -215,21 +195,21 @@ class _WidgetPostState extends State<WidgetPost> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => WidgetDetailAllPost(
-                                    image: post['image'],
-                                    description: post['description'],
-                                    id: post['id'],
-                                    position: post['position'],
-                                    company: post['company'],
-                                    typeJobs: post['type_jobs'],
-                                    expired: post['expired'],
+                                    image: post.image,
+                                    description: post.description,
+                                    id: post.id,
+                                    position: post.position,
+                                    company: post.company,
+                                    typeJobs: post.typeJobs,
+                                    expired: post.expired,
                                     isUser: false,
-                                    linkApply: post['link_apply'],
-                                    verified: post['verified'],
-                                    name: post['uploader'].fullname,
-                                    profile: post['uploader'].foto,
-                                    can: post['can_comment'],
-                                    postAt: post['post_at'],
-                                    commentModel: post['comments'],
+                                    linkApply: post.linkApply,
+                                    verified: post.verified,
+                                    name: post.uploader.fullname ?? "",
+                                    profile: post.uploader.foto ?? "",
+                                    can: post.canComment,
+                                    postAt: post.postAt,
+                                    commentModel: post.comments,
                                   ),
                                 ));
                           },
@@ -248,7 +228,7 @@ class _WidgetPostState extends State<WidgetPost> {
                             padding: const EdgeInsets.only(
                                 right: 10, left: 10, top: 10),
                             child: ReadMoreText(
-                              post['description'],
+                              post.description,
                               trimLines: 2,
                               trimMode: TrimMode.Line,
                               trimCollapsedText: "Baca Selengkapnya",

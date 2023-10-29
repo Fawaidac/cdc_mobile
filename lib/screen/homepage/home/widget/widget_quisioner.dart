@@ -1,7 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
+import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/home/quisioner/identitas_section.dart';
+import 'package:cdc_mobile/screen/homepage/homepage.dart';
+import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,6 +37,24 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
         setState(() {
           questionnaireCheck = check;
         });
+      } else if (fetchedData['message'] ==
+          "your token is not valid , please login again") {
+        // ignore: use_build_context_synchronously
+        GetAwesomeDialog.showCustomDialog(
+          isTouch: false,
+          context: context,
+          dialogType: DialogType.ERROR,
+          title: "Error",
+          desc: "Sesi anda telah habis , silahkan login ulang",
+          btnOkPress: () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginView(),
+                ));
+          },
+          btnCancelPress: () => Navigator.pop(context),
+        );
       }
     } catch (e) {
       print('Error fetching quisioner check: $e');
@@ -70,9 +92,9 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
                   ));
             },
             child: Container(
-              height: 150,
+              height: 175,
               padding: const EdgeInsets.all(15),
-              margin: const EdgeInsets.symmetric(horizontal: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 20),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15),
@@ -116,7 +138,7 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
             ),
           ),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
           child: LinearProgressIndicator(
             value: totalSection == 0 ? 0.0 : completedSection / totalSection,
             backgroundColor: Colors.grey[300],
@@ -124,7 +146,7 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 25),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

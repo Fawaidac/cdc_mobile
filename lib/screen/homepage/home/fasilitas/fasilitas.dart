@@ -1,6 +1,7 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/home/fasilitas/whatsapp_view.dart';
+import 'package:cdc_mobile/screen/homepage/home/widget/widget_quisioner.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -38,55 +39,7 @@ class _FasilitasState extends State<Fasilitas> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              margin: const EdgeInsets.all(20),
-              padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-              height: 175,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                gradient: LinearGradient(
-                    colors: [first, second],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter),
-              ),
-              child: Row(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: SizedBox(
-                      height: 120,
-                      child: Image.asset(
-                        "images/stock.png",
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 10, 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Kuesioner",
-                          style: MyFont.poppins(
-                              fontSize: 20,
-                              color: white,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Menurut tracer.study.kemdikbud\nuntuk lulusan tahun 2018 - 2023",
-                          style: MyFont.poppins(
-                              fontSize: 12,
-                              color: white,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+            WidgetQuisioner(),
             InkWell(
               onTap: () {
                 Navigator.push(
@@ -96,7 +49,7 @@ class _FasilitasState extends State<Fasilitas> {
                     ));
               },
               child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                margin: const EdgeInsets.fromLTRB(20, 20, 20, 20),
                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                 height: 175,
                 width: MediaQuery.of(context).size.width,
@@ -144,7 +97,7 @@ class _FasilitasState extends State<Fasilitas> {
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
