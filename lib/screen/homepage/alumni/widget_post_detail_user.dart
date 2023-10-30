@@ -19,8 +19,6 @@ class WidgetPostDetailUser extends StatefulWidget {
 class _WidgetPostDetailUserState extends State<WidgetPostDetailUser> {
   int currentPage = 1;
   int totalPage = 1;
-  bool hasMoreData = true;
-  bool isLoading = false;
 
   List postList = [];
 

@@ -19,11 +19,14 @@ class WidgetPost extends StatefulWidget {
 }
 
 class _WidgetPostState extends State<WidgetPost> {
+  ScrollController scrollController = ScrollController();
   int page = 1;
-  int? totalPage;
+  int totalPage = 1;
+  
+
+
   Future<Map<String, dynamic>>? postFuture;
   List<PostAllModel> postList = [];
-
   bool isLoading = false;
 
   Future<Map<String, dynamic>> fetchData(int page) async {

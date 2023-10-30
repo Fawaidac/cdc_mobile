@@ -1,5 +1,6 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
+import 'package:cdc_mobile/screen/homepage/alumni/alumni.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';
 import 'package:cdc_mobile/screen/homepage/home/fasilitas/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
@@ -23,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   int index = 0;
   List<Widget> screen = <Widget>[
     Home(),
-    const UsersAll(),
+    const AlumniView(),
     const Posting(),
     const IkapjScreen(),
     const Profile(),

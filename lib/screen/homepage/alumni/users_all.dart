@@ -27,11 +27,26 @@ class _UsersAllState extends State<UsersAll> {
   bool _isAscending = true;
   var search = TextEditingController();
 
+  ScrollController scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _loadPage(currentPage);
   }
+
+  // void _scrollListener() {
+  //   if (scrollController.position.pixels ==
+  //       scrollController.position.maxScrollExtent) {
+  //     print('call');
+  //     if (currentPage < totalPage) {
+  //       currentPage = currentPage + 1;
+  //       _loadPage(currentPage);
+  //     }
+  //   } else {
+  //     print('dont call');
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +105,7 @@ class _UsersAllState extends State<UsersAll> {
                 ),
               ),
             ),
+            
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -614,4 +630,5 @@ class _UsersAllState extends State<UsersAll> {
       },
     );
   }
+
 }

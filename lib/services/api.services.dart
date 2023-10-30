@@ -19,8 +19,8 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.0.117:8000/api";
-  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
+  static const String baseUrl = "http://192.168.150.87:8000/api";
+  static const String baseUrlImage = "http://192.168.150.87:8000/users/";
 
   static Future<Map<String, dynamic>> logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -311,6 +311,7 @@ class ApiServices {
     if (response.statusCode == 200) {
       if (jsonResponse['status'] == true) {
         final Map<String, dynamic> data = jsonResponse['data'];
+        final int totalPage = data['total_page'];
         final int totalItems = data['total_items'];
         final List<Map<String, dynamic>> userList = [];
 
@@ -1140,54 +1141,11 @@ class ApiServices {
           "Authorization": "Bearer $token",
         },
       );
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      print(jsonResponse['data']);
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
         final Map<String, dynamic> data = jsonResponse['data'];
-
-        // Extract total_page and total_item
-        final int totalPage = data['total_page'];
-        final int totalItem = data['total_item'];
-
-        final List<PostAllModel> postList = data.entries.where((entry) {
-          // Filter out entries with non-numeric keys (0, 1, 2, etc.)
-          return int.tryParse(entry.key) != null;
-        }).map((entry) {
-          final Map<String, dynamic> postData = entry.value;
-
-          List<CommentModel> comments = (postData['comments'] as List)
-              .map((commentData) => CommentModel.fromJson(commentData))
-              .toList();
-
-          // Parse uploader data
-          final Map<String, dynamic> uploaderData = postData['uploader'];
-          User uploader = User.fromJson(uploaderData);
-
-          // Create a PostAllModel instance
-          return PostAllModel(
-            id: postData['id'],
-            userId: postData['user_id'],
-            linkApply: postData['link_apply'],
-            image: postData['image'],
-            description: postData['description'],
-            company: postData['company'],
-            position: postData['position'],
-            expired: postData['expired'],
-            postAt: postData['post_at'],
-            canComment: postData['can_comment'],
-            verified: postData['verified'],
-            comments: comments,
-            typeJobs: postData['type_jobs'],
-            uploader: uploader,
-          );
-        }).toList();
-
-        return {
-          "postList": postList,
-          "totalPage": totalPage,
-          "totalItem": totalItem,
-        };
+        return data; // Return the "data" field directly
       } else {
         throw Exception("Failed to fetch data ${response.statusCode}");
       }
@@ -1200,6 +1158,81 @@ class ApiServices {
       };
     }
   }
+
+  // static Future<Map<String, dynamic>> getData(int page) async {
+  //   try {
+  //     final prefs = await SharedPreferences.getInstance();
+  //     final token = prefs.getString('token');
+
+  //     if (token == null) {
+  //       throw Exception("Token not found");
+  //     }
+
+  //     final response = await http.get(
+  //       Uri.parse('$baseUrl/user/post?page=$page'),
+  //       headers: {
+  //         "Authorization": "Bearer $token",
+  //       },
+  //     );
+  //     final Map<String, dynamic> jsonResponse = json.decode(response.body);
+  //     print(jsonResponse['data']);
+  //     if (response.statusCode == 200) {
+  //       final Map<String, dynamic> jsonResponse = json.decode(response.body);
+  //       final Map<String, dynamic> data = jsonResponse['data'];
+
+  //       // Extract total_page and total_item
+  //       final int totalPage = data['total_page'];
+  //       final int totalItem = data['total_item'];
+
+  //       final List<PostAllModel> postList = data.entries.where((entry) {
+  //         return int.tryParse(entry.key) != null;
+  //       }).map((entry) {
+  //         final Map<String, dynamic> postData = entry.value;
+
+  //         List<CommentModel> comments = (postData['comments'] as List)
+  //             .map((commentData) => CommentModel.fromJson(commentData))
+  //             .toList();
+
+  //         // Parse uploader data
+  //         final Map<String, dynamic> uploaderData = postData['uploader'];
+  //         User uploader = User.fromJson(uploaderData);
+
+  //         // Create a PostAllModel instance
+  //         return PostAllModel(
+  //           id: postData['id'],
+  //           userId: postData['user_id'],
+  //           linkApply: postData['link_apply'],
+  //           image: postData['image'],
+  //           description: postData['description'],
+  //           company: postData['company'],
+  //           position: postData['position'],
+  //           expired: postData['expired'],
+  //           postAt: postData['post_at'],
+  //           canComment: postData['can_comment'],
+  //           verified: postData['verified'],
+  //           comments: comments,
+  //           typeJobs: postData['type_jobs'],
+  //           uploader: uploader,
+  //         );
+  //       }).toList();
+
+  //       return {
+  //         "postList": postList,
+  //         "totalPage": totalPage,
+  //         "totalItem": totalItem,
+  //       };
+  //     } else {
+  //       throw Exception("Failed to fetch data ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching data: $e");
+  //     return {
+  //       "postList": [],
+  //       "totalPage": 0,
+  //       "totalItem": 0,
+  //     };
+  //   }
+  // }
 
   static Future<Map<String, dynamic>> getDataByIdUser(String userId,
       {int? page}) async {
@@ -1518,7 +1551,7 @@ class ApiServices {
         final jsonResponse = json.decode(response.body);
         final List<Map<String, dynamic>> data =
             List<Map<String, dynamic>>.from(jsonResponse['data']);
-        print(data);
+        // print(data);
         return data;
       } else {
         print('Failed to fetch news: ${response.statusCode}');
@@ -1528,5 +1561,58 @@ class ApiServices {
       print('Error fetching news: $e');
       return null;
     }
+  }
+
+  static Future<Map<String, dynamic>> fetchAlumniAll(
+      int page, BuildContext context,
+      {int? angkatan, String? prodi}) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    String url = '$baseUrl/users?page=$page';
+    if (angkatan != null) {
+      url += '&angkatan=$angkatan';
+    }
+    if (prodi != null && prodi.isNotEmpty) {
+      url += '&prodi=$prodi';
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {"Authorization": "Bearer $token"},
+    );
+
+    final Map<String, dynamic> jsonResponse = json.decode(response.body);
+    if (response.statusCode == 200) {
+      print(url);
+      final Map<String, dynamic> data = jsonResponse['data'];
+      return data;
+    } else if (jsonResponse['message'] ==
+        "ops , nampaknya akun kamu belum terverifikasi") {
+      // ignore: use_build_context_synchronously
+      GetAwesomeDialog.showCustomDialog(
+        isTouch: false,
+        context: context,
+        dialogType: DialogType.ERROR,
+        title: "Error",
+        desc:
+            "ops , nampaknya akun kamu belum terverifikasi, Silahkan isi quisioner terlebih dahulu",
+        btnOkPress: () {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+        },
+        btnCancelPress: () => Navigator.pop(context),
+      );
+      print('Account is not verified');
+    } else {
+      print(
+          'Failed to load data ${response.statusCode}'); // Menampilkan pesan kesalahan ke konsol
+    }
+    // Mengembalikan Future yang selesai dengan nilai kosong
+    // ignore: null_argument_to_non_null_type
+    return Future.value();
   }
 }

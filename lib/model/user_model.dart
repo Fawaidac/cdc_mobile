@@ -166,10 +166,44 @@ class PostDetail {
 
   factory PostDetail.fromJson(Map<String, dynamic> json) {
     final List<dynamic> postsJson = json['posts'];
-    final List<PostAllModel> posts = postsJson.map((postJson) => PostAllModel.fromJson(postJson)).toList();
+    final List<PostAllModel> posts =
+        postsJson.map((postJson) => PostAllModel.fromJson(postJson)).toList();
     final int totalPage = json['pagination']['total_page'];
     final int totalItem = json['pagination']['total_item'];
     return PostDetail(posts: posts, totalPage: totalPage, totalItem: totalItem);
   }
 }
 
+class Alumni {
+  final User user;
+  final List<Follower> followers;
+  final List<EducationsModel> educations;
+  final List<JobsModel> jobs;
+
+  Alumni({
+    required this.user,
+    required this.followers,
+    required this.educations,
+    required this.jobs,
+  });
+
+  factory Alumni.fromJson(Map<String, dynamic> json) {
+    final userData = json['user'];
+    final followersData = (json['followers'] as List<dynamic>)
+        .map((followerJson) => Follower.fromJson(followerJson))
+        .toList();
+    final educationsData = (json['educations'] as List<dynamic>)
+        .map((educationJson) => EducationsModel.fromJson(educationJson))
+        .toList();
+    final jobsData = (json['jobs'] as List<dynamic>)
+        .map((jobJson) => JobsModel.fromJson(jobJson))
+        .toList();
+
+    return Alumni(
+      user: User.fromJson(userData),
+      followers: followersData,
+      educations: educationsData,
+      jobs: jobsData,
+    );
+  }
+}
