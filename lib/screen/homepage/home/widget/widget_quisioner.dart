@@ -4,6 +4,7 @@ import 'package:cdc_mobile/resource/awesome_dialog.dart';
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/screen/homepage/home/quisioner/identitas_section.dart';
+import 'package:cdc_mobile/screen/homepage/home/quisioner/widget_all_quisioner.dart';
 import 'package:cdc_mobile/screen/homepage/homepage.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
@@ -88,7 +89,7 @@ class _WidgetQuisionerState extends State<WidgetQuisioner> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => IdentitasSection(),
+                    builder: (context) => WidgetAllQuisioner(),
                   ));
             },
             child: Container(

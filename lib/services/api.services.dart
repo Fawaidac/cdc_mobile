@@ -19,8 +19,8 @@ import 'package:path/path.dart' as path;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiServices {
-  static const String baseUrl = "http://192.168.150.87:8000/api";
-  static const String baseUrlImage = "http://192.168.150.87:8000/users/";
+  static const String baseUrl = "http://192.168.0.117:8000/api";
+  static const String baseUrlImage = "http://192.168.0.117:8000/users/";
 
   static Future<Map<String, dynamic>> logout() async {
     final prefs = await SharedPreferences.getInstance();
@@ -755,7 +755,7 @@ class ApiServices {
       String studyFunding,
       String univName,
       String prodi,
-      String studyStart,
+      DateTime studyStart,
       String educationFunding,
       String finansial,
       String studyJob,
@@ -764,7 +764,7 @@ class ApiServices {
       "study_funding_source": studyFunding,
       "univercity_name": univName,
       "study_program": prodi,
-      "study_start_date": studyStart,
+      "study_start_date": studyStart.toLocal().toIso8601String().split('T')[0],
       "education_funding_source": educationFunding,
       "financial_source": finansial,
       "study_job_relationship": studyJob,

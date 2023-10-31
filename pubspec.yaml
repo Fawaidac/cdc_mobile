@@ -2,10 +2,10 @@ name: cdc_mobile
 version: 1.0.0+1
 publish_to: none
 description: A new Flutter project.
-environment:
-  sdk: ">=3.1.2 <4.0.0"
+environment: 
+  sdk: '>=3.1.2 <4.0.0'
 
-dependencies:
+dependencies: 
   cupertino_icons: ^1.0.2
   http: 1.1.0
   shared_preferences: 2.2.1
@@ -33,16 +33,19 @@ dependencies:
   firebase_messaging: 14.7.2
   firebase_auth: 4.12.0
   flutter_local_notifications: 16.1.0
-  flutter:
+  flutter_html: 3.0.0-beta.2
+  flutter_widget_from_html: 0.14.6
+  flutter: 
     sdk: flutter
 
-dev_dependencies:
+dev_dependencies: 
   flutter_lints: ^2.0.0
-  flutter_test:
+  flutter_test: 
     sdk: flutter
 
-flutter:
-  assets:
+flutter: 
+  assets: 
     - images/
     - assets/
   uses-material-design: true
+

@@ -51,19 +51,10 @@ class _KompetensiSectionState extends State<KompetensiSection> {
             color: primaryColor,
           ),
         ),
-        title: InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudyMethodSection(),
-                ));
-          },
-          child: Text(
-            "Kuisioner Tingkat Kompetensi",
-            style: MyFont.poppins(
-                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
-          ),
+        title: Text(
+          "Kuisioner Tingkat Kompetensi",
+          style: MyFont.poppins(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(

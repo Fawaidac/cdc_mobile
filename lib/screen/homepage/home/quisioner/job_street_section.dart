@@ -54,21 +54,12 @@ class _JobStreetSectionState extends State<JobStreetSection> {
               color: primaryColor,
             ),
           ),
-          title: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => FindJobsSection(),
-                  ));
-            },
-            child: Text(
-              "Kuisioner Mulai Mencari Pekerjaan",
-              style: MyFont.poppins(
-                  fontSize: 16,
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold),
-            ),
+          title: Text(
+            "Kuisioner Mulai Mencari Pekerjaan",
+            style: MyFont.poppins(
+                fontSize: 16,
+                color: primaryColor,
+                fontWeight: FontWeight.bold),
           ),
         ),
         body: SingleChildScrollView(

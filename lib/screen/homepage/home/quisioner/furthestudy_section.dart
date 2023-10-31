@@ -83,19 +83,10 @@ class _StudySectionState extends State<StudySection> {
             color: primaryColor,
           ),
         ),
-        title: InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => KompetensiSection(),
-                ));
-          },
-          child: Text(
-            "Kuisioner Studi Lanjut",
-            style: MyFont.poppins(
-                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
-          ),
+        title: Text(
+          "Kuisioner Studi Lanjut",
+          style: MyFont.poppins(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -544,20 +535,13 @@ class _StudySectionState extends State<StudySection> {
     String sumberDanaValue = selectedSumberdana == 'Lainnya'
         ? sumberDana.text
         : selectedSumberdana.toString();
-    DateTime selectDateValue = selectedDate != null
-        ? DateTime(selectedDate!.year, selectedDate!.month, selectedDate!.day)
-        : DateTime(0, 0, 0);
-
-    String formattedDate = DateFormat('yyyy-MM-dd').format(selectDateValue);
-
-    print(formattedDate);
-
+    print(DateTime(0).toLocal().toIso8601String().split('T')[0]);
     try {
       final response = await ApiServices.quisionerStudy(
           selectedBiaya.toString(),
           namaPerguruan.text,
           namaProdi.text,
-          formattedDate,
+          selectedDate ?? DateTime(0),
           sumberDanaValue,
           sumberDana.text,
           selectedHubungan.toString(),

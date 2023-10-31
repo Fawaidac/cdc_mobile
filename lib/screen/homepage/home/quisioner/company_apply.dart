@@ -73,21 +73,12 @@ class _CompanyApplyState extends State<CompanyApply> {
               color: primaryColor,
             ),
           ),
-          title: InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JobsuitabilitySection(),
-                  ));
-            },
-            child: Text(
-              "Kuisioner Jumlah Perusahaan/Instansi/Institusi",
-              style: MyFont.poppins(
-                  fontSize: 16,
-                  color: primaryColor,
-                  fontWeight: FontWeight.bold),
-            ),
+          title: Text(
+            "Kuisioner Jumlah Perusahaan/Instansi/Institusi",
+            style: MyFont.poppins(
+                fontSize: 16,
+                color: primaryColor,
+                fontWeight: FontWeight.bold),
           ),
         ),
         body: SingleChildScrollView(

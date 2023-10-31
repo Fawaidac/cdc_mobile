@@ -125,19 +125,10 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             color: primaryColor,
           ),
         ),
-        title: InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MainSection(),
-                ));
-          },
-          child: Text(
-            "Identitas Diri",
-            style: MyFont.poppins(
-                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
-          ),
+        title: Text(
+          "Identitas Diri",
+          style: MyFont.poppins(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
@@ -472,6 +463,7 @@ class _IdentitasSectionState extends State<IdentitasSection> {
             npwp.text);
         if (response['code'] == 201) {
           Fluttertoast.showToast(msg: response['message']);
+          // ignore: use_build_context_synchronously
           Navigator.push(
               context,
               MaterialPageRoute(

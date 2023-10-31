@@ -141,7 +141,7 @@ class _AlumniViewState extends State<AlumniView> {
         child: Column(
           children: [
             CustomTextField(
-              label: "Cari Alumni",
+              label: "   Cari Alumni",
               keyboardType: TextInputType.text,
               inputFormatters: FilteringTextInputFormatter.singleLineFormatter,
               isLength: 255,

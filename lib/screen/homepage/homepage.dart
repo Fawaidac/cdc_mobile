@@ -4,6 +4,8 @@ import 'package:cdc_mobile/screen/homepage/alumni/alumni.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/detail%20user.dart';
 import 'package:cdc_mobile/screen/homepage/home/fasilitas/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
+// import 'package:cdc_mobile/screen/homepage/home/home_view.dart';
+import 'package:cdc_mobile/screen/homepage/home/home_view2.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
@@ -23,7 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int index = 0;
   List<Widget> screen = <Widget>[
-    Home(),
+    const HomeView2(),
     const AlumniView(),
     const Posting(),
     const IkapjScreen(),

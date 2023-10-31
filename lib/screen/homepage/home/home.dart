@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
           children: [
             WidgetNews(),
             WidgetTopAlumni(),
-            MyWidget(),
+            // MyWidget(),
           ],
         ),
       ),

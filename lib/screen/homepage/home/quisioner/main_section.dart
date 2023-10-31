@@ -36,7 +36,7 @@ class _MainSectionState extends State<MainSection> {
     'Belum memungkinkan bekerja',
     'Wiraswasta',
     'Melanjutkan Pendidikan',
-    'Tidak kerja tapi sedang mencari kerja'
+    'Tidak kerja tetapi sedang mencari kerja'
   ];
   List<String> jobsOptions = [
     'Ya',
@@ -154,19 +154,10 @@ class _MainSectionState extends State<MainSection> {
             color: primaryColor,
           ),
         ),
-        title: InkWell(
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudySection(),
-                ));
-          },
-          child: Text(
-            "Kuisioner Utama",
-            style: MyFont.poppins(
-                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
-          ),
+        title: Text(
+          "Kuisioner Utama",
+          style: MyFont.poppins(
+              fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
       body: SingleChildScrollView(
