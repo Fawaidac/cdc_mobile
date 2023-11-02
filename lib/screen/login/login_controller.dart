@@ -19,10 +19,16 @@ class LoginController {
         DateTime expirationTime = DateTime.now().add(Duration(days: 7));
         prefs.setInt(
             'tokenExpirationTime', expirationTime.millisecondsSinceEpoch);
-        String? fcmToken = await firebaseMessaging.getToken();
-        await LoginServices.sendFcmToken(fcmToken!);
+        // String? fcmToken = await firebaseMessaging.getToken();
+        // print(' fcmTOken : $fcmToken');
+        // final res = await LoginServices.sendFcmToken(fcmToken!);
+        // if (res['code'] == 200) {
+        //   print('ok');
+        // } else {
+        //   print(res['message']);
+        // }
         Fluttertoast.showToast(msg: response['message']);
-        await firebaseMessaging.subscribeToTopic('all');
+        // await firebaseMessaging.subscribeToTopic('all');
 
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(

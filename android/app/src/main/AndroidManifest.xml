@@ -6,7 +6,7 @@
     <application
         android:label="cdc_mobile"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
@@ -24,7 +24,7 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-              <meta-data
+            <meta-data
                 android:name="firebase_messaging_auto_init_enabled"
                 android:value="false" />
             <meta-data

@@ -34,6 +34,33 @@ class ApiServices {
     return data;
   }
 
+  static Future<Map<String, dynamic>> fetchDataGrupWhatsApp() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http.get(Uri.parse('$baseUrl/user/whatsapp'), headers: {
+      "Authorization": "Bearer $token",
+    }); // Ganti URL sesuai kebutuhan
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      return data;
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  static Future<Map<String, dynamic>> sendFcmToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    final res = await http
+        .put(Uri.parse('${ApiServices.baseUrl}/user/fcmtoken'), body: {
+      'token': token,
+    }, headers: {
+      "Authorization": "Bearer $token",
+    });
+    final data = jsonDecode(res.body);
+    return data;
+  }
+
   static Future<User?> userInfo() async {
     try {
       final prefs = await SharedPreferences.getInstance();

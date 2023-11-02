@@ -29,47 +29,44 @@ class Tentang extends StatelessWidget {
               fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        physics: const BouncingScrollPhysics(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: primaryColor,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Aplikasi CDC Career Development Center adalah solusi yang dirancang oleh Teaching Factory Jurusan Teknologi Informasi Politeknik Negeri Jember untuk membantu mahasiswa dan alumni kami dalam menjalani perjalanan karir mereka. Aplikasi ini menyediakan akses ke berbagai informasi dan layanan yang diperlukan untuk mencapai kesuksesan dalam dunia kerja.",
-                    style: MyFont.poppins(fontSize: 12, color: white),
-                  ),
-                ],
-              ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(15),
+            margin: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: primaryColor,
             ),
-            const SizedBox(
-              height: 20,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Aplikasi CDC Career Development Center adalah solusi yang dirancang oleh Teaching Factory Jurusan Teknologi Informasi Politeknik Negeri Jember untuk membantu mahasiswa dan alumni kami dalam menjalani perjalanan karir mereka. Aplikasi ini menyediakan akses ke berbagai informasi dan layanan yang diperlukan untuk mencapai kesuksesan dalam dunia kerja.",
+                  style: MyFont.poppins(fontSize: 12, color: white),
+                ),
+              ],
             ),
-            Text(
-              "Versi Aplikasi: 1.0.0",
-              style: MyFont.poppins(fontSize: 12, color: black),
-            ),
-            Image.asset(
-              "images/logogrey.png",
-              height: 125,
-            ),
-            SvgPicture.asset(
-              "images/5tentang.svg",
-              alignment: Alignment.topCenter,
-              width: 700,
-              height: MediaQuery.of(context).size.height,
-            )
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Versi Aplikasi: 1.0.0",
+            style: MyFont.poppins(fontSize: 12, color: black),
+          ),
+          Image.asset(
+            "images/logogrey.png",
+            height: 125,
+          ),
+          Spacer(),
+          Image.asset(
+            "images/about.png",
+            height: 390,
+            width: MediaQuery.of(context).size.width,
+          ),
+        ],
       ),
     );
   }

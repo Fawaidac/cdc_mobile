@@ -14,7 +14,7 @@ class IntroPage2 extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 200, child: Image.asset("images/rafiki.png")),
+          SizedBox(height: 200, child: Image.asset("images/onboarding2.png")),
           const SizedBox(
             height: 50,
           ),

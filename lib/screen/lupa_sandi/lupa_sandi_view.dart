@@ -1,8 +1,10 @@
 import 'package:cdc_mobile/resource/colors.dart';
 import 'package:cdc_mobile/resource/fonts.dart';
 import 'package:cdc_mobile/resource/textfields.dart';
+import 'package:cdc_mobile/screen/lupa_sandi/lupa_sandi_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LupaSandiView extends StatefulWidget {
   const LupaSandiView({super.key});
@@ -13,6 +15,15 @@ class LupaSandiView extends StatefulWidget {
 
 class _LupaSandiViewState extends State<LupaSandiView> {
   var email = TextEditingController();
+  LupaSandiController controller = LupaSandiController();
+  void checkRecovery() async {
+    if (email.text.isEmpty) {
+      Fluttertoast.showToast(msg: 'Silahkan isi email anda');
+    } else {
+      controller.handleRecovery(email.text);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +82,7 @@ class _LupaSandiViewState extends State<LupaSandiView> {
                         borderRadius: BorderRadius.circular(10),
                       )),
                   onPressed: () {
-                    // handleLogin();
+                    checkRecovery();
                   },
                   child: Text('Verifikasi',
                       style: MyFont.poppins(
@@ -79,31 +90,6 @@ class _LupaSandiViewState extends State<LupaSandiView> {
                         color: white,
                       )),
                 )),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Tidak menerima pesan ? ",
-                  style: MyFont.poppins(fontSize: 12, color: black),
-                ),
-                InkWell(
-                  onTap: () {},
-                  child: Text(
-                    "Kirim Ulang ",
-                    style: MyFont.poppins(
-                        fontSize: 12,
-                        color: first,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            ),
-            Center(
-              child: Text(
-                "Harap tunggu kode dalam 00:30s",
-                style: MyFont.poppins(fontSize: 12, color: grey),
-              ),
-            ),
           ],
         ),
       ),

@@ -147,6 +147,16 @@ class _PostingState extends State<Posting> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            "Posting Lowongan Pekerjaan",
+            style: MyFont.poppins(
+                fontSize: 16, color: primaryColor, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.fromLTRB(20, 25, 20, 0),
         child: Column(

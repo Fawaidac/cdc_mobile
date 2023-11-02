@@ -11,6 +11,7 @@ import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
 import 'package:cdc_mobile/screen/homepage/ikapj/ikapj_screen.dart';
 import 'package:cdc_mobile/services/api.services.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -136,6 +137,21 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     requestPermissions();
+    sendFcm();
+  }
+
+  final firebaseMessaging = FirebaseMessaging.instance;
+
+  void sendFcm() async {
+    String? fcmToken = await firebaseMessaging.getToken();
+    await firebaseMessaging.subscribeToTopic('all');
+    print(' fcmTOken : $fcmToken');
+    final res = await ApiServices.sendFcmToken(fcmToken!);
+    if (res['code'] == 200) {
+      print('ok');
+    } else {
+      print(res['message']);
+    }
   }
 
   List<Map<String, dynamic>> searchResult = [];

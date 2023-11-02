@@ -1,9 +1,11 @@
 import 'package:cdc_mobile/model/post_model.dart';
+import 'package:cdc_mobile/resource/textfields.dart';
 import 'package:cdc_mobile/screen/homepage/home/widget/test.dart';
 import 'package:cdc_mobile/screen/homepage/home/widget/widget_news.dart';
 import 'package:cdc_mobile/screen/homepage/home/widget/widget_top_alumni.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeView2 extends StatefulWidget {
   const HomeView2({super.key});
@@ -82,10 +84,31 @@ class _HomeView2State extends State<HomeView2> {
       physics: const BouncingScrollPhysics(),
       children: [
         const SizedBox(
-          height: 20,
+          height: 10,
         ),
         const WidgetNews(),
         const WidgetTopAlumni(),
+        Padding(
+          padding: EdgeInsets.all(8),
+          child: CustomTextField(
+              controller: search,
+              label: "Cari postingan berdasarkan posisi...",
+              keyboardType: TextInputType.text,
+              inputFormatters: FilteringTextInputFormatter.singleLineFormatter,
+              isLength: 255,
+              isEnable: true,
+              isWhite: true,
+              onTap: () {},
+              onChange: (value) {
+                ApiServices.searchData(value).then((searchResults) {
+                  setState(() {
+                    postList = searchResults;
+                    print('seach : $postList');
+                  });
+                });
+              },
+              icon: Icons.search),
+        ),
         MyWidget(postList: postList, page: page, totalPage: totalPage)
       ],
     );

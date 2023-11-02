@@ -163,6 +163,7 @@ class _AlumniViewState extends State<AlumniView> {
             Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: InkWell(
                     onTap: _toggleSortOrder,
                     child: Container(
@@ -184,6 +185,7 @@ class _AlumniViewState extends State<AlumniView> {
                   ),
                 ),
                 Expanded(
+                  flex: 2,
                   child: InkWell(
                     onTap: () {
                       _showProdiBottomSheet(context);
@@ -199,9 +201,7 @@ class _AlumniViewState extends State<AlumniView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            showCloseIcon == false
-                                ? "Program Studi"
-                                : selectedProdi ?? "",
+                            "Program Studi",
                             style: MyFont.poppins(
                                 fontSize: 12, color: primaryColor),
                           ),
@@ -254,6 +254,7 @@ class _AlumniViewState extends State<AlumniView> {
                   ),
                 ),
                 Expanded(
+                  flex: 1,
                   child: InkWell(
                     onTap: () {
                       _showAngkatanBottomSheet(context);
