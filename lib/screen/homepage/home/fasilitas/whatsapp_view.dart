@@ -67,6 +67,7 @@ class _GrupWhatsappViewState extends State<GrupWhatsappView> {
                     ),
                   )
                 : GridView.builder(
+                    shrinkWrap: true,
                     itemCount: grupWhatsAppList.length,
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

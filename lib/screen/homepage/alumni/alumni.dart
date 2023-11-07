@@ -24,7 +24,7 @@ class _AlumniViewState extends State<AlumniView> {
   bool isLoading = false;
   bool hasMore = true;
   String? selectedProdi;
-  int? angkatan;
+  int? angkatan;  
   bool showCloseIcon = false;
   bool showCloseIconAngkatan = false;
 
@@ -326,6 +326,7 @@ class _AlumniViewState extends State<AlumniView> {
                 ),
               ],
             ),
+            
             SizedBox(
               height: MediaQuery.of(context).size.height - 100,
               child: ListView.builder(
@@ -467,6 +468,7 @@ class _AlumniViewState extends State<AlumniView> {
                 },
               ),
             ),
+          
           ],
         ),
       ),

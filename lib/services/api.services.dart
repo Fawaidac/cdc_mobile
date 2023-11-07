@@ -6,6 +6,7 @@ import 'package:cdc_mobile/model/comment_model.dart';
 import 'package:cdc_mobile/model/followers_model.dart';
 import 'package:cdc_mobile/model/educations_model.dart';
 import 'package:cdc_mobile/model/jobs_model.dart';
+import 'package:cdc_mobile/model/notification_model.dart';
 import 'package:cdc_mobile/model/post_model.dart';
 import 'package:cdc_mobile/model/quisioner_check_model.dart';
 import 'package:cdc_mobile/model/salary_model.dart';
@@ -1641,5 +1642,36 @@ class ApiServices {
     // Mengembalikan Future yang selesai dengan nilai kosong
     // ignore: null_argument_to_non_null_type
     return Future.value();
+  }
+
+  static Future<List<NotificationsModel>> fetchNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/user/notifications'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final List<dynamic> notificationsList =
+            jsonResponse['data']['notifications'];
+
+        return notificationsList
+            .map((data) => NotificationsModel.fromJson(data))
+            .toList();
+      } else {
+        print(
+            'Gagal mengambil data notifikasi. Kode status: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('Terjadi kesalahan: $e');
+      return [];
+    }
   }
 }

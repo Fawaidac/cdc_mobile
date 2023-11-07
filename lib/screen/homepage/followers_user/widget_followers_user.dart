@@ -19,7 +19,7 @@ class _WidgetFollowersUserState extends State<WidgetFollowersUser> {
   Widget build(BuildContext context) {
     return FutureBuilder<UserFollowersInfo>(
       future: ApiServices.fetchUserFollowers(widget.id),
-      builder: (context, snapshot) { 
+      builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {

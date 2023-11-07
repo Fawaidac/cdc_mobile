@@ -4,6 +4,7 @@ import 'package:cdc_mobile/screen/homepage/profile/education/add_education.dart'
 import 'package:cdc_mobile/screen/homepage/profile/jobs/add_jobs.dart';
 import 'package:cdc_mobile/screen/homepage/profile/tentang.dart';
 import 'package:cdc_mobile/screen/login/login_view.dart';
+import 'package:cdc_mobile/screen/lupa_sandi/lupa_sandi_view.dart';
 import 'package:cdc_mobile/services/api.services.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,7 +69,15 @@ class _SettingState extends State<Setting> {
                       ));
                 },
                 child: get("Pekerjaan", Icons.work_outline)),
-            get("Ubah Sandi", Icons.lock_outline),
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LupaSandiView(),
+                      ));
+                },
+                child: get("Ubah Sandi", Icons.lock_outline)),
             Text(
               "Aksi",
               style: MyFont.poppins(

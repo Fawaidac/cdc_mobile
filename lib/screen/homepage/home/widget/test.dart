@@ -32,6 +32,11 @@ class _MyWidgetState extends State<MyWidget> {
       shrinkWrap: true,
       itemCount: widget.postList.length,
       itemBuilder: (context, index) {
+        if (widget.postList.isEmpty) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
         final post = widget.postList[index];
         if (index < widget.postList.length) {
           String dateTime = widget.postList[index].postAt;
@@ -163,8 +168,11 @@ class _MyWidgetState extends State<MyWidget> {
               ],
             ),
           );
+        } else {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
         }
-        return CircularProgressIndicator();
       },
     );
   }
@@ -277,4 +285,5 @@ class _MyWidgetState extends State<MyWidget> {
       },
     );
   }
+
 }

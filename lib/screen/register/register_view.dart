@@ -31,6 +31,7 @@ class RegisterView extends StatefulWidget {
 class _RegisterViewState extends State<RegisterView> {
   var email = TextEditingController();
   var alamat = TextEditingController();
+  var prodi = TextEditingController();
   var fullname = TextEditingController();
   var nik = TextEditingController();
   var pw = TextEditingController();
@@ -50,6 +51,7 @@ class _RegisterViewState extends State<RegisterView> {
     // TODO: implement initState
     countrycode.text = "+62";
     alamat.text = widget.alamat;
+    prodi.text = widget.prodi;
     fullname.text = widget.namaLengkap;
     nim.text = widget.nim;
     email.text = widget.email;
@@ -64,6 +66,8 @@ class _RegisterViewState extends State<RegisterView> {
       Fluttertoast.showToast(msg: "Email harus diisi");
     } else if (nik.text.isEmpty) {
       Fluttertoast.showToast(msg: "NIK harus diisi");
+    } else if (prodi.text.isEmpty) {
+      Fluttertoast.showToast(msg: "Program studi harus diisi");
     } else if (pw.text.isEmpty) {
       Fluttertoast.showToast(msg: "Password harus diisi");
     } else if (pw.text.length < 8) {
@@ -75,17 +79,8 @@ class _RegisterViewState extends State<RegisterView> {
       Fluttertoast.showToast(
           msg: "Password dan konfirmasi password harus sama");
     } else {
-      await controller.checkEmail(
-          email.text,
-          context,
-          countrycode.text,
-          phone,
-          fullname.text,
-          pw.text,
-          alamat.text,
-          nik.text,
-          nim.text,
-          idProdi ?? "");
+      await controller.checkEmail(email.text, context, countrycode.text, phone,
+          fullname.text, pw.text, alamat.text, nik.text, nim.text, prodi.text);
     }
   }
 
@@ -142,95 +137,14 @@ class _RegisterViewState extends State<RegisterView> {
                   inputFormatters:
                       FilteringTextInputFormatter.singleLineFormatter,
                   icon: Icons.mail),
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: ApiServices.getProdi(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: CircularProgressIndicator(),
-                    ); // Placeholder for loading state
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData) {
-                    final List<Map<String, dynamic>>? prodiList = snapshot.data;
-                    return Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5, top: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Pilih Program Studi",
-                                style: GoogleFonts.poppins(fontSize: 12),
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        SizedBox(
-                          height: 50,
-                          child: DropdownButtonFormField<String>(
-                            isExpanded: true,
-                            value: selectedProdi,
-                            icon: Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.black,
-                            ),
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedProdi = newValue;
-                                idProdi = prodiList
-                                    .firstWhere((prodi) =>
-                                        prodi['nama_prodi'] ==
-                                        selectedProdi)['id']
-                                    .toString();
-                              });
-                            },
-                            items: prodiList!.map((prodi) {
-                              return DropdownMenuItem<String>(
-                                value: prodi['nama_prodi'],
-                                child: Text(
-                                  prodi['nama_prodi'],
-                                  style: MyFont.poppins(
-                                      fontSize: 12, color: Colors.black),
-                                ),
-                              );
-                            }).toList(),
-                            decoration: InputDecoration(
-                              hintText: "Pilih Program Studi",
-                              isDense: true,
-                              hintStyle: GoogleFonts.poppins(
-                                  fontSize: 13, color: Colors.grey),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 1,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: const Color(0xFFFCFDFE),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return Container(); // Placeholder for empty state
-                  }
-                },
-              ),
+              CustomTextField(
+                  controller: prodi,
+                  label: "Program Studi",
+                  keyboardType: TextInputType.text,
+                  isEnable: true,
+                  inputFormatters:
+                      FilteringTextInputFormatter.singleLineFormatter,
+                  icon: Icons.school),
               CustomTextField(
                   controller: alamat,
                   label: "Alamat",

@@ -6,6 +6,7 @@ import 'package:cdc_mobile/screen/homepage/home/fasilitas/fasilitas.dart';
 import 'package:cdc_mobile/screen/homepage/home/home.dart';
 // import 'package:cdc_mobile/screen/homepage/home/home_view.dart';
 import 'package:cdc_mobile/screen/homepage/home/home_view2.dart';
+import 'package:cdc_mobile/screen/homepage/home/widget/widget_notifications.dart';
 import 'package:cdc_mobile/screen/homepage/posting/posting.dart';
 import 'package:cdc_mobile/screen/homepage/profile/profile.dart';
 import 'package:cdc_mobile/screen/homepage/alumni/users_all.dart';
@@ -109,6 +110,7 @@ class _HomePageState extends State<HomePage> {
       "label": "Profile"
     },
   ];
+
   void onTap(value) {
     setState(() {
       index = value;
@@ -230,12 +232,21 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.only(right: 10),
                   child: Row(
                     children: [
-                      SizedBox(
-                        child: Image.asset(
-                          "images/bell.png",
-                          height: 20,
-                          alignment: Alignment.center,
-                          color: primaryColor,
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => NotificationsScreen(),
+                              ));
+                        },
+                        child: SizedBox(
+                          child: Image.asset(
+                            "images/bell.png",
+                            height: 20,
+                            alignment: Alignment.center,
+                            color: primaryColor,
+                          ),
                         ),
                       ),
                       const SizedBox(
